@@ -13,7 +13,7 @@ git add .
 set /p commit_msg="Izoh kiriting (shunchaki Enter bossangiz 'update' deb saqlanadi): "
 if "%commit_msg%"=="" set commit_msg=update_%date%_%time%
 git commit -m "%commit_msg%"
-git push
+git push -u origin main
 
 echo.
 echo ========================================================
