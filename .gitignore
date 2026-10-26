@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+bot_activity.log
+*.zip
+*.session
+*.session-journal
+data/backups/
+
