@@ -443,6 +443,12 @@ class MarsBotEngine:
         t = re.sub(r"([a-z]+)ebdi\b|([a-z]+)epti\b", r"\1yapti", t)
         t = re.sub(r"([a-z]+)vor([a-z]*)\b", r"\1 yubor\2", t)
 
+        # -moqchi / to'lash fe'l shakllari va dialekt variantlari
+        t = re.sub(r"\b(to'?la|tola|tula|o'?tkaz|utkaz|tashla)moqchiydim(da)?\b", r"\1moqchiman", t)
+        t = re.sub(r"\b(to'?la|tola|tula)y(da|m)?\b", r"to'lay", t)
+        t = re.sub(r"\btul(a\w*)\b", r"to'l\1", t)
+        t = re.sub(r"\btulov(\w*)\b", r"to'lov\1", t)
+
         # Qo'shimchalar va birikmalarni ajratish (oygaham -> oyga ham, uchunam -> uchun ham, manku -> man ku, vb.)
         t = re.sub(r"\buchunam\b|\buchunyam\b", "uchun ham", t)
         t = re.sub(r"([a-z]+)gaham\b", r"\1ga ham", t)
@@ -488,6 +494,10 @@ class MarsBotEngine:
             "quygandim": "qo'ygandim", "quygandimku": "qo'ygandimku", "quydim": "qo'ydim", "quydimku": "qo'ydimku",
             "quyganman": "qo'yganman", "quyganmanku": "qo'yganmanku", "quygandik": "qo'ygandik", "quyganmiz": "qo'yganmiz",
             "quymoqchi": "qo'ymoqchi", "quyildi": "qo'yildi", "quyilgan": "qo'yilgan",
+            "tulamoqchiydimda": "to'lamoqchiman", "tulamoqchiydim": "to'lamoqchiman", "tulamoqchi": "to'lamoqchi", "tulamoqchiman": "to'lamoqchiman", "tulay": "to'lay", "tulasam": "to'lasam", "tulasa": "to'lasa",
+            "tolamoqchiydimda": "to'lamoqchiman", "tolamoqchiydim": "to'lamoqchiman", "tolamoqchi": "to'lamoqchi", "tolamoqchiman": "to'lamoqchiman", "tolay": "to'lay", "tolasam": "to'lasam", "tolasa": "to'lasa",
+            "utkazmoqchiydimda": "o'tkazmoqchiman", "utkazmoqchiydim": "o'tkazmoqchiman", "utkazmoqchi": "o'tkazmoqchi", "utkazmoqchiman": "o'tkazmoqchiman",
+            "tashlamoqchiydimda": "tashlamoqchiman", "tashlamoqchiydim": "tashlamoqchiman", "tashlamoqchi": "tashlamoqchi", "tashlamoqchiman": "tashlamoqchiman",
             "tulov": "to'lov", "tolov": "to'lov", "tulash": "to'lash", "tolash": "to'lash",
             "tulovlar": "to'lovlar", "tolovlar": "to'lovlar", "tulovlari": "to'lovlari", "tolovlari": "to'lovlari",
             "tulovim": "to'lovim", "tolovim": "to'lovim", "tulovimiz": "to'lovimiz", "tolovimiz": "to'lovimiz",
@@ -690,7 +700,7 @@ class MarsBotEngine:
             "to'lov", "tolov", "tulov", "qanday", "qayerga", "tartibi", "video", "qo'llanma", "darslik", "click", "hisob raqam",
             "rekvizit", "pul tashla", "to'lov qilish", "to'lov qilsam"
         ]
-        if has_monthly and any(p in norm_text for p in pay_actions):
+        if has_monthly and (any(p in norm_text for p in pay_actions) or re.search(r"\b(t(?:o'?|o|u)la\w*|o'?tkaz\w*|utkaz\w*|tashla\w*|shot\w*|hisob\s*raqam|rekvizit\w*|click\w*)\b", norm_text)):
             return True
 
         # 4. Agar umumiy "qanday to'lasam bo'ladi" / "qanday to'layman" deb yozilgan bo'lsa
@@ -761,24 +771,21 @@ class MarsBotEngine:
         return False
 
     def send_monthly_payment_media(self, chat_id, reply_to_id=None):
-        """Oylik to'lov rekviziti va video qo'llanmasini kanaldan mijozning xabariga javob (reply) tariqasida yuborish"""
+        """Oylik to'lov rekviziti va video qo'llanmasini yangi kanaldan (@POS_Terminal_UzSmart_Bank) mijozga yuborish"""
         cache = load_media_cache()
-        channel_id = cache.get("channel_id") or -1004424217398
-        # Foydalanuvchi ko'rsatgan linklar: https://t.me/c/4424217398/10 va https://t.me/c/4424217398/6
-        post_ids = [cache.get("oylik_video_msg_id") or 6, cache.get("oylik_rekvizit_msg_id") or 10]
-        # Takrorlanmasligi uchun
+        channel_id = cache.get("channel_id") or getattr(config, "MATERIALS_CHANNEL_ID", -1001641871516)
+        # @POS_Terminal_UzSmart_Bank kanalidan: post 148 (video) va 85 (rekvizit rasmi)
+        post_ids = [cache.get("oylik_video_msg_id") or 148, cache.get("oylik_rekvizit_msg_id") or 85]
         seen = set()
         unique_post_ids = [x for x in post_ids if not (x in seen or seen.add(x))]
 
         sent_any = False
         for msg_id in unique_post_ids:
             try:
-                # Kanaldagi post mijozning xabariga reply (javob tariqasida) yuboriladi
                 res = self.bot.copy_message(chat_id, from_chat_id=channel_id, message_id=msg_id, reply_to_message_id=reply_to_id)
                 if res.get("ok"):
                     sent_any = True
                 else:
-                    # Agar copyMessage o'xshamasa, forward_message orqali uzatamiz
                     fwd_res = self.bot.forward_message(chat_id, from_chat_id=channel_id, message_id=msg_id)
                     if fwd_res.get("ok"):
                         sent_any = True
@@ -786,27 +793,24 @@ class MarsBotEngine:
                 print(f"[MEDIA] Post #{msg_id} yuborishda xatolik: {e}")
 
         if not sent_any:
-            # Agar tasodifan kanaldan yuborishda xatolik yuz bersa, zaxira sifatida rasmiy matnni reply qilib yuboramiz
             self.bot.send_message(chat_id, config.REKVIZIT_OYLIK, reply_to_message_id=reply_to_id)
 
     def send_yearly_payment_media(self, chat_id, reply_to_id=None):
-        """Yillik to'lov rekviziti va video qo'llanmasini kanaldan mijozning xabariga javob (reply) tariqasida yuborish"""
+        """Yillik to'lov rekviziti va video qo'llanmasini yangi kanaldan (@POS_Terminal_UzSmart_Bank) mijozga yuborish"""
         cache = load_media_cache()
-        channel_id = cache.get("channel_id") or -1004424217398
-        # Foydalanuvchi ko'rsatgan linklar: https://t.me/c/4424217398/7 (video) va https://t.me/c/4424217398/11 (rekvizit)
-        post_ids = [cache.get("yillik_video_msg_id") or 7, cache.get("yillik_rekvizit_msg_id") or 11]
+        channel_id = cache.get("channel_id") or getattr(config, "MATERIALS_CHANNEL_ID", -1001641871516)
+        # @POS_Terminal_UzSmart_Bank kanalidan: post 145 (yillik fiskal modul to'lovi videosi)
+        post_ids = [cache.get("yillik_video_msg_id") or 145, cache.get("yillik_rekvizit_msg_id") or 34]
         seen = set()
         unique_post_ids = [x for x in post_ids if not (x in seen or seen.add(x))]
 
         sent_any = False
         for msg_id in unique_post_ids:
             try:
-                # Kanaldagi post mijozning xabariga reply (javob tariqasida) yuboriladi
                 res = self.bot.copy_message(chat_id, from_chat_id=channel_id, message_id=msg_id, reply_to_message_id=reply_to_id)
                 if res.get("ok"):
                     sent_any = True
                 else:
-                    # Agar copyMessage o'xshamasa, forward_message orqali uzatamiz
                     fwd_res = self.bot.forward_message(chat_id, from_chat_id=channel_id, message_id=msg_id)
                     if fwd_res.get("ok"):
                         sent_any = True
@@ -814,7 +818,6 @@ class MarsBotEngine:
                 print(f"[MEDIA] Yillik post #{msg_id} yuborishda xatolik: {e}")
 
         if not sent_any:
-            # Agar tasodifan kanaldan yuborishda xatolik yuz bersa, zaxira sifatida rasmiy matnni reply qilib yuboramiz
             resp = (
                 f"📹 *Yillik Fiskal Modul to'lovini to'lash bo'yicha video darslik:*\n"
                 f"{config.VIDEO_YILLIK_URL}\n\n"
@@ -823,10 +826,10 @@ class MarsBotEngine:
             self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
 
     def send_ikpu_solution_media(self, chat_id, reply_to_id=None):
-        """IKPU xatoligi bo'yicha video qo'llanmani (post #9) mijozga reply qilib yuborish"""
+        """IKPU / dastur yangilash xatoligi bo'yicha video qo'llanmani (post #126 / #125) mijozga reply qilib yuborish"""
         cache = load_media_cache()
-        channel_id = cache.get("channel_id") or -1004424217398
-        post_id = 9  # https://t.me/c/4424217398/9
+        channel_id = cache.get("channel_id") or getattr(config, "MATERIALS_CHANNEL_ID", -1001641871516)
+        post_id = cache.get("ikpu_video_msg_id") or 126
         sent = False
         try:
             res = self.bot.copy_message(chat_id, from_chat_id=channel_id, message_id=post_id, reply_to_message_id=reply_to_id)
@@ -845,7 +848,7 @@ class MarsBotEngine:
             f"ℹ️ *Eslatma:* Agar videodagi ko'rsatmalarni bajarganingizdan keyin ham xatolik bartaraf bo'lmasa yoki yordam kerak bo'lsa, xabar qoldiring — sizni darhol mas'ul texnik mutaxassisimizga ulaymiz."
         )
         if not sent:
-            resp_text += f"\n\n👉 [Video qo'llanmani ko'rish uchun havola](https://t.me/c/4424217398/9)"
+            resp_text += f"\n\n👉 [Video qo'llanmani ko'rish uchun havola](https://t.me/POS_Terminal_UzSmart_Bank/{post_id})"
 
         self.bot.send_message(chat_id, resp_text, reply_to_message_id=reply_to_id)
 
@@ -962,10 +965,10 @@ class MarsBotEngine:
         return any(p in norm_text for p in phrases)
 
     def send_clock_solution_media(self, chat_id, reply_to_id=None):
-        """Kassa apparati soatini to'g'irlash bo'yicha video qo'llanmani (post #8) mijozga reply qilib yuborish"""
+        """Kassa apparati soatini to'g'irlash bo'yicha video qo'llanmani (post #141) mijozga reply qilib yuborish"""
         cache = load_media_cache()
-        channel_id = cache.get("channel_id") or -1004424217398
-        post_id = 8  # https://t.me/c/4424217398/8
+        channel_id = cache.get("channel_id") or getattr(config, "MATERIALS_CHANNEL_ID", -1001641871516)
+        post_id = cache.get("clock_video_msg_id") or 141
         sent = False
         try:
             res = self.bot.copy_message(chat_id, from_chat_id=channel_id, message_id=post_id, reply_to_message_id=reply_to_id)
@@ -988,7 +991,7 @@ class MarsBotEngine:
             f"2️⃣ `123498765`"
         )
         if not sent:
-            resp_text += f"\n\n👉 [Video qo'llanmani ko'rish uchun havola](https://t.me/c/4424217398/8)"
+            resp_text += f"\n\n👉 [Video qo'llanmani ko'rish uchun havola](https://t.me/POS_Terminal_UzSmart_Bank/{post_id})"
 
         self.bot.send_message(chat_id, resp_text, reply_to_message_id=reply_to_id)
 
@@ -1118,7 +1121,7 @@ class MarsBotEngine:
             "qanday", "qayerga", "tartibi", "video", "qo'llanma", "darslik", "click", "hisob raqam",
             "rekvizit", "pul tashla", "to'lov qilish", "to'lov qilsam"
         ]
-        if has_yearly and any(p in norm_text for p in pay_actions):
+        if has_yearly and (any(p in norm_text for p in pay_actions) or re.search(r"\b(t(?:o'?|o|u)la\w*|o'?tkaz\w*|utkaz\w*|tashla\w*|shot\w*|hisob\s*raqam|rekvizit\w*|duk\b)\b", norm_text)):
             return True
 
         return False
@@ -1209,6 +1212,71 @@ class MarsBotEngine:
         if any(p in norm_text for p in person_words) and any(a in norm_text for a in action_words):
             return True
         return False
+
+    def cross_delete_other(self, ticket, accepted_source):
+        """
+        Texnik murojaatni qaysi joydan (kanal/guruh yoki shaxsiy chat) qabul qilsa,
+        ikkinchi joyga yuborilgan ma'lumotni o'chirib tashlash.
+        accepted_source: 'group' yoki 'chat'
+        """
+        if not ticket:
+            return
+        if accepted_source == "group":
+            # Guruh/kanal orqali qabul qilindi -> Texniklarning shaxsiy chatiga yuborilgan alert xabarlarni o'chirish
+            admin_msgs = ticket.get("admin_messages", [])
+            for am in admin_msgs:
+                try:
+                    self.bot.delete_message(am["chat_id"], am["message_id"])
+                except Exception as e:
+                    print(f"[CROSS_DELETE_CHAT] Xatolik: {e}")
+            ticket["admin_messages"] = []
+            ticket_service.save_tickets()
+        elif accepted_source == "chat":
+            # Shaxsiy chat orqali qabul qilindi -> Kanaldagi va muhokama guruhidagi xabarlarni o'chirish
+            chan_id = config.TECHNICIAN_CHANNEL_ID
+            chan_mid = ticket.get("channel_message_id")
+            if chan_id and chan_mid:
+                try:
+                    self.bot.delete_message(chan_id, chan_mid)
+                except Exception as e:
+                    print(f"[CROSS_DELETE_CHAN] Xatolik: {e}")
+                ticket["channel_message_id"] = None
+            disc_mid = ticket.get("group_discussion_id")
+            if config.DISCUSSION_GROUP_ID and disc_mid:
+                try:
+                    self.bot.delete_message(config.DISCUSSION_GROUP_ID, disc_mid)
+                except Exception as e:
+                    pass
+                ticket["group_discussion_id"] = None
+            ticket_service.save_tickets()
+
+    def mark_ticket_finished(self, ticket, tech_name, tech_username, status_text="Tugatilgan (Suhbat yakunlandi)"):
+        """
+        Suhbat tugatilganda texnikka yuborilgan mijoz ma'lumotlarini (kanal va/yoki chatda)
+        tahrirlab, tagidan 'Tugatilgan' deb yozib qo'yish.
+        """
+        if not ticket:
+            return
+        base = ticket.get("base_card", "").strip()
+        u_tag = f"@{tech_username}" if tech_username else tech_name
+        finished_tag = f"\n\n━━━━━━━━━━━━━━━━━━━━\n👨‍💻 *Mas'ul mutaxassis:* {u_tag}\n🔴 *Holat:* {status_text}"
+
+        # 1. Kanaldagi kartochkani tahrirlash (agar hali mavjud bo'lsa)
+        chan_id = config.TECHNICIAN_CHANNEL_ID
+        chan_mid = ticket.get("channel_message_id")
+        if chan_id and chan_mid:
+            try:
+                self.bot.edit_ticket_card(chan_id, chan_mid, f"{base}{finished_tag}", is_photo=ticket.get("is_photo", False))
+            except Exception as e:
+                print(f"[MARK_FINISHED_CHAN] Xatolik: {e}")
+
+        # 2. Texnikning shaxsiy chatidagi kartochkani tahrirlash (agar hali mavjud bo'lsa)
+        admin_msgs = ticket.get("admin_messages", [])
+        for am in admin_msgs:
+            try:
+                self.bot.edit_ticket_card(am["chat_id"], am["message_id"], f"{base}{finished_tag}", is_photo=am.get("is_photo", False))
+            except Exception as e:
+                print(f"[MARK_FINISHED_CHAT] Xatolik: {e}")
 
     def notify_technician(self, chat_id, message_id, session, first_name, username, user_id, text, is_ikpu_exception=False):
         """Mijozning barcha ma'lumotlari (INN, Tashkilot, oylik holat, FM, yillik holat, rasm)ni texnik (@Yashnarbek_butaev)ga yetkazish"""
@@ -1360,7 +1428,38 @@ class MarsBotEngine:
             ticket["channel_message_id"] = channel_msg_id
             ticket["is_photo"] = is_photo_card
             ticket_service.tickets[str(channel_msg_id)] = ticket
-            ticket_service.save_tickets()
+
+        # 3. Texnik va adminlarning shaxsiy chatiga ham mijoz ma'lumotlarini yuborish
+        target_ids = list(set([config.TECHNICIAN_TELEGRAM_ID] + config.ADMIN_TELEGRAM_IDS))
+        admin_messages = []
+        tech_chat_text = (
+            f"🚨 *Yangi murojaat:*\n\n"
+            f"{alert_text}\n\n"
+            f"💬 _Javob berish yoki qabul qilish uchun ushbu xabarga «Reply» (Javob) qilib yozing yoki «+» yuboring._"
+        )
+        photo_file_id = getattr(session, "last_photo_file_id", None)
+        for adm_id in target_ids:
+            try:
+                if photo_file_id:
+                    res_alert = self.bot.send_photo(adm_id, photo_file_id, caption=tech_chat_text)
+                    if res_alert.get("ok"):
+                        alert_mid = res_alert["result"]["message_id"]
+                        admin_messages.append({"chat_id": adm_id, "message_id": alert_mid, "is_photo": True})
+                else:
+                    res_alert = self.bot.send_message(adm_id, tech_chat_text)
+                    if res_alert.get("ok"):
+                        alert_mid = res_alert["result"]["message_id"]
+                        admin_messages.append({"chat_id": adm_id, "message_id": alert_mid, "is_photo": False})
+            except Exception as e_alert:
+                print(f"[NOTIFY_TECH_DIRECT] Texnik ({adm_id}) ga yuborishda xatolik: {e_alert}")
+
+        if admin_messages:
+            ticket["admin_messages"] = admin_messages
+            ticket["tech_msg_id"] = admin_messages[0]["message_id"]
+            for am in admin_messages:
+                ticket_service.tickets[str(am["message_id"])] = ticket
+
+        ticket_service.save_tickets()
 
         # Mijozga yuboriladigan muloyim va chiroyli javob
         if is_ikpu:
@@ -1662,30 +1761,49 @@ class MarsBotEngine:
                 else:
                     print(f"[KANAL] ❌ Faylni yuklab olishda xatolik yuz berdi: {file_name}")
 
-        # 2. Yangi Video yoki animatsiya (Click video qo'llanmasi)
+        # 2. Yangi Video yoki animatsiya (Qo'llanmalar va darsliklar)
         if "video" in post or "animation" in post:
             media_obj = post.get("video") or post.get("animation")
             file_id = media_obj.get("file_id")
-            caption = post.get("caption", "").strip() or config.VIDEO_OYLIK_CAPTION
+            caption = (post.get("caption", "") or "").strip()
+            c_low = caption.lower()
             cache["channel_id"] = chat_id
-            cache["oylik_video_msg_id"] = post["message_id"]
-            cache["oylik_video_file_id"] = file_id
-            cache["oylik_video_caption"] = caption
+            mid = post["message_id"]
+
+            if any(k in c_low for k in ["yillik", "fiskal modul", "feskal modul", "ofd"]):
+                cache["yillik_video_msg_id"] = mid
+                cache["yillik_video_file_id"] = file_id
+                print(f"[KANAL] 🎬 Yillik to'lov video qo'llanmasi post ID #{mid} saqlandi!")
+            elif any(k in c_low for k in ["sana", "vaqt", "soat"]):
+                cache["clock_video_msg_id"] = mid
+                print(f"[KANAL] 🎬 Soat / sana sozlash video qo'llanmasi post ID #{mid} saqlandi!")
+            elif any(k in c_low for k in ["ikpu", "mxik", "o'lchov", "olchov", "dastur"]):
+                cache["ikpu_video_msg_id"] = mid
+                print(f"[KANAL] 🎬 IKPU / dastur video qo'llanmasi post ID #{mid} saqlandi!")
+            else:
+                cache["oylik_video_msg_id"] = mid
+                cache["oylik_video_file_id"] = file_id
+                cache["oylik_video_caption"] = caption or config.VIDEO_OYLIK_CAPTION
+                print(f"[KANAL] 🎬 Oylik to'lov video qo'llanmasi post ID #{mid} saqlandi!")
             save_media_cache(cache)
-            print(f"[KANAL] 🎬 Oylik to'lov video qo'llanmasi post ID #{post['message_id']} saqlandi!")
 
         # 3. Yangi Rasm yoki Matn (Click rekvizit rasmi / matni)
         if "photo" in post or "text" in post:
-            caption = post.get("caption", "") or post.get("text", "")
+            caption = (post.get("caption", "") or post.get("text", "")).strip()
+            c_low = caption.lower()
             cache["channel_id"] = chat_id
-            cache["oylik_rekvizit_msg_id"] = post["message_id"]
-            if "photo" in post:
-                photo_arr = post.get("photo", [])
-                if photo_arr:
-                    cache["oylik_photo_file_id"] = photo_arr[-1]["file_id"]
-            cache["oylik_photo_caption"] = caption or config.REKVIZIT_OYLIK
+            mid = post["message_id"]
+            if any(k in c_low for k in ["inn", "jshshir", "chek"]):
+                cache["inn_jshshir_msg_id"] = mid
+            else:
+                cache["oylik_rekvizit_msg_id"] = mid
+                if "photo" in post:
+                    photo_arr = post.get("photo", [])
+                    if photo_arr:
+                        cache["oylik_photo_file_id"] = photo_arr[-1]["file_id"]
+                cache["oylik_photo_caption"] = caption or config.REKVIZIT_OYLIK
             save_media_cache(cache)
-            print(f"[KANAL] 🖼 Oylik to'lov rekviziti post ID #{post['message_id']} saqlandi!")
+            print(f"[KANAL] 🖼 Post ID #{mid} rekvizit/ma'lumot sifatida saqlandi!")
 
     def handle_callback_query(self, callback_query):
         """Inline tugmalar bosilganda qayta ishlash"""
@@ -1965,14 +2083,18 @@ class MarsBotEngine:
         # Yangi INN yoki JSHSHIR yuborilganda oldingi suhbat va aparat xotirasi to'liq unutiladi!
         is_history_req = (session.state == "AWAITING_INN_HISTORY" or (self.is_payment_history_query(norm_text, session) and not norm_text.strip().isdigit()))
         
+        # Agar bot avval FM ni tekshirib, mijozdan INN so'ragan bo'lsa (AWAITING_INN) yoki FM tekshirilgan bo'lsa,
+        # FM ma'lumotlarini va oflayn xatolik holatini saqlab qolamiz!
+        preserve_fm = bool(session.state == "AWAITING_INN" or session.fm_holat is not None or getattr(session, "offline_limit_error_active", False))
+
         # Mijoz avvalroq rasm yuborgan bo'lsa, uni xotirada saqlab qolamiz (qayta rasm so'ramaslik uchun!):
         saved_photo_id = getattr(session, "last_photo_file_id", None)
         saved_photo_cap = getattr(session, "last_photo_caption", None)
         saved_photo_txt = getattr(session, "last_photo_text", None)
         saved_msg_id = getattr(session, "last_msg_id", None)
 
-        # Mijoz bilan bo'lgan avvalgi suhbat holati yangilanadi (lekin yuborilgan rasm saqlanadi!)
-        session.reset_for_new_target(preserve_photo=True)
+        # Mijoz bilan bo'lgan avvalgi suhbat holati yangilanadi (lekin yuborilgan rasm va tekshirilgan FM saqlanadi!)
+        session.reset_for_new_target(preserve_photo=True, preserve_fm=preserve_fm)
         ticket_service.user_tickets.pop(str(user_id), None)
         ticket_service.save_tickets()
 
@@ -2094,8 +2216,9 @@ class MarsBotEngine:
                     or self.is_offline_limit_error(photo_ocr)
                     or self.is_offline_limit_error(caption_text)
                 )
-                if is_offline:
-                    session.offline_limit_error_active = True
+                if is_offline or session.fm_holat == "toza":
+                    if is_offline:
+                        session.offline_limit_error_active = True
                     if session.fm_holat == "toza":
                         session_mgr.save_sessions()
                         if getattr(session, "last_photo_file_id", None):
@@ -2304,9 +2427,10 @@ class MarsBotEngine:
                 claimed_by = ticket.get("claimed_by")
 
                 norm_cmd = raw_text.lower().strip()
+                base_cmd = norm_cmd.split("@")[0].strip()
 
                 # 0.9. Boshqa texnik suhbatga qo'shilishi (/davomettirish):
-                if norm_cmd in ["/davomettirish", "davomettirish", "/davom_ettirish", "davom ettirish"]:
+                if base_cmd in ["/davomettirish", "davomettirish", "/davom_ettirish", "davom ettirish"]:
                     try:
                         self.bot.delete_message(chat_id, message_id)
                     except Exception:
@@ -2332,7 +2456,7 @@ class MarsBotEngine:
                     # Mijozga yangi texnik qo'shilgani haqida xabar yuborilmaydi (mijozga bildirish shart emas)
                     return
 
-                # 1. Texnik '+' yuborib murojaatni qabul qilganda:
+                # 1. Texnik '+' yuborganda:
                 if raw_text == "+" or (raw_text.startswith("+") and len(raw_text) <= 3):
                     # '+' xabarini guruhdan darhol o'chiramiz
                     try:
@@ -2340,6 +2464,33 @@ class MarsBotEngine:
                     except Exception:
                         pass
 
+                    # Guruh orqali qabul qilindi -> Texnikning shaxsiy chatiga borgan xabarni o'chirish (Cross-delete)
+                    ticket["claimed_in"] = "group"
+                    self.cross_delete_other(ticket, accepted_source="group")
+
+                    # A) Agar bu to'lov kvitansiyasi bo'lsa: '+' bosilganda avtomatik faollashtirildi xabari yuborilib suhbat yopiladi!
+                    if ticket.get("type") == "kvitansiya" or ticket.get("is_receipt"):
+                        client_msg = "✅ *To'lov kvitansiyangiz qabul qilindi va apparatingiz faollashtirildi. Apparatingizni ishlatib ko'rishingiz mumkin!*"
+                        self.bot.send_message(target_chat_id, client_msg, reply_to_message_id=target_reply_id)
+
+                        # Kanaldagi asosiy postni tahrirlash (To'lov tasdiqlandi va tugatildi deb yoziladi)
+                        self.mark_ticket_finished(ticket, tech_name, tech_username, status_text="To'lov tasdiqlandi (Faollashtirildi va tugatilgan)")
+
+                        ticket_service.close_ticket(client_uid)
+                        if client_uid:
+                            cs = session_mgr.get_session(client_uid)
+                            if cs and cs.state == "ADMIN_BOGLANISH":
+                                cs.state = "NORMAL"
+                                session_mgr.save_sessions()
+
+                        self.bot.send_message(
+                            chat_id,
+                            f"✅ *To'lov kvitansiyasi tasdiqlandi ({tech_name}).*\nMijozga apparat faollashtirilgani haqida xabar yuborildi va suhbat yakunlandi.",
+                            reply_to_message_id=ticket.get("group_discussion_id")
+                        )
+                        return
+
+                    # B) Oddiy nosozlik murojaati bo'lsa:
                     # Agar allaqachon boshqa texnik qabul qilgan bo'lsa va bu texnik hali biriktirilmagan bo'lsa:
                     if claimed_by and not ticket_service.is_tech_authorized(ticket, user_id):
                         c_name = claimed_by.get("name", "Boshqa texnik")
@@ -2388,6 +2539,11 @@ class MarsBotEngine:
                     return
 
                 # 2. Oddiy xabar yozilganda:
+                # Guruh orqali qabul qilindi -> Texnik shaxsiy chatidagi xabarni o'chirish (Cross-delete)
+                if not ticket.get("claimed_in") or ticket.get("claimed_in") != "group":
+                    ticket["claimed_in"] = "group"
+                    self.cross_delete_other(ticket, accepted_source="group")
+
                 # Agar murojaat hali hech kim tomonidan qabul qilinmagan bo'lsa:
                 if not claimed_by:
                     tech_info = {
@@ -2425,8 +2581,16 @@ class MarsBotEngine:
                     )
                     return
 
-                # 2.1 Murojaatni yopish (/yopish, yopish, /tamom, tamom, /done)
-                if raw_text.lower() in ["/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                # 2.1 Murojaatni yopish (/yakun, yakun, /tugatish, tugatish, /yopish, yopish, /tamom, tamom, /done)
+                if base_cmd in ["/yakun", "yakun", "/tugatish", "tugatish", "/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                    try:
+                        self.bot.delete_message(chat_id, message_id)
+                    except Exception:
+                        pass
+
+                    # Texnikka yuborilgan mijoz ma'lumotlarini tahrirlab, tagidan 'Tugatilgan' deb yozib qo'yish
+                    self.mark_ticket_finished(ticket, tech_name, tech_username, status_text="Tugatilgan (Suhbat yakunlandi)")
+
                     ticket_service.close_ticket(client_uid)
                     if client_uid:
                         cs = session_mgr.get_session(client_uid)
@@ -2437,8 +2601,8 @@ class MarsBotEngine:
                     self.bot.send_message(target_chat_id, close_msg, reply_to_message_id=target_reply_id)
                     self.bot.send_message(
                         chat_id,
-                        f"✅ *Murojaat muvaffaqiyatli yopildi.*\nMijoz bilan suhbat yakunlandi.",
-                        reply_to_message_id=message_id
+                        f"✅ *Murojaat muvaffaqiyatli yakunlandi.*\nMijoz bilan suhbat tugatildi.",
+                        reply_to_message_id=ticket.get("group_discussion_id")
                     )
                     return
 
@@ -2536,19 +2700,65 @@ class MarsBotEngine:
                     client_name = ticket.get("first_name", "Mijoz")
                     c_uid = ticket.get("user_id")
 
+                    # Chat orqali qabul qilindi -> Texnikni biriktiramiz va kanaldagi xabarni o'chiramiz (Cross-delete)
+                    tech_name = from_user.get("first_name", "Texnik")
+                    tech_username = from_user.get("username", "")
+                    tech_info = {
+                        "user_id": user_id,
+                        "name": tech_name,
+                        "username": tech_username,
+                        "time": time.time()
+                    }
+                    ticket["claimed_by"] = tech_info
+                    ticket["claimed_in"] = "chat"
+                    ticket["claimed_chat_id"] = chat_id
+                    ticket_service.add_technician_to_ticket(ticket, user_id, tech_name, tech_username)
+                    self.cross_delete_other(ticket, accepted_source="chat")
+
                     # A) Matnli xabar
                     if "text" in message:
                         tech_text = message["text"].strip()
-                        if tech_text.lower() in ["/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                        norm_tech = tech_text.lower().strip()
+                        base_cmd = norm_tech.split("@")[0].strip()
+                        if base_cmd in ["/yakun", "yakun", "/tugatish", "tugatish", "/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                            # Texnikka yuborilgan mijoz ma'lumotini tahrirlab, tagidan 'Tugatilgan' deb yozib qo'yish
+                            self.mark_ticket_finished(ticket, tech_name, tech_username, status_text="Tugatilgan (Suhbat yakunlandi)")
                             ticket_service.close_ticket(c_uid)
                             if c_uid:
                                 cs = session_mgr.get_session(c_uid)
                                 if cs and cs.state == "ADMIN_BOGLANISH":
                                     cs.state = "NORMAL"
                                     session_mgr.save_sessions()
-                            self.bot.delete_message(chat_id, message_id)
+                            try:
+                                self.bot.delete_message(chat_id, message_id)
+                            except Exception:
+                                pass
                             self.bot.send_message(target_chat_id, "✅ *Texnik mutaxassis bilan suhbat yakunlandi.*\n\nAgar yana savollaringiz bo'lsa, bemalol murojaat qilishingiz mumkin!", reply_to_message_id=target_msg_id)
+                            self.bot.send_message(chat_id, "✅ *Murojaat muvaffaqiyatli yakunlandi.* Mijoz bilan suhbat tugatildi.", reply_to_message_id=reply_to_msg.get("message_id"))
                             return
+
+                        # '+' yuborilganda:
+                        if tech_text == "+" or (tech_text.startswith("+") and len(tech_text) <= 3):
+                            try:
+                                self.bot.delete_message(chat_id, message_id)
+                            except Exception:
+                                pass
+                            if ticket.get("type") == "kvitansiya" or ticket.get("is_receipt"):
+                                client_msg = "✅ *To'lov kvitansiyangiz qabul qilindi va apparatingiz faollashtirildi. Apparatingizni ishlatib ko'rishingiz mumkin!*"
+                                self.bot.send_message(target_chat_id, client_msg, reply_to_message_id=target_msg_id)
+                                self.mark_ticket_finished(ticket, tech_name, tech_username, status_text="To'lov tasdiqlandi (Faollashtirildi va tugatilgan)")
+                                ticket_service.close_ticket(c_uid)
+                                if c_uid:
+                                    cs = session_mgr.get_session(c_uid)
+                                    if cs and cs.state == "ADMIN_BOGLANISH":
+                                        cs.state = "NORMAL"
+                                        session_mgr.save_sessions()
+                                self.bot.send_message(chat_id, "✅ *To'lov kvitansiyasi tasdiqlandi.* Mijozga apparat faollashtirilgani haqida xabar yuborildi va suhbat yakunlandi.", reply_to_message_id=reply_to_msg.get("message_id"))
+                                return
+                            else:
+                                self.bot.send_message(target_chat_id, "👨‍💻 *Murojaatingizni mas'ul texnik mutaxassisimiz qabul qildi, tez orada javob yozadi!*", reply_to_message_id=target_msg_id)
+                                self.bot.send_message(chat_id, "👨‍💻 *Murojaat qabul qilindi.* Endi mijoz bilan shu yerda muloqot qilishingiz mumkin.", reply_to_message_id=reply_to_msg.get("message_id"))
+                                return
 
                         resp = f"👨‍💻 *Texnik mutaxassis javobi:*\n\n{tech_text}"
                         res = self.bot.send_message(target_chat_id, resp, reply_to_message_id=target_msg_id)
@@ -2638,8 +2848,47 @@ class MarsBotEngine:
                             self.bot.send_message(chat_id, f"❌ Xatolik: Video bormadi ({res.get('error')}).", reply_to_message_id=reply_to_id)
                         return
 
-            # 2. Texnik /javob <ID> <matn> yoki <ID> <matn> deb yozgan bo'lsa
+            # 1.5. Texnik to'g'ridan-to'g'ri /yakun yoki /yakun <ID> deb yozgan bo'lsa:
             raw_admin_text = (message.get("text") or "").strip()
+            clean_first = raw_admin_text.lower().split("@")[0].strip()
+            m_yakun_direct = re.match(r"^(?:/yakun|yakun|/tugatish|tugatish|/yopish|yopish)\s+(\d{8,14})$", raw_admin_text, re.IGNORECASE)
+
+            ticket_to_end = None
+            if m_yakun_direct:
+                ticket_to_end = ticket_service.find_ticket_by_user_id(m_yakun_direct.group(1))
+            elif clean_first in ["/yakun", "yakun", "/tugatish", "tugatish", "/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                active_list = [t for t in ticket_service.user_tickets.values() if t.get("status") != "closed"]
+                if len(active_list) == 1:
+                    ticket_to_end = active_list[0]
+                elif len(active_list) > 1:
+                    self.bot.send_message(chat_id, "⚠️ Bir nechta faol murojaat mavjud. Qaysi mijoz bilan suhbatni tugatmoqchi bo'lsangiz, o'sha xabarga «Reply» qilib /yakun deb yozing yoki «/yakun <ID>» yuboring.", reply_to_message_id=reply_to_id)
+                    return
+                else:
+                    self.bot.send_message(chat_id, "ℹ️ Hozirda faol murojaat mavjud emas.", reply_to_message_id=reply_to_id)
+                    return
+
+            if ticket_to_end:
+                t_uid = ticket_to_end.get("user_id")
+                t_target_chat = ticket_to_end.get("chat_id") or t_uid
+                t_target_msg = ticket_to_end.get("message_id")
+                t_tech_name = from_user.get("first_name", "Texnik")
+                t_tech_uname = from_user.get("username", "")
+
+                self.mark_ticket_finished(ticket_to_end, t_tech_name, t_tech_uname, status_text="Tugatilgan (Suhbat yakunlandi)")
+                ticket_service.close_ticket(t_uid)
+                cs = session_mgr.get_session(t_uid)
+                if cs and cs.state == "ADMIN_BOGLANISH":
+                    cs.state = "NORMAL"
+                    session_mgr.save_sessions()
+                try:
+                    self.bot.delete_message(chat_id, message_id)
+                except Exception:
+                    pass
+                self.bot.send_message(t_target_chat, "✅ *Texnik mutaxassis bilan suhbat yakunlandi.*\n\nAgar yana savollaringiz bo'lsa, bemalol murojaat qilishingiz mumkin!", reply_to_message_id=t_target_msg)
+                self.bot.send_message(chat_id, f"✅ *Murojaat muvaffaqiyatli yakunlandi.* (Mijoz ID: `{t_uid}` bilan suhbat tugatildi).")
+                return
+
+            # 2. Texnik /javob <ID> <matn> yoki <ID> <matn> deb yozgan bo'lsa
             cmd_match = re.match(r"^(?:/javob\s+|javob\s+)?(\d{8,12})\s+(.+)$", raw_admin_text, re.DOTALL | re.IGNORECASE)
             if cmd_match:
                 target_user_id = cmd_match.group(1)
@@ -2649,7 +2898,11 @@ class MarsBotEngine:
                 target_msg_id = ticket.get("message_id") if ticket else None
                 client_name = ticket.get("first_name", target_user_id) if ticket else target_user_id
 
-                if tech_text.lower() in ["/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                if tech_text.lower() in ["/yakun", "yakun", "/tugatish", "tugatish", "/yopish", "yopish", "/tamom", "tamom", "/done"]:
+                    t_tech_name = from_user.get("first_name", "Texnik")
+                    t_tech_uname = from_user.get("username", "")
+                    if ticket:
+                        self.mark_ticket_finished(ticket, t_tech_name, t_tech_uname, status_text="Tugatilgan (Suhbat yakunlandi)")
                     ticket_service.close_ticket(target_user_id)
                     cs = session_mgr.get_session(target_user_id)
                     if cs and cs.state == "ADMIN_BOGLANISH":
@@ -2657,6 +2910,7 @@ class MarsBotEngine:
                         session_mgr.save_sessions()
                     self.bot.delete_message(chat_id, message_id)
                     self.bot.send_message(target_chat_id, "✅ *Texnik mutaxassis bilan suhbat yakunlandi.*\n\nAgar yangi savollaringiz bo'lsa, bemalol murojaat qilishingiz mumkin!", reply_to_message_id=target_msg_id)
+                    self.bot.send_message(chat_id, f"✅ *Murojaat muvaffaqiyatli yakunlandi.* (Mijoz ID: `{target_user_id}` bilan suhbat tugatildi).")
                     return
 
                 resp = f"👨‍💻 *Texnik mutaxassis javobi:*\n\n{tech_text}"
@@ -2740,30 +2994,6 @@ class MarsBotEngine:
                         self.bot.send_message(chat_id, "✅ *Oylik to'lov rekvizit rasmi qabul qilindi va bazaga saqlandi!*\nEndi mijozlarga aynan ushbu rasm va rekvizit yuboriladi.", reply_to_message_id=reply_to_id)
                         return
 
-        # Hujjat (Excel/CSV yoki PDF/Rasm kvitansiya) tashlangan bo'lsa
-        if "document" in message:
-            doc = message["document"]
-            file_name = doc.get("file_name", "").lower()
-            file_mime = (doc.get("mime_type") or "").lower()
-
-            # 1. Admin tomonidan Excel/CSV baza yangilanishi
-            if file_name.endswith(".xlsx") or file_name.endswith(".csv"):
-                temp_path = os.path.join(config.DATA_DIR, f"temp_{int(time.time())}_{file_name}")
-                if self.bot.download_file(doc["file_id"], temp_path):
-                    count = excel_service.update_excel_file(temp_path)
-                    if os.path.exists(temp_path):
-                        os.remove(temp_path)
-                    resp = (
-                        f"📊 *Excel oylik abonent hisob-kitob jadvali muvaffaqiyatli yangilandi!*\n\n"
-                        f"📁 Fayl nomi: `{file_name}`\n"
-                        f"👥 Bazadagi jami tashkilotlar soni: *{count} ta*"
-                    )
-                    self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
-                    return
-                else:
-                    self.bot.send_message(chat_id, "❌ Faylni yuklab olishda xatolik yuz berdi.", reply_to_message_id=reply_to_id)
-                    return
-
         # 0.99. MIJOZ VA TEXNIK O'RTASIDAGI JONLI KO'PRIK (BRIDGE) REJIMI:
         # Agar mijoz texnikka bog'langan bo'lsa (ADMIN_BOGLANISH yoki faol tiket mavjud bo'lsa),
         # bot sun'iy intellekt, rasm klassifikatori, OCR yoki boshqa tahlillarni butunlay to'xtatadi.
@@ -2800,6 +3030,7 @@ class MarsBotEngine:
 
             disc_id = ticket.get("group_discussion_id") if ticket else None
             is_claimed = bool(ticket and ticket.get("claimed_by"))
+            claimed_cid = ticket.get("claimed_chat_id") if (ticket and ticket.get("claimed_in") == "chat") else None
 
             # 2. Rasm yuborilganda (Hech qanday OCR/tahlilsiz to'g'ridan-to'g'ri texnikka):
             if "photo" in message:
@@ -2809,19 +3040,15 @@ class MarsBotEngine:
                     desc = f"Rasm: {raw_text}" if raw_text else "Rasm"
                     ticket = ticket_service.add_client_message(user_id, desc, media_type="photo", file_id=photo_file_id, chat_id=chat_id, message_id=message_id)
                     disc_id = ticket.get("group_discussion_id") if ticket else None
-                    if config.DISCUSSION_GROUP_ID and photo_file_id:
-                        cap = f"📷 *Mijoz ({first_name}) dan rasm:*\n{raw_text}".strip() if raw_text else f"📷 *Mijoz ({first_name}) dan rasm*"
+                    cap = f"📷 *Mijoz ({first_name}, ID: `{user_id}`):*\n{raw_text}".strip() if raw_text else f"📷 *Mijoz ({first_name}, ID: `{user_id}`)*"
+                    if claimed_cid:
+                        self.bot.send_photo(claimed_cid, photo_file_id, caption=cap)
+                    elif config.DISCUSSION_GROUP_ID and photo_file_id:
                         self.bot.send_photo(
                             config.DISCUSSION_GROUP_ID,
                             photo_file_id,
                             caption=cap,
                             reply_to_message_id=disc_id
-                        )
-                    if not is_claimed:
-                        self.bot.send_message(
-                            chat_id,
-                            "👨‍💻 *Yuborgan rasmingiz mas'ul texnik mutaxassislar guruhiga yetkazildi.*\n\nIltimos, mutaxassisimiz javobini kutib turing!",
-                            reply_to_message_id=reply_to_id
                         )
                 return
 
@@ -2830,8 +3057,10 @@ class MarsBotEngine:
                 voice_id = (message.get("voice") or message.get("audio", {})).get("file_id")
                 ticket = ticket_service.add_client_message(user_id, "Ovozli xabar", media_type="voice", file_id=voice_id, chat_id=chat_id, message_id=message_id)
                 disc_id = ticket.get("group_discussion_id") if ticket else None
-                if config.DISCUSSION_GROUP_ID and voice_id:
-                    cap = f"🎤 *Mijoz ({first_name}) dan ovozli xabar*" + (f"\n{raw_text}" if raw_text else "")
+                cap = f"🎤 *Mijoz ({first_name}, ID: `{user_id}`)*" + (f"\n{raw_text}" if raw_text else "")
+                if claimed_cid and voice_id:
+                    self.bot.api_request("sendVoice", {"chat_id": claimed_cid, "voice": voice_id, "caption": cap})
+                elif config.DISCUSSION_GROUP_ID and voice_id:
                     payload = {
                         "chat_id": config.DISCUSSION_GROUP_ID,
                         "voice": voice_id,
@@ -2843,12 +3072,6 @@ class MarsBotEngine:
                     if not res.get("ok") and disc_id:
                         payload.pop("reply_to_message_id", None)
                         self.bot.api_request("sendVoice", payload)
-                if not is_claimed:
-                    self.bot.send_message(
-                        chat_id,
-                        "👨‍💻 *Ovozli xabaringiz mas'ul texnik mutaxassislar guruhiga yetkazildi.*\n\nIltimos, mutaxassisimiz javobini kutib turing!",
-                        reply_to_message_id=reply_to_id
-                    )
                 return
 
             # 4. Dumaloq video (Video note) yuborilganda:
@@ -2856,7 +3079,9 @@ class MarsBotEngine:
                 vnote_id = message["video_note"]["file_id"]
                 ticket = ticket_service.add_client_message(user_id, "Dumaloq video xabar", media_type="video", file_id=vnote_id, chat_id=chat_id, message_id=message_id)
                 disc_id = ticket.get("group_discussion_id") if ticket else None
-                if config.DISCUSSION_GROUP_ID and vnote_id:
+                if claimed_cid and vnote_id:
+                    self.bot.api_request("sendVideoNote", {"chat_id": claimed_cid, "video_note": vnote_id})
+                elif config.DISCUSSION_GROUP_ID and vnote_id:
                     payload = {
                         "chat_id": config.DISCUSSION_GROUP_ID,
                         "video_note": vnote_id
@@ -2867,12 +3092,6 @@ class MarsBotEngine:
                     if not res.get("ok") and disc_id:
                         payload.pop("reply_to_message_id", None)
                         self.bot.api_request("sendVideoNote", payload)
-                if not is_claimed:
-                    self.bot.send_message(
-                        chat_id,
-                        "👨‍💻 *Video xabaringiz mas'ul texnik mutaxassislar guruhiga yetkazildi.*\n\nIltimos, mutaxassisimiz javobini kutib turing!",
-                        reply_to_message_id=reply_to_id
-                    )
                 return
 
             # 5. Video yoki animatsiya (GIF) yuborilganda:
@@ -2881,19 +3100,15 @@ class MarsBotEngine:
                 desc = f"Video: {raw_text}" if raw_text else "Video"
                 ticket = ticket_service.add_client_message(user_id, desc, media_type="video", file_id=vid_id, chat_id=chat_id, message_id=message_id)
                 disc_id = ticket.get("group_discussion_id") if ticket else None
-                if config.DISCUSSION_GROUP_ID and vid_id:
-                    cap = f"📹 *Mijoz ({first_name}) dan video:*\n{raw_text}".strip() if raw_text else f"📹 *Mijoz ({first_name}) dan video*"
+                cap = f"📹 *Mijoz ({first_name}, ID: `{user_id}`):*\n{raw_text}".strip() if raw_text else f"📹 *Mijoz ({first_name}, ID: `{user_id}`)*"
+                if claimed_cid and vid_id:
+                    self.bot.send_video(claimed_cid, vid_id, caption=cap)
+                elif config.DISCUSSION_GROUP_ID and vid_id:
                     self.bot.send_video(
                         config.DISCUSSION_GROUP_ID,
                         vid_id,
                         caption=cap,
                         reply_to_message_id=disc_id
-                    )
-                if not is_claimed:
-                    self.bot.send_message(
-                        chat_id,
-                        "👨‍💻 *Video xabaringiz mas'ul texnik mutaxassislar guruhiga yetkazildi.*\n\nIltimos, mutaxassisimiz javobini kutib turing!",
-                        reply_to_message_id=reply_to_id
                     )
                 return
 
@@ -2905,19 +3120,15 @@ class MarsBotEngine:
                 desc = f"Fayl: {doc_name} ({raw_text})" if raw_text else f"Fayl: {doc_name}"
                 ticket = ticket_service.add_client_message(user_id, desc, media_type="document", file_id=doc_id, chat_id=chat_id, message_id=message_id)
                 disc_id = ticket.get("group_discussion_id") if ticket else None
-                if config.DISCUSSION_GROUP_ID and doc_id:
-                    cap = f"📁 *Mijoz ({first_name}) dan fayl:* {doc_name}" + (f"\n{raw_text}" if raw_text else "")
+                cap = f"📁 *Mijoz ({first_name}, ID: `{user_id}`):* {doc_name}" + (f"\n{raw_text}" if raw_text else "")
+                if claimed_cid and doc_id:
+                    self.bot.send_document(claimed_cid, doc_id, caption=cap)
+                elif config.DISCUSSION_GROUP_ID and doc_id:
                     self.bot.send_document(
                         config.DISCUSSION_GROUP_ID,
                         doc_id,
                         caption=cap,
                         reply_to_message_id=disc_id
-                    )
-                if not is_claimed:
-                    self.bot.send_message(
-                        chat_id,
-                        "👨‍💻 *Faylingiz mas'ul texnik mutaxassislar guruhiga yetkazildi.*\n\nIltimos, mutaxassisimiz javobini kutib turing!",
-                        reply_to_message_id=reply_to_id
                     )
                 return
 
@@ -2925,7 +3136,9 @@ class MarsBotEngine:
             if "sticker" in message:
                 stk_id = message["sticker"]["file_id"]
                 disc_id = ticket.get("group_discussion_id") if ticket else None
-                if config.DISCUSSION_GROUP_ID and stk_id:
+                if claimed_cid and stk_id:
+                    self.bot.api_request("sendSticker", {"chat_id": claimed_cid, "sticker": stk_id})
+                elif config.DISCUSSION_GROUP_ID and stk_id:
                     payload = {
                         "chat_id": config.DISCUSSION_GROUP_ID,
                         "sticker": stk_id
@@ -2942,22 +3155,47 @@ class MarsBotEngine:
             if raw_text:
                 ticket = ticket_service.add_client_message(user_id, raw_text, media_type=None, chat_id=chat_id, message_id=message_id)
                 disc_id = ticket.get("group_discussion_id") if ticket else None
-                if config.DISCUSSION_GROUP_ID:
+                client_fwd = f"💬 *Mijoz ({first_name}, ID: `{user_id}`):*\n\n{raw_text}"
+                if claimed_cid:
+                    try:
+                        self.bot.send_message(claimed_cid, client_fwd)
+                    except Exception as chat_err:
+                        print(f"[BRIDGE_CHAT_TEXT] Xatolik: {chat_err}")
+                elif config.DISCUSSION_GROUP_ID:
                     try:
                         self.bot.send_message(
                             config.DISCUSSION_GROUP_ID,
-                            f"💬 *Mijoz ({first_name}, ID: `{user_id}`):*\n{raw_text}",
+                            client_fwd,
                             reply_to_message_id=disc_id
                         )
                     except Exception as disc_err:
                         print(f"[BRIDGE_TEXT] Xatolik: {disc_err}")
-                if not is_claimed:
-                    self.bot.send_message(
-                        chat_id,
-                        "👨‍💻 *Xabaringiz mas'ul texnik mutaxassislar guruhiga yetkazildi.*\n\nIltimos, mutaxassisimiz javobini kutib turing — tez orada mutaxassisimiz sizga javob yozadi.",
-                        reply_to_message_id=reply_to_id
-                    )
                 return
+
+
+        # Hujjat (Excel/CSV yoki PDF/Rasm kvitansiya) tashlangan bo'lsa
+        if "document" in message:
+            doc = message["document"]
+            file_name = doc.get("file_name", "").lower()
+            file_mime = (doc.get("mime_type") or "").lower()
+
+            # 1. Admin tomonidan Excel/CSV baza yangilanishi
+            if file_name.endswith(".xlsx") or file_name.endswith(".csv"):
+                temp_path = os.path.join(config.DATA_DIR, f"temp_{int(time.time())}_{file_name}")
+                if self.bot.download_file(doc["file_id"], temp_path):
+                    count = excel_service.update_excel_file(temp_path)
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                    resp = (
+                        f"📊 *Excel oylik abonent hisob-kitob jadvali muvaffaqiyatli yangilandi!*\n\n"
+                        f"📁 Fayl nomi: `{file_name}`\n"
+                        f"👥 Bazadagi jami tashkilotlar soni: *{count} ta*"
+                    )
+                    self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                    return
+                else:
+                    self.bot.send_message(chat_id, "❌ Faylni yuklab olishda xatolik yuz berdi.", reply_to_message_id=reply_to_id)
+                    return
 
             # 2. PDF yoki hujjat ko'rinishidagi rasm / kvitansiya
             is_pdf_or_image = (
@@ -3037,22 +3275,48 @@ class MarsBotEngine:
                                 f"👤 Yuboruvchi: {first_name} ({uname_str})\n"
                                 f"🆔 ID: `{user_id}`"
                             )
+                            admin_messages = []
                             for adm_id in target_ids:
                                 try:
                                     res_alert = self.bot.send_document(adm_id, doc_file_id, caption=tech_caption)
                                     if res_alert.get("ok"):
                                         alert_mid = res_alert["result"]["message_id"]
-                                        ticket_service.register_ticket(alert_mid, {
-                                            "user_id": user_id,
-                                            "chat_id": chat_id,
-                                            "message_id": message_id,
-                                            "first_name": first_name,
-                                            "org_name": org_name,
-                                            "inn": inn,
-                                            "type": "kvitansiya"
-                                        })
+                                        admin_messages.append({"chat_id": adm_id, "message_id": alert_mid, "is_photo": False})
                                 except Exception as e_alert:
                                     print(f"[KVITANSIYA_DOC_ALERT] Alert yuborishda xatolik: {e_alert}")
+
+                            ticket = ticket_service.register_ticket(
+                                tech_msg_id=admin_messages[0]["message_id"] if admin_messages else None,
+                                client_data={
+                                    "user_id": user_id,
+                                    "chat_id": chat_id,
+                                    "message_id": message_id,
+                                    "first_name": first_name,
+                                    "org_name": org_name,
+                                    "inn": inn,
+                                    "type": "kvitansiya",
+                                    "is_receipt": True
+                                },
+                                base_card=tech_caption,
+                                admin_messages=admin_messages
+                            )
+
+                            # Texniklar kanaliga (@mars_tex_xizmat) ham yuborish
+                            try:
+                                card_kb = ticket_service.get_channel_keyboard(ticket)
+                                card_text = ticket_service.format_channel_card(ticket)
+                                chan_id = config.TECHNICIAN_CHANNEL_ID
+                                c_res = self.bot.send_document(chan_id, doc_file_id, caption=card_text, reply_markup=card_kb)
+                                if not c_res.get("ok"):
+                                    c_res = self.bot.send_message(chan_id, card_text, reply_markup=card_kb)
+                                if c_res.get("ok"):
+                                    c_mid = c_res["result"]["message_id"]
+                                    ticket["channel_message_id"] = c_mid
+                                    ticket["is_photo"] = False
+                                    ticket_service.tickets[str(c_mid)] = ticket
+                                    ticket_service.save_tickets()
+                            except Exception as chan_e:
+                                print(f"[KVITANSIYA_DOC_CHANNEL] Xatolik: {chan_e}")
 
                             # Mijozga qisqa va aniq javob
                             client_resp = "🧾 *To'lov kvitansiyangiz mas'ul texnik mutaxassisimizga yetkazildi. Iltimos, kutib turing!*"
@@ -3853,7 +4117,7 @@ class MarsBotEngine:
             return
 
         # 2. Salomlashish
-        if self.is_greeting(norm_text):
+        if self.is_greeting(norm_text) or ai_intent == "GREETING":
             session.unclear_count = 0
             session_mgr.save_sessions()
             resp = (
@@ -3919,7 +4183,7 @@ class MarsBotEngine:
             return
 
         # 3.8. Shunchaki "rekvizit" / "rekvizet" deb so'ralganda (oylik yoki yillik ekanligini so'rash)
-        if self.is_general_rekvizit_query(norm_text):
+        if self.is_general_rekvizit_query(norm_text) or ai_intent == "GENERAL_REKVIZIT":
             session.unclear_count = 0
             resp = (
                 f"💳 *Sizga qaysi to'lov rekviziti kerak?*\n\n"
@@ -4127,6 +4391,13 @@ class MarsBotEngine:
         print("8 soatlik suhbat sessiyalari faol.")
         print("=" * 60)
 
+        # Telegram serveridagi eski kutib qolgan barcha xabarlarni tozalash (drop pending updates)
+        try:
+            self.bot.api_request("deleteWebhook", {"drop_pending_updates": True})
+            print("[POLLING] Telegram serveridagi eski xabarlar navbati tozalandi.")
+        except Exception:
+            pass
+
         # Eski xabarlarni tozalash (faqat yangilarini olish)
         updates = self.bot.get_updates(offset=-1, timeout=1)
         if updates.get("ok") and updates["result"]:
@@ -4136,6 +4407,7 @@ class MarsBotEngine:
             try:
                 # 8 soatdan oshgan eski sessiyalarni tozalash
                 session_mgr.clean_expired()
+                ticket_service.clean_expired()
 
                 updates = self.bot.get_updates(offset=self.bot.offset, timeout=20)
                 if not updates.get("ok"):

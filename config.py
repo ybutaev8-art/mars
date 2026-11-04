@@ -20,13 +20,18 @@ COMPANY_NAME = "MARS ELEKTRON TEXNIKA MCHJ"
 COMPANY_PHONE = "+998 94 299 77 99"
 TECHNICIAN_TELEGRAM_ID = 6436610869
 TECHNICIAN_USERNAME = "@Yashnarbek_butaev"
-ADMIN_TELEGRAM_IDS = [6436610869]
-ADMIN_USERNAMES = ["@Yashnarbek_butaev"]
+ADMIN_TELEGRAM_IDS = [6436610869, 360332364]
+ADMIN_USERNAMES = ["@Yashnarbek_butaev", "@MARSSMARTSALELLC"]
 
 # Texniklar kanali va unga bog'langan Muhokama (Fikr bildirish) guruhi
 TECHNICIAN_CHANNEL_ID = -1004327901839  # @mars_tex_xizmat
 TECHNICIAN_CHANNEL_USERNAME = "@mars_tex_xizmat"
 DISCUSSION_GROUP_ID = -1004332222960   # Kanalga bog'langan sharhlar (muhokama) guruhi
+
+# Video va qo'llanmalar (Rekvizitlar, darsliklar va xatolarni tuzatish) kanali
+MATERIALS_CHANNEL_ID = -1001641871516  # @POS_Terminal_UzSmart_Bank
+MATERIALS_CHANNEL_USERNAME = "@POS_Terminal_UzSmart_Bank"
+MATERIALS_CHANNEL_URL = "https://t.me/POS_Terminal_UzSmart_Bank"
 
 # Oylik abonent to'lovi rekvizitlari (Telegram kanaldagi rasmiy ko'rinish)
 REKVIZIT_OYLIK = """CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi
@@ -47,21 +52,25 @@ VIDEO_OYLIK_CAPTION = """Oylik abanit tulovni Clickdan utkazish varianti
 👇👇👇👇👇👇
 Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!"""
 
-# Yillik fiskal modul to'lovi rekvizitlari
-REKVIZIT_YILLIK = """💳 *Yillik Fiskal Modul to'lovi uchun rekvizitlar:*
+# Yillik fiskal modul to'lovi rekvizitlari (Telegram kanaldagi rasmiy ko'rinish)
+REKVIZIT_YILLIK = """Yillik Fiscal modul tulovi uchun shot
 
-🏢 *Qabul qiluvchi:* Davlat Soliq Qo'mitasi huzuridagi "Yangi texnologiyalar" IAM
-🏦 *Hisob raqam:* 2340 2000 XXXXX XXXX XXXX
-📍 *MFO:* 00014
-📑 *To'lov kodi:* 01010
-📝 *To'lov maqsadi:* Fiskal modul xizmati uchun (FM raqamingiz: [Sizning FM raqamingiz])
+«Yangi Texnologiyalar» DUK
+Х/Р: `2021 0000 1004 3120 0010`
+МФО: `01018`
+ИНН: `201 589 463`
+Tulov kodi: `00668`
+Tulov maqsadi: INN [Sizning INN] fiskal modulning yillik tulovi
+Tulov summasi: 440 000 so'm
+Tel: +998 71 202 32 32
 
-📲 *Click / Payme orqali to'lash:*
-Ilovada "Davlat xizmatlari" -> "Yangi texnologiyalar (OFD / Fiskal modul)" bo'limini tanlab, chekdagi FM raqamingizni kiriting."""
+ℹ️ Tulov qilingandan sung 2 soatdan 24 soat ichida ishlab ketadi Fiscal modul"""
 
 # Video qo'llanmalar (Havolalar yoki fayllar)
-VIDEO_OYLIK_URL = "https://t.me/mars_elektron_texnika/video_oylik_tulov"
-VIDEO_YILLIK_URL = "https://t.me/mars_elektron_texnika/video_yillik_tulov"
+VIDEO_OYLIK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/148"
+VIDEO_YILLIK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/145"
+VIDEO_CLOCK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/141"
+VIDEO_IKPU_URL = "https://t.me/POS_Terminal_UzSmart_Bank/126"
 
 # Sun'iy intellekt (Google Gemini AI) integratsiyasi
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AQ.Ab8RN6JD8ZebojWkiSMDLE9qyxmjftSna03tFS744MoifNIj5g")

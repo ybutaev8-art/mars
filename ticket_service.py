@@ -281,6 +281,8 @@ class TicketService:
         str_id = str(chan_msg_id)
         for ticket in self.user_tickets.values():
             if str(ticket.get("channel_message_id")) == str_id:
+                if ticket.get("status") == "closed":
+                    return None
                 return ticket
         return None
 
@@ -291,9 +293,13 @@ class TicketService:
         str_id = str(disc_id)
         for ticket in self.user_tickets.values():
             if str(ticket.get("group_discussion_id")) == str_id:
+                if ticket.get("status") == "closed":
+                    return None
                 return ticket
-        # Shuningdek self.tickets da ham qidiramiz
-        return self.tickets.get(str_id)
+        t = self.tickets.get(str_id)
+        if t and t.get("status") == "closed":
+            return None
+        return t
 
     def link_discussion_id(self, chan_msg_id, disc_msg_id):
         """Kanal posti ID si va Muhokama guruhi xabari ID sini o'zaro bog'lash"""
@@ -365,23 +371,42 @@ class TicketService:
         user_id = str(user_id)
         ticket = self.user_tickets.pop(user_id, None)
         if ticket:
-            cmid = ticket.get("channel_message_id")
-            if cmid and str(cmid) in self.tickets:
-                self.tickets.pop(str(cmid), None)
-            gdid = ticket.get("group_discussion_id")
-            if gdid and str(gdid) in self.tickets:
-                self.tickets.pop(str(gdid), None)
-            for am in ticket.get("admin_messages", []):
-                mid = am.get("message_id")
-                if mid and str(mid) in self.tickets:
-                    self.tickets.pop(str(mid), None)
+            ticket["status"] = "closed"
+            # self.tickets lug'atidan ushbu tiketga tegishli barcha murojaat kalitlarini tozalaymiz
+            keys_to_remove = [k for k, v in list(self.tickets.items()) if v == ticket or str(v.get("user_id")) == user_id]
+            for k in keys_to_remove:
+                self.tickets.pop(k, None)
             self.save_tickets()
         return ticket
 
+    def clean_expired(self, max_age_hours=8):
+        """8 soatdan oshgan yoki faol bo'lmagan eski tiketlarni tozalash"""
+        now = time.time()
+        expired_uids = []
+        for uid, ticket in list(self.user_tickets.items()):
+            last_up = ticket.get("last_updated", 0)
+            if now - last_up > max_age_hours * 3600:
+                expired_uids.append(uid)
+        for uid in expired_uids:
+            self.close_ticket(uid)
+
+    def reset_all(self):
+        """Barcha murojaatlar va tarixlarni to'liq tozalash (yangi start)"""
+        self.tickets = {}
+        self.user_tickets = {}
+        self.save_tickets()
+        print("[TICKETS] Barcha eski tiketlar va suhbatlar to'liq tozalandi.")
+
     def find_ticket_by_tech_msg(self, tech_msg_id):
-        return self.tickets.get(str(tech_msg_id))
+        t = self.tickets.get(str(tech_msg_id))
+        if t and t.get("status") == "closed":
+            return None
+        return t
 
     def find_ticket_by_user_id(self, user_id):
-        return self.user_tickets.get(str(user_id))
+        t = self.user_tickets.get(str(user_id))
+        if t and t.get("status") == "closed":
+            return None
+        return t
 
 ticket_service = TicketService()

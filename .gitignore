@@ -7,4 +7,5 @@ bot_activity.log
 *.session
 *.session-journal
 data/backups/
+data/temp_*
 

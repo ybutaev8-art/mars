@@ -37,20 +37,23 @@ class UserSession:
         self.offline_limit_error_active = False
         self.pending_receipt = None
 
-    def reset_for_new_target(self, preserve_photo=False):
-        """Mijoz yangi INN yoki yangi FM kiritganda avvalgi suhbat va aparat xotirasini tozalash (agar preserve_photo=True bo'lsa rasm saqlanadi)"""
+    def reset_for_new_target(self, preserve_photo=False, preserve_fm=False):
+        """Mijoz yangi INN yoki yangi FM kiritganda avvalgi suhbat va aparat xotirasini tozalash (agar preserve_photo=True bo'lsa rasm saqlanadi, preserve_fm=True bo'lsa FM va oflayn xatolik saqlanadi)"""
         saved_pid = self.last_photo_file_id if preserve_photo else None
         saved_pcap = self.last_photo_caption if preserve_photo else None
         saved_ptxt = self.last_photo_text if preserve_photo else None
         saved_mid = self.last_msg_id if preserve_photo else None
+        saved_fm = self.fm_number if preserve_fm else None
+        saved_fm_h = self.fm_holat if preserve_fm else None
+        saved_off = self.offline_limit_error_active if preserve_fm else False
 
         self.state = "START"
         self.inn = None
         self.org_name = None
         self.oylik_qarz = None
         self.oylik_holat = None
-        self.fm_number = None
-        self.fm_holat = None
+        self.fm_number = saved_fm
+        self.fm_holat = saved_fm_h
         self.last_intent = None
         self.last_topic = None
         self.unclear_count = 0
@@ -60,7 +63,7 @@ class UserSession:
         self.last_msg_id = saved_mid
         self.ikpu_video_sent = False
         self.ikpu_error_active = False
-        self.offline_limit_error_active = False
+        self.offline_limit_error_active = saved_off
         self.pending_receipt = None
         self.update_activity()
 
@@ -163,6 +166,12 @@ class SessionManager:
                 del self.sessions[k]
             if expired_keys:
                 self.save_sessions_unlocked()
+
+    def reset_all(self):
+        with self._lock:
+            self.sessions = {}
+            self.save_sessions_unlocked()
+            print("[SESSIONS] Barcha sessiyalar to'liq tozalandi.")
 
     def save_sessions_unlocked(self):
         try:

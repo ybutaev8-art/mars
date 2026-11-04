@@ -1,10 +1,27 @@
 {
-  "channel_id": -1004327901839,
-  "oylik_video_msg_id": 6,
-  "oylik_rekvizit_msg_id": 10,
-  "yillik_video_msg_id": 7,
-  "yillik_rekvizit_msg_id": 11,
-  "channel_link": "https://t.me/+VtyW9CtPcAc3MDMy",
-  "oylik_photo_file_id": "AgACAgIAAyEFAAMBAfaKjwADCmre4txIexfU_Oszn6zkjQ5wwAL2AALLG2sbmt35SoOZWP8XioVwAQADAgADdwADPQQ",
-  "oylik_photo_caption": "hdjdjfjdjdlfif"
+  "channel_id": -1001641871516,
+  "channel_username": "POS_Terminal_UzSmart_Bank",
+  "channel_link": "https://t.me/POS_Terminal_UzSmart_Bank",
+  "oylik_video_msg_id": 148,
+  "oylik_rekvizit_msg_id": 85,
+  "yillik_video_msg_id": 145,
+  "yillik_rekvizit_msg_id": 34,
+  "clock_video_msg_id": 141,
+  "ikpu_video_msg_id": 126,
+  "inn_jshshir_msg_id": 149,
+  "guide_videos": {
+    "oylik_tulov": 148,
+    "oylik_rekvizit": 85,
+    "yillik_tulov": 145,
+    "yillik_rekvizit": 34,
+    "sana_vaqt": 141,
+    "ikpu_dastur": 126,
+    "inn_jshshir": 149,
+    "fm_qayta_ornatish": 134,
+    "fm_aktivlashtirish": 137,
+    "malumotlarni_yuklash": 138,
+    "markirofkani_ochirish": 139,
+    "narxni_ozgartirish": 140,
+    "dastur_yangilash": 142
+  }
 }
