@@ -245,6 +245,8 @@ class ExcelService:
                 except ValueError:
                     qoldiq_amount = 0.0
 
+                orig_qoldiq_amount = qoldiq_amount
+
                 # Oylik to'lovlar va hisoblangan summalar (2026 yil)
                 months_paid = {}
                 months_paid_cols = [
@@ -276,6 +278,13 @@ class ExcelService:
                         amt = 0.0
                     months_calc[m_name] = amt
 
+                # Qizil qator ro'yxatdan chiqarilgan va butunlay hisob-kitobdan chiqarilgan hisoblanadi
+                if color_type == "red":
+                    qoldiq_amount = 0.0
+                    prev_year_balance = 0.0
+                    months_paid = {m_name: 0.0 for m_name, _ in months_paid_cols}
+                    months_calc = {m_name: 0.0 for m_name, _ in months_calc_cols}
+
                 pos_record = {
                     "stir": raw_stir,
                     "jshshir": raw_jshshir,
@@ -289,6 +298,7 @@ class ExcelService:
                     "raw_reg_date": raw_b,
                     "prev_year_balance": prev_year_balance,
                     "qoldiq_raw": qoldiq_amount,
+                    "orig_qoldiq_raw": orig_qoldiq_amount,
                     "qarz_amount": max(0.0, qoldiq_amount),
                     "months_paid": months_paid,
                     "months_calc": months_calc,
@@ -338,6 +348,10 @@ class ExcelService:
                     if "qizil" in last_val: color_type = "red"
                     elif "sariq" in last_val: color_type = "yellow"
 
+                orig_q_num = q_num
+                if color_type == "red":
+                    q_num = 0.0
+
                 pos_record = {
                     "stir": raw_stir,
                     "jshshir": "",
@@ -351,6 +365,7 @@ class ExcelService:
                     "raw_reg_date": "",
                     "prev_year_balance": 0.0,
                     "qoldiq_raw": q_num,
+                    "orig_qoldiq_raw": orig_q_num,
                     "qarz_amount": max(0.0, q_num),
                     "months_paid": {},
                     "months_calc": {},
@@ -392,11 +407,17 @@ class ExcelService:
 
         org_name = pos_list[0]["org_name"]
         total_pos_count = len(pos_list)
-        active_pos_list = [p for p in pos_list if p["is_active"]]
+        active_pos_list = [p for p in pos_list if p.get("is_active")]
         active_count = len(active_pos_list)
         inactive_count = total_pos_count - active_count
 
-        total_qoldiq = sum(p.get("qoldiq_raw", 0.0) for p in pos_list)
+        # Qizil (ro'yxatdan chiqarilgan) qatorlardagi balans hisoblanmaydi
+        # Chunki u apparat ro'yxatdan chiqarilgan va butunlay hisob-kitobdan chiqarilgan hisoblanadi
+        if active_count > 0:
+            total_qoldiq = sum(p.get("qoldiq_raw", 0.0) for p in active_pos_list)
+        else:
+            total_qoldiq = 0.0
+
         total_debt = max(0.0, total_qoldiq)
         has_debt = total_qoldiq > 0.01
         has_advance = total_qoldiq < -0.01
@@ -526,7 +547,16 @@ class ExcelService:
             ("Sentabr", 9), ("Oktabr", 10), ("Noyabr", 11), ("Dekabr", 12)
         ]
 
-        # Barcha apparatlar bo'yicha ma'lumotlarni jamlash
+        # Agar barcha apparatlar ro'yxatdan chiqarilgan bo'lsa
+        if active_count == 0:
+            return (
+                f"📊 *{org_name} bo'yicha to'lovlar hisoboti:*\n"
+                f"📑 {id_type}: `{query}`\n"
+                f"📌 Kassa apparatlari soni: *{total_pos_count} ta* (barchasi ro'yxatdan chiqarilgan)\n\n"
+                f"❌ *Barcha kassa apparatlari ro'yxatdan chiqarilgan va butunlay hisob-kitobdan to'xtatilgan.*"
+            )
+
+        # Barcha faol apparatlar bo'yicha ma'lumotlarni jamlash (qizil qatorlar butunlay chiqarilgan)
         earliest_reg = None
         total_prev_year_balance = 0.0
         total_qoldiq_raw = 0.0
@@ -534,6 +564,8 @@ class ExcelService:
         agg_paid = {m: 0.0 for m, _ in month_keys}
 
         for p in pos_list:
+            if p.get("color_type") == "red" or not p.get("is_active"):
+                continue
             rd = p.get("reg_date")
             if rd:
                 if earliest_reg is None or rd < earliest_reg:
@@ -579,7 +611,7 @@ class ExcelService:
             for idx, p in enumerate(pos_list, 1):
                 rd = p.get("reg_date")
                 rd_str = rd.strftime("%d.%m.%Y") if rd else "Ko'rsatilmagan"
-                status_suffix = " (chiqarilgan)" if p.get("color_type") == "red" else ""
+                status_suffix = " (❌ ro'yxatdan chiqarilgan, hisoblanmaydi)" if p.get("color_type") == "red" else ""
                 header += f"  • {idx}-aparat{status_suffix}: *{rd_str}*\n"
 
         lines = ["\n🗓 *Oylik to'lovlar holati:*"]
@@ -601,7 +633,7 @@ class ExcelService:
         jami_tolangan = sum(agg_paid.values())
         jami_tolangan_str = f"{jami_tolangan:,.0f}".replace(",", " ")
 
-        pos_rate = (active_count if active_count > 0 else total_pos_count) * 100000.0
+        pos_rate = (active_count if active_count > 0 else 1) * 100000.0
         # Joriy yil bo'yicha hisoblangan summa
         calc_total = sum(agg_calc[m_name] for m_name, m_idx in month_keys if m_idx >= start_month)
         if calc_total == 0.0 and start_month <= current_month:
