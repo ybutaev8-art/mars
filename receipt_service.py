@@ -220,10 +220,15 @@ class ReceiptService:
             "rekvizitlar boyicha tolov", "rekvizitlar boyicha", "to'lov raqami", "tolov raqami",
             "qabul qiluvchining hisob raqami", "qabul qiluvchining hisobraqami",
             "o'tkazma muvaffaqiyatli", "otkazma muvaffaqiyatli", "muvaffaqiyatli to'landi",
-            "muvaffaqiyatli tolandi", "karta uzcard", "karta humo", "kapta uzcard", "kapta humo"
+            "muvaffaqiyatli tolandi", "karta uzcard", "karta humo", "kapta uzcard", "kapta humo",
+            "to'lov tafsilotlari", "tolov tafsilotlari", "детали платежа", "детали перевода",
+            "to'lov amalga oshirildi", "tolov amalga oshirildi", "o'tkazma bajarildi", "otkazma bajarildi",
+            "to'lov cheki", "tolov cheki", "to'lov muvaffaqiyatli", "tolov muvaffaqiyatli",
+            "operatsiya tafsilotlari", "tranzaksiya", "o'tkazildi", "otkazildi",
+            "to'landi", "tolandi", "click pass", "click", "payme", "uzum"
         ]
         matches = [m for m in app_screen_markers if m in t]
-        if len(matches) >= 2 or any(m in t for m in ["hisobotlar", "kvitansiya yukl", "xarid cheki", "takrorlash"]):
+        if len(matches) >= 2 or any(m in t for m in ["hisobotlar", "kvitansiya yukl", "xarid cheki", "takrorlash", "to'lov tafsilotlari", "tolov tafsilotlari", "детали платежа"]):
             return True
         return False
 

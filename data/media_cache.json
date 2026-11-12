@@ -2,7 +2,7 @@
   "channel_id": -1001641871516,
   "channel_username": "POS_Terminal_UzSmart_Bank",
   "channel_link": "https://t.me/POS_Terminal_UzSmart_Bank",
-  "oylik_video_msg_id": 148,
+  "oylik_video_msg_id": 151,
   "oylik_rekvizit_msg_id": 85,
   "yillik_video_msg_id": 145,
   "yillik_rekvizit_msg_id": 34,
@@ -23,5 +23,7 @@
     "markirofkani_ochirish": 139,
     "narxni_ozgartirish": 140,
     "dastur_yangilash": 142
-  }
+  },
+  "oylik_video_file_id": "BAACAgIAAx0CYdz4nAADl2r1bVUpOOA4_9JSdQxbY8aWdCUKAAIhpgACSuOwSxTo8QnXSpnRPQQ",
+  "oylik_video_caption": "to'lov kvitansiyasi to'lov qo'liq tasdiqlangandan kiyin [ to'lov to'liq o'tgandan kiyin] ko'rinadi"
 }

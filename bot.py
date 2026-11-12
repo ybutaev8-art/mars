@@ -75,6 +75,7 @@ import config
 from session_manager import session_mgr
 from excel_service import excel_service
 from ofd_service import ofd_service
+from ofd_bridge import ofd_bridge
 from ticket_service import ticket_service
 from receipt_service import receipt_service
 from ai_service import ai_service
@@ -769,6 +770,83 @@ class MarsBotEngine:
         if "rekvizit" in norm_text:
             return True
         return False
+
+    def is_receipt_download_query(self, norm_text):
+        """Mijoz to'lov kvitansiyasini qanday yuklab olish yoki qayerdan olish haqida so'raganini aniqlash"""
+        if not norm_text:
+            return False
+        t = norm_text.lower()
+        has_kvit = bool(re.search(r"\b(kvitansiya\w*|kvitansa\w*|chek\w*|patta\w*)\b", t))
+        has_how = bool(re.search(r"\b(qanday|qanaqa|qattdan|qayerdan|qayerda|yuklash|olish|yuklay|olay|olaman|yuklayman|topaman|tashlay|yuklanadi|olinadi|oladi|olinsa|qilsa|videosi|darsligi|urgat|o'rgat)\b", t))
+        if has_kvit and has_how:
+            if any(w in t for w in ["qanday to'la", "qayerga to'la", "qancha to'la", "qancha qarz"]):
+                return False
+            return True
+        if re.search(r"\b(kvitansiya\s*yuklash|kvitansiya\s*olish|kvitansiyani\s*yuklash|kvitansiyani\s*olish|chek\s*olish|chekni\s*olish|clickdan\s*kvitansiya|clikdan\s*kvitansiya|paymedan\s*kvitansiya)\b", t):
+            return True
+        return False
+
+    def send_download_receipt_guide(self, chat_id, reply_to_id=None, is_invalid_screen=False):
+        """Click dasturida to'lov kvitansiyasini yuklab olish videosini (post 151) yuborish"""
+        channel_id = getattr(config, "MATERIALS_CHANNEL_ID", -1001641871516)
+        video_msg_id = 151
+        cache = load_media_cache()
+
+        if is_invalid_screen:
+            caption = (
+                "🧾 *Siz yuborgan rasm rasmiy to'lov kvitansiyasi emas, balki to'lov tafsilotlari (ekran skrinshoti) hisoblanadi.*\n\n"
+                "To'lovni kassa apparatingizga to'liq qabul qilishimiz uchun rasmiy to'lov kvitansiyasi kerak bo'ladi.\n\n"
+                "📹 *Ushbu videoda Click ilovasida to'lov kvitansiyasini yuklab olish tartibi ko'rsatilgan.* "
+                "Iltimos, ilovangizdan kvitansiyani yuklab olib, botga yuboring."
+            )
+        else:
+            caption = (
+                "📹 *Click dasturida to'lov kvitansiyasini yuklab olish bo'yicha video qo'llanma:*\n\n"
+                "To'lov amalga oshirilgach, rasmiy to'lov kvitansiyasini yuklab olib botga yuborishingiz mumkin."
+            )
+
+        sent = False
+        try:
+            # 1. Post 151 ni tushuntirish sarlavhasi (caption) bilan mijoz xabariga reply qilib nusxalash
+            res = self.bot.copy_message(chat_id, from_chat_id=channel_id, message_id=video_msg_id, caption=caption, reply_to_message_id=reply_to_id, parse_mode="Markdown")
+            if res.get("ok"):
+                sent = True
+            else:
+                # Agar caption uzunlik yoki parse_mode tufayli o'tmasa, asl holida copy qilamiz
+                res2 = self.bot.copy_message(chat_id, from_chat_id=channel_id, message_id=video_msg_id, reply_to_message_id=reply_to_id)
+                if res2.get("ok"):
+                    self.bot.send_message(chat_id, caption, reply_to_message_id=reply_to_id)
+                    sent = True
+        except Exception as e:
+            print(f"[GUIDE_151] copy_message xatolik: {e}")
+
+        if not sent:
+            try:
+                # Forward orqali urinish
+                fwd = self.bot.forward_message(chat_id, from_chat_id=channel_id, message_id=video_msg_id)
+                if fwd.get("ok"):
+                    self.bot.send_message(chat_id, caption, reply_to_message_id=reply_to_id)
+                    sent = True
+            except Exception as e_fwd:
+                print(f"[GUIDE_151] forward_message xatolik: {e_fwd}")
+
+        if not sent:
+            # Fayl ID orqali yuborish
+            file_id = cache.get("oylik_video_file_id")
+            if file_id:
+                try:
+                    self.bot.send_video(chat_id, file_id, caption=caption, reply_to_message_id=reply_to_id)
+                    sent = True
+                except Exception:
+                    pass
+
+        if not sent:
+            # Zaxira matn
+            self.bot.send_message(
+                chat_id,
+                f"{caption}\n\n👉 Video qo'llanma havolasi: https://t.me/POS_Terminal_UzSmart_Bank/151",
+                reply_to_message_id=reply_to_id
+            )
 
     def send_monthly_payment_media(self, chat_id, reply_to_id=None):
         """Oylik to'lov rekviziti va video qo'llanmasini yangi kanaldan (@POS_Terminal_UzSmart_Bank) mijozga yuborish"""
@@ -3219,13 +3297,7 @@ class MarsBotEngine:
                         print(f"[RECEIPT_DOC] Tahlilda xatolik: {err}")
 
                     if receipt_check.get("is_transfer_screen"):
-                        resp = (
-                            "🧾 *Siz yuborgan rasm to'lov kvitansiyasi emas, balki to'lov ilovasidagi o'tkazma ekrani (skrinshot) hisoblanadi.*\n\n"
-                            "To'lovni to'liq hisobga olishimiz uchun bizga rasmiy to'lov kvitansiyasi kerak bo'ladi.\n\n"
-                            "📲 *Kvitansiyani yuklab olish tartibi:*\n"
-                            "Ilovangizda (masalan, *Click* yoki *Payme* dasturida) ekranning pastki qismidagi **«Kvitansiyani yuklab olish»** (yoki **«Kvitansiya» / «Chek»**) tugmasini bosing va saqlab olingan rasmiy to'lov kvitansiyasini (PDF yoki rasm ko'rinishida) botga yuboring."
-                        )
-                        self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                        self.send_download_receipt_guide(chat_id, reply_to_id=reply_to_id, is_invalid_screen=True)
                         if os.path.exists(temp_doc_path):
                             try:
                                 os.remove(temp_doc_path)
@@ -3520,6 +3592,16 @@ class MarsBotEngine:
 
                     # 1. BOSHQA (Kassa apparati ham, to'lov kvitansiyasi ham emas - odam, tabiat, mashina, skrinshot va h.k.)
                     if img_category == "BOSHQA":
+                        raw_text = receipt_service.extract_text_from_file(temp_img_path)
+                        if receipt_service.is_transfer_screenshot(raw_text):
+                            self.send_download_receipt_guide(chat_id, reply_to_id=reply_to_id, is_invalid_screen=True)
+                            if os.path.exists(temp_img_path):
+                                try:
+                                    os.remove(temp_img_path)
+                                except Exception:
+                                    pass
+                            return
+
                         resp = (
                             "⚠️ *Iltimos, kassa apparati nosozligi aks etgan ekranni yoki to'lov kvitansiyasini yuboring.*\n\n"
                             "Siz yuborgan rasm kassa apparatiga ham, to'lov chekiga ham o'xshamaydi."
@@ -3541,13 +3623,7 @@ class MarsBotEngine:
                             receipt_check = {"is_receipt": False}
 
                         if receipt_check.get("is_transfer_screen"):
-                            resp = (
-                                "🧾 *Siz yuborgan rasm to'lov kvitansiyasi emas, balki to'lov ilovasidagi o'tkazma ekrani (skrinshot) hisoblanadi.*\n\n"
-                                "To'lovni to'liq hisobga olishimiz uchun bizga rasmiy to'lov kvitansiyasi kerak bo'ladi.\n\n"
-                                "📲 *Kvitansiyani yuklab olish tartibi:*\n"
-                                "Ilovangizda (masalan, *Click* yoki *Payme* dasturida) ekranning pastki qismidagi **«Kvitansiyani yuklab olish»** (yoki **«Kvitansiya» / «Chek»**) tugmasini bosing va saqlab olingan rasmiy to'lov kvitansiyasini (PDF yoki rasm ko'rinishida) botga yuboring."
-                            )
-                            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                            self.send_download_receipt_guide(chat_id, reply_to_id=reply_to_id, is_invalid_screen=True)
                             if os.path.exists(temp_img_path):
                                 try:
                                     os.remove(temp_img_path)
@@ -4207,6 +4283,13 @@ class MarsBotEngine:
             self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
             return
 
+        # 3.95. To'lov kvitansiyasini qanday yuklab olish/olish haqida so'ralsa (Post 151 darsligi)
+        if self.is_receipt_download_query(norm_text) or ai_intent == "DOWNLOAD_RECEIPT_GUIDE":
+            session.unclear_count = 0
+            session_mgr.save_sessions()
+            self.send_download_receipt_guide(chat_id, reply_to_id=reply_to_id, is_invalid_screen=False)
+            return
+
         # 4. Oylar kesimida to'lovlar tarixi / qaysi oylar to'langanligi hisoboti (tarix so'ralganda yoki to'lovdan norozilik bildirilganda)
         if self.is_payment_history_query(norm_text, session) or ai_intent == "PAYMENT_HISTORY":
             session.unclear_count = 0
@@ -4402,6 +4485,13 @@ class MarsBotEngine:
         updates = self.bot.get_updates(offset=-1, timeout=1)
         if updates.get("ok") and updates["result"]:
             self.bot.offset = updates["result"][-1]["update_id"] + 1
+
+        # Userbot fon monitoring xizmatini ishga tushirish (txkmbot)
+        # 'Абонент тулови' guruhidan yangi Excel hisob-kitoblarni avtomatik kanalga forward qilish
+        try:
+            ofd_bridge.start_background()
+        except Exception as e_ub:
+            print(f"[USERBOT] Boshlashda xatolik: {e_ub}")
 
         while True:
             try:

@@ -33,6 +33,10 @@ MATERIALS_CHANNEL_ID = -1001641871516  # @POS_Terminal_UzSmart_Bank
 MATERIALS_CHANNEL_USERNAME = "@POS_Terminal_UzSmart_Bank"
 MATERIALS_CHANNEL_URL = "https://t.me/POS_Terminal_UzSmart_Bank"
 
+# Excel hisob-kitob jadvallarini avtomatik monitoring va forward qilish
+EXCEL_SOURCE_GROUP_ID = -1001795471853    # Абонент тулови🏦💸💰
+EXCEL_TARGET_CHANNEL_ID = -1004405333505  # Oylik abanit (https://t.me/+1KOqeABGySo1M2Iy)
+
 # Oylik abonent to'lovi rekvizitlari (Telegram kanaldagi rasmiy ko'rinish)
 REKVIZIT_OYLIK = """CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi
 

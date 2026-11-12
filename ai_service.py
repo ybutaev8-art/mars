@@ -147,6 +147,13 @@ class AIService:
             if not re.search(r"\b(oldingi|avval|dekabr|oxirigacha|nega|nimaga|qani|tarix)\b", norm):
                 return {"intent": "PAYMENT_MADE", "ai_reply": None}
 
+        # 6.1 To'lov kvitansiyasini qanday yuklab olish/olish bo'yicha video qo'llanma so'rovi (DOWNLOAD_RECEIPT_GUIDE)
+        if re.search(r"\b(kvitansiya\w*|kvitansa\w*|chek\w*|patta\w*)\b", norm):
+            if re.search(r"\b(qanday\s*(yuklash|olish|yuklay|olay|tashlay|yuklanadi|olinadi)|qayerdan\s*(olamiz|olaman|yuklayman|topaman|olinadi)|yuklash\s*(tartibi|qollanmasi|videosi)|qanday\s*yuklasa|qayerda\s*boladi|qayerda\s*turadi|topa\s*olmayapman)\b", norm):
+                return {"intent": "DOWNLOAD_RECEIPT_GUIDE", "ai_reply": None}
+        if re.search(r"\b(kvitansiya\s*yuklash|kvitansiya\s*olish|kvitansiyani\s*yuklash|kvitansiyani\s*olish|chek\s*olish|chekni\s*olish|clickdan\s*kvitansiya|clikdan\s*kvitansiya|paymedan\s*kvitansiya)\b", norm):
+            return {"intent": "DOWNLOAD_RECEIPT_GUIDE", "ai_reply": None}
+
         # To'lov harakatlari va so'rovlari:
         # to'lamoqchi, tulamoqchi, tolamoqchi, tulamoqchiydimda, to'lamoqchi edim, to'lasam, to'lay, to'lash, to'lov, rekvizit, shot, click, video va h.k.
         pay_action_regex = r"(t(?:o'?|o|u)la\w*|t(?:o'?|o|u)lov\w*|o'?tkaz\w*|utkaz\w*|otkaz\w*|tashla\w*|shot\w*|hisob\s*raqam\w*|rekvizit\w*|click\w*|clik\w*|video\w*|darslik\w*|qo'?llanma\w*|qanday\s*to'?la|qayerga\s*to'?la)"
