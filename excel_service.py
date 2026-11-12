@@ -682,6 +682,21 @@ class ExcelService:
                     return p
         return None
 
+    def find_by_org_name(self, org_name):
+        """Tashkilot nomi bo'yicha qidirish"""
+        if not org_name:
+            return None
+        self.load_data()
+        norm_target = re.sub(r"[^\w\s]", "", str(org_name)).strip().lower()
+        if len(norm_target) < 3:
+            return None
+        for inn, pos_list in self.cache_by_inn.items():
+            if pos_list and pos_list[0].get("org_name"):
+                cand = re.sub(r"[^\w\s]", "", str(pos_list[0]["org_name"])).strip().lower()
+                if norm_target in cand or cand in norm_target:
+                    return self.find_by_identifier(inn)
+        return None
+
     def update_excel_file(self, new_file_path):
         """Yangi kelgan Excel faylni o'rnatish va zaxiralash"""
         os.makedirs(config.BACKUP_DIR, exist_ok=True)

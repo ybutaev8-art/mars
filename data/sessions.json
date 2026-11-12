@@ -1,27 +1,30 @@
 {
-  "1966874161": {
-    "user_id": "1966874161",
-    "chat_id": 1966874161,
-    "first_name": "Quvonchbek",
-    "username": "Quvonchbek_admin",
-    "created_at": 1794477024.1449494,
-    "last_activity": 1794477211.7206962,
-    "state": "NORMAL",
-    "inn": "302568138",
-    "org_name": "`MARS ELEKTRON TEXNIKA` MChJ",
-    "oylik_qarz": 0,
-    "oylik_holat": "toza",
-    "fm_number": null,
-    "fm_holat": null,
-    "last_intent": null,
-    "last_topic": null,
-    "unclear_count": 0,
-    "last_photo_file_id": null,
-    "last_photo_caption": null,
-    "last_msg_id": null,
-    "ikpu_video_sent": false,
-    "ikpu_error_active": false,
-    "offline_limit_error_active": false,
-    "pending_receipt": null
-  }
+  "sessions": {
+    "1966874161": {
+      "user_id": "1966874161",
+      "chat_id": 1966874161,
+      "first_name": "Quvonchbek",
+      "username": "Quvonchbek_admin",
+      "created_at": 1794477024.1449494,
+      "last_activity": 1794481119.1745741,
+      "state": "NORMAL",
+      "inn": "302568138",
+      "org_name": "`MARS ELEKTRON TEXNIKA` MChJ",
+      "oylik_qarz": 0,
+      "oylik_holat": "toza",
+      "fm_number": null,
+      "fm_holat": null,
+      "last_intent": null,
+      "last_topic": null,
+      "unclear_count": 0,
+      "last_photo_file_id": null,
+      "last_photo_caption": null,
+      "last_msg_id": null,
+      "ikpu_video_sent": false,
+      "ikpu_error_active": false,
+      "offline_limit_error_active": false,
+      "pending_receipt": null
+    }
+  },
+  "chat_info": {}
 }

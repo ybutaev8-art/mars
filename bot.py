@@ -609,8 +609,7 @@ class MarsBotEngine:
         """Mijoz 'suhbatni unut', 'meni unut', 'boshidan' deb yozganda sessiyani tozalash"""
         reset_keywords = [
             "suhbatni unut", "suhbatimizni unut", "suhbatingni unut", "suhbatngni unut",
-            "meni unut", "esdan chiqar", "unut", "boshidan boshla", "tozala", "reset",
-            "clear", "/reset", "/clear", "/salombot", "salombot"
+            "meni unut", "esdan chiqar", "boshidan boshla", "/reset", "/clear", "/salombot", "salombot"
         ]
         return any(k in norm_text for k in reset_keywords)
 
@@ -635,6 +634,27 @@ class MarsBotEngine:
             "yillik tolov hisob raqami",
             "to'lovlar tarixi",
             "tolovlar tarixi",
+            "tulovlar tarixi",
+            "to'lov tarixi",
+            "tolov tarixi",
+            "tulov tarixi",
+            "to'lovlarim tarixi",
+            "to'lov tarixim",
+            "to'lovlar tarixi va hisoboti",
+            "tolovlar tarixi va hisoboti",
+            "to'lovlar tarixi va xisoboti",
+            "tolovlar tarixi va xisoboti",
+            "tulovlar tarixi va xisoboti",
+            "to'lov hisoboti",
+            "tolov hisoboti",
+            "tulov hisoboti",
+            "to'lovlar hisoboti",
+            "tolovlar hisoboti",
+            "oylik tarixi",
+            "oylik to'lovlar tarixi",
+            "tarixni ko'rsat",
+            "tarixini ko'rsat",
+            "tarixini ber",
             "texnik bilan bog'lan",
             "texnik bilan boglan",
             "oylik to'lov rekviziti",
@@ -1808,6 +1828,94 @@ class MarsBotEngine:
                 return clean_digits
 
         return None
+
+    def resolve_inn(self, session, text="", message=None, chat_id=None, user_id=None):
+        """Mijoz yoki guruh bo'yicha INN/JSHSHIR raqamini 8 soatlik xotira va barcha manbalardan aniqlash"""
+        # 1. Matndan INN topish (agar xabarda INN yozilgan bo'lsa)
+        if text:
+            direct_inn = self.extract_inn(text)
+            if direct_inn:
+                return direct_inn
+
+        # 2. Sessiyadan olish (Mijozning 8 soatlik shaxsiy xotirasi)
+        if session and getattr(session, "inn", None):
+            return str(session.inn).strip()
+
+        # 3. Agar foydalanuvchi botning avvalgi xabariga reply qilgan bo'lsa (reply_to_message)
+        if message:
+            reply_to = message.get("reply_to_message")
+            if reply_to:
+                reply_text = reply_to.get("text") or reply_to.get("caption") or ""
+                reply_inn = self.extract_inn(reply_text)
+                if reply_inn:
+                    return reply_inn
+
+        # 4. Guruh / chat umumiy xotirasidan (guruhdagi har qanday xodim uchun 8 soatlik xotira)
+        if chat_id:
+            chat_info = session_mgr.get_chat_info(chat_id)
+            if chat_info.get("inn"):
+                return str(chat_info["inn"]).strip()
+
+        # 5. Agar FM raqami xotirada bo'lsa, Exceldan FM bo'yicha INN ni topish
+        if session and getattr(session, "fm_number", None):
+            fm_info = excel_service.find_by_fm(session.fm_number)
+            if fm_info and fm_info.get("inn"):
+                return str(fm_info.get("inn")).strip()
+
+        # 6. Agar tashkilot nomi xotirada bo'lsa, Exceldan nomi bo'yicha topish
+        if session and getattr(session, "org_name", None):
+            org_info = excel_service.find_by_org_name(session.org_name)
+            if org_info and org_info.get("query"):
+                return str(org_info.get("query")).strip()
+
+        # 7. Faol tiketdan olish
+        if user_id:
+            ticket = ticket_service.find_ticket_by_user_id(user_id)
+            if ticket and ticket.get("inn"):
+                return str(ticket.get("inn")).strip()
+
+        # 8. Chatdagi boshqa faol sessiyalardan qidirish
+        if chat_id:
+            with session_mgr._lock:
+                for s in session_mgr.sessions.values():
+                    if str(s.chat_id) == str(chat_id) and getattr(s, "inn", None) and not s.is_expired():
+                        return str(s.inn).strip()
+
+        return None
+
+    def handle_payment_history(self, chat_id, message_id, reply_to_id, session, text="", message=None, user_id=None):
+        """To'lovlar tarixi va oylar kesimidagi hisobotni 8 soatlik xotiradan foydalanib darhol chiqarish"""
+        if session:
+            session.unclear_count = 0
+
+        inn_to_use = self.resolve_inn(session, text=text, message=message, chat_id=chat_id, user_id=user_id)
+
+        if inn_to_use:
+            info = excel_service.find_by_identifier(inn_to_use)
+            if info:
+                if session:
+                    session.inn = inn_to_use
+                    session.org_name = info.get("org_name")
+                    session.state = "NORMAL"
+                    session_mgr.save_sessions()
+                if chat_id:
+                    session_mgr.set_chat_info(chat_id, inn=inn_to_use, org_name=info.get("org_name"))
+
+                resp = excel_service.get_payment_history_text(info)
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
+
+        # Agar INN mutlaqo xotirada mavjud bo'lmasa yoki topilmasa:
+        resp = (
+            "Yil davomida qaysi oylar uchun qancha to'lov qilinganligini tekshirish uchun "
+            "tashkilotingizning INN yoki JSHSHIR raqamini yuboring.\n\n"
+            "ℹ️ *Ma'lumot uchun:* Tashkilotingiz INN yoki JSHSHIR raqami aparatingiz chiqargan chekda *STIR* deb yozilgan bo'limida ko'rsatilgan."
+        )
+        if session:
+            session.state = "AWAITING_INN_HISTORY"
+            session_mgr.save_sessions()
+        self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+
     def handle_channel_post(self, post):
         """Telegram kanalga tashlangan yangi hisob-kitob jadvallari, video va rasmlarni avtomatik qabul qilish"""
         chat_id = post["chat"]["id"]
@@ -1993,16 +2101,26 @@ class MarsBotEngine:
 
         # 1. To'lovlar tarixi
         if data.startswith("action_history_") or data == "action_history":
-            inn = data.replace("action_history_", "") if data.startswith("action_history_") else (session.inn if session else None)
+            inn = data.replace("action_history_", "").strip() if data.startswith("action_history_") else None
+            if not inn or inn == "None":
+                inn = self.resolve_inn(session, text="", message=message, chat_id=chat_id, user_id=user_id)
             if inn:
                 info = excel_service.find_by_identifier(inn)
                 if info:
+                    if session:
+                        session.inn = inn
+                        session.org_name = info.get("org_name")
+                        session.state = "NORMAL"
+                        session_mgr.save_sessions()
+                    if chat_id:
+                        session_mgr.set_chat_info(chat_id, inn=inn, org_name=info.get("org_name"))
                     resp = excel_service.get_payment_history_text(info)
                     self.bot.send_message(chat_id, resp, reply_to_message_id=reply_target_id)
                     return
             resp = (
                 "Yil davomida qaysi oylar uchun qancha to'lov qilinganligini tekshirish uchun "
-                "tashkilotingizning INN yoki JSHSHIR raqamini yuboring."
+                "tashkilotingizning INN yoki JSHSHIR raqamini yuboring.\n\n"
+                "ℹ️ *Ma'lumot uchun:* Tashkilotingiz INN yoki JSHSHIR raqami aparatingiz chiqargan chekda *STIR* deb yozilgan bo'limida ko'rsatilgan."
             )
             if session:
                 session.state = "AWAITING_INN_HISTORY"
@@ -2012,10 +2130,25 @@ class MarsBotEngine:
 
         # 2. Yillik fiskal modul to'lovini tekshirish
         if data.startswith("action_check_yearly_") or data == "action_check_yearly":
+            passed_inn = data.replace("action_check_yearly_", "").strip() if data.startswith("action_check_yearly_") else None
+            inn_to_use = passed_inn if (passed_inn and passed_inn != "None") else self.resolve_inn(session, message=message, chat_id=chat_id, user_id=user_id)
+
+            fm_to_use = getattr(session, "fm_number", None) if session else None
+            if not fm_to_use and inn_to_use:
+                info = excel_service.find_by_identifier(inn_to_use)
+                if info and info.get("active_count") == 1 and info.get("pos_list"):
+                    fm_to_use = info["pos_list"][0].get("pos_id")
+
+            if fm_to_use:
+                self.process_fm_check(chat_id, message_id, reply_target_id, session, from_user.get("first_name", ""), from_user.get("username", ""), user_id, "", "", fm_to_use)
+                return
+
             if session:
                 session.unclear_count = 0
                 session.state = "AWAITING_FM"
                 session.last_intent = "check_yearly"
+                if inn_to_use:
+                    session.inn = inn_to_use
                 session_mgr.save_sessions()
             resp = (
                 "Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini yuboring.\n\n"
@@ -2241,6 +2374,19 @@ class MarsBotEngine:
             else:
                 pos_count_text = f"📌 *Faol kassa apparatlari soni:* *{info['active_count']} ta*"
 
+            buttons_markup = {
+                "keyboard": [
+                    [{"text": "📊 To'lovlar tarixi va hisoboti"}],
+                    [{"text": "📟 Yillik fiskal modul to'lovini tekshirish"}],
+                    [{"text": "💳 Oylik abonent to'lovi hisob raqami"}],
+                    [{"text": "🧾 Yillik fiskal modul to'lovi hisob raqami"}]
+                ],
+                "resize_keyboard": True,
+                "one_time_keyboard": False,
+                "selective": True
+            }
+            session_mgr.set_chat_info(chat_id, inn=inn_to_check, org_name=info["org_name"])
+
             if info["has_debt"]:
                 session.oylik_qarz = info["total_debt"]
                 session.oylik_holat = "qarzdor"
@@ -2262,7 +2408,7 @@ class MarsBotEngine:
                     f"{pay_prompt_text}"
                 )
                 session_mgr.save_sessions()
-                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id, reply_markup=buttons_markup)
                 self.send_monthly_payment_media(chat_id, reply_to_id=reply_to_id)
                 return
             else:
@@ -2311,7 +2457,7 @@ class MarsBotEngine:
                                 f"📷 Ekranda ko'rsatilayotgan ushbu nosozlikni bartaraf etish uchun mas'ul texnik mutaxassisimizga yetkazishimiz lozim. "
                                 f"Iltimos, aparat ekranidagi xatolikni (soat va interneti ko'ringan holda) **rasmga olib yuboring** — darhol texnikka ulaymiz."
                             )
-                            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id, reply_markup=buttons_markup)
                             return
                     elif session.fm_holat == "qarzdor":
                         session_mgr.save_sessions()
@@ -2328,17 +2474,6 @@ class MarsBotEngine:
                         )
                         session.state = "AWAITING_FM"
                         session_mgr.save_sessions()
-                        buttons_markup = {
-                            "keyboard": [
-                                [{"text": "📊 To'lovlar tarixi va hisoboti"}],
-                                [{"text": "📟 Yillik fiskal modul to'lovini tekshirish"}],
-                                [{"text": "💳 Oylik abonent to'lovi hisob raqami"}],
-                                [{"text": "🧾 Yillik fiskal modul to'lovi hisob raqami"}]
-                            ],
-                            "resize_keyboard": True,
-                            "one_time_keyboard": True,
-                            "selective": True
-                        }
                         self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id, reply_markup=buttons_markup)
                         return
                 elif getattr(session, "last_photo_file_id", None):
@@ -2356,17 +2491,6 @@ class MarsBotEngine:
                         f"Agar apparatingizning yillik fiskal modul to'lovini ham tekshirmoqchi bo'lsangiz, 📟 **Yillik fiskal modul to'lovini tekshirish** tugmasini bosing.\n\n"
                         f"{fee_info_text}"
                     )
-                    buttons_markup = {
-                        "keyboard": [
-                            [{"text": "📊 To'lovlar tarixi va hisoboti"}],
-                            [{"text": "📟 Yillik fiskal modul to'lovini tekshirish"}],
-                            [{"text": "💳 Oylik abonent to'lovi hisob raqami"}],
-                            [{"text": "🧾 Yillik fiskal modul to'lovi hisob raqami"}]
-                        ],
-                        "resize_keyboard": True,
-                        "one_time_keyboard": True,
-                        "selective": True
-                    }
                     session_mgr.save_sessions()
                     self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id, reply_markup=buttons_markup)
                     return
@@ -3985,8 +4109,21 @@ class MarsBotEngine:
             t_low = text.lower()
             # A) Yillik fiskal modul to'lovini tekshirish
             if any(k in t_low or k in norm_text for k in ["fiskal modul to'lovini tekshir", "fiskal modul tolovini tekshir"]):
+                fm_to_use = getattr(session, "fm_number", None) if session else None
+                inn_to_use = self.resolve_inn(session, text=text, message=message, chat_id=chat_id, user_id=user_id)
+                if not fm_to_use and inn_to_use:
+                    info = excel_service.find_by_identifier(inn_to_use)
+                    if info and info.get("active_count") == 1 and info.get("pos_list"):
+                        fm_to_use = info["pos_list"][0].get("pos_id")
+
+                if fm_to_use:
+                    self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, fm_to_use)
+                    return
+
                 session.state = "AWAITING_FM"
                 session.last_intent = "check_yearly"
+                if inn_to_use:
+                    session.inn = inn_to_use
                 session_mgr.save_sessions()
                 resp = (
                     "Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini yuboring.\n\n"
@@ -4012,23 +4149,14 @@ class MarsBotEngine:
                 return
 
             # D) To'lovlar tarixi va hisoboti
-            if any(k in t_low or k in norm_text for k in ["to'lovlar tarixi", "tolovlar tarixi"]):
-                inn_to_use = session.inn or self.extract_inn(text)
-                if inn_to_use:
-                    info = excel_service.find_by_identifier(inn_to_use)
-                    if info:
-                        resp = excel_service.get_payment_history_text(info)
-                        session_mgr.save_sessions()
-                        self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
-                        return
-                resp = (
-                    f"Yil davomida qaysi oylar uchun qancha to'lov qilinganligini tekshirish uchun "
-                    f"tashkilotingizning INN yoki JSHSHIR raqamini yuboring.\n\n"
-                    f"ℹ️ *Ma'lumot uchun:* Tashkilotingiz INN yoki JSHSHIR raqami aparatingiz chiqargan chekda *STIR* deb yozilgan bo'limida ko'rsatilgan."
-                )
-                session.state = "AWAITING_INN_HISTORY"
-                session_mgr.save_sessions()
-                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            if any(k in t_low or k in norm_text for k in [
+                "to'lovlar tarixi", "tolovlar tarixi", "tulovlar tarixi",
+                "to'lov tarixi", "tolov tarixi", "tulov tarixi",
+                "to'lovlarim tarixi", "to'lov tarixim",
+                "to'lov hisoboti", "tolov hisoboti", "to'lovlar hisoboti",
+                "hisobot", "tarix"
+            ]):
+                self.handle_payment_history(chat_id, message_id, reply_to_id, session, text=text, message=message, user_id=user_id)
                 return
 
             # E) Mas'ul texnik bilan bog'lanish
@@ -4292,24 +4420,7 @@ class MarsBotEngine:
 
         # 4. Oylar kesimida to'lovlar tarixi / qaysi oylar to'langanligi hisoboti (tarix so'ralganda yoki to'lovdan norozilik bildirilganda)
         if self.is_payment_history_query(norm_text, session) or ai_intent == "PAYMENT_HISTORY":
-            session.unclear_count = 0
-            inn_to_use = session.inn or self.extract_inn(text)
-            if inn_to_use:
-                info = excel_service.find_by_identifier(inn_to_use)
-                if info:
-                    resp = excel_service.get_payment_history_text(info)
-                    session_mgr.save_sessions()
-                    self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
-                    return
-
-            resp = (
-                f"Yil davomida qaysi oylar uchun qancha to'lov qilinganligini tekshirish uchun "
-                f"tashkilotingizning INN yoki JSHSHIR raqamini yuboring.\n\n"
-                f"ℹ️ *Ma'lumot uchun:* Tashkilotingiz INN yoki JSHSHIR raqami aparatingiz chiqargan chekda *STIR* deb yozilgan bo'limida ko'rsatilgan."
-            )
-            session.state = "AWAITING_INN_HISTORY"
-            session_mgr.save_sessions()
-            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            self.handle_payment_history(chat_id, message_id, reply_to_id, session, text=text, message=message, user_id=user_id)
             return
 
         # 5. Oylik to'lovni TO'LASH / REKVIZIT / QANDAY TO'LASH so'rovi (Click video va rekviziti)

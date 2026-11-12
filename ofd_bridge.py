@@ -82,12 +82,22 @@ class OFDBridge:
             async def handle_edited_excel_message(event):
                 await self._process_excel_message(event.message)
 
-            await self.client.run_until_disconnected()
+            while True:
+                try:
+                    await self.client.run_until_disconnected()
+                    print("[USERBOT] ⚠️ Ulanish uzildi, 5 soniyadan so'ng qayta ulanadi...")
+                    await asyncio.sleep(5)
+                    await self.client.connect()
+                except Exception as loop_e:
+                    print(f"[USERBOT] Qayta ulanishda xatolik: {loop_e}")
+                    await asyncio.sleep(10)
 
-        try:
-            self.loop.run_until_complete(main())
-        except Exception as e:
-            print(f"[USERBOT] Xatolik: {e}")
+        while True:
+            try:
+                self.loop.run_until_complete(main())
+            except Exception as e:
+                print(f"[USERBOT] Xatolik: {e}. 10 soniyadan so'ng qayta ulanmoqda...")
+                time.sleep(10)
 
     async def _check_missed_excel(self):
         try:

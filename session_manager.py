@@ -37,8 +37,8 @@ class UserSession:
         self.offline_limit_error_active = False
         self.pending_receipt = None
 
-    def reset_for_new_target(self, preserve_photo=False, preserve_fm=False):
-        """Mijoz yangi INN yoki yangi FM kiritganda avvalgi suhbat va aparat xotirasini tozalash (agar preserve_photo=True bo'lsa rasm saqlanadi, preserve_fm=True bo'lsa FM va oflayn xatolik saqlanadi)"""
+    def reset_for_new_target(self, preserve_photo=False, preserve_fm=False, preserve_inn=False):
+        """Mijoz yangi INN yoki yangi FM kiritganda avvalgi suhbat va aparat xotirasini tozalash (agar preserve_photo=True bo'lsa rasm saqlanadi, preserve_fm=True bo'lsa FM va oflayn xatolik saqlanadi, preserve_inn=True bo'lsa INN va tashkilot saqlanadi)"""
         saved_pid = self.last_photo_file_id if preserve_photo else None
         saved_pcap = self.last_photo_caption if preserve_photo else None
         saved_ptxt = self.last_photo_text if preserve_photo else None
@@ -46,10 +46,12 @@ class UserSession:
         saved_fm = self.fm_number if preserve_fm else None
         saved_fm_h = self.fm_holat if preserve_fm else None
         saved_off = self.offline_limit_error_active if preserve_fm else False
+        saved_inn = self.inn if preserve_inn else None
+        saved_org = self.org_name if preserve_inn else None
 
         self.state = "START"
-        self.inn = None
-        self.org_name = None
+        self.inn = saved_inn
+        self.org_name = saved_org
         self.oylik_qarz = None
         self.oylik_holat = None
         self.fm_number = saved_fm
@@ -128,6 +130,7 @@ class UserSession:
 class SessionManager:
     def __init__(self):
         self.sessions = {}
+        self.chat_info = {}
         self._lock = threading.Lock()
         self.load_sessions()
 
@@ -152,6 +155,39 @@ class SessionManager:
             self.save_sessions_unlocked()
             return session
 
+    def set_chat_info(self, chat_id, inn=None, org_name=None, fm_number=None):
+        """Guruh yoki shaxsiy chat bo'yicha INN va FM ma'lumotlarini 8 soatlik umumiy xotirada saqlash"""
+        if not chat_id:
+            return
+        cid_key = str(chat_id)
+        with self._lock:
+            info = self.chat_info.get(cid_key) or {}
+            if inn:
+                info["inn"] = str(inn).strip()
+            if org_name:
+                info["org_name"] = org_name
+            if fm_number:
+                info["fm_number"] = str(fm_number).strip()
+            info["timestamp"] = time.time()
+            self.chat_info[cid_key] = info
+            self.save_sessions_unlocked()
+
+    def get_chat_info(self, chat_id):
+        """Chat (guruh yoki shaxsiy) xotirasidagi ma'lumotlarni olish (8 soatgacha)"""
+        if not chat_id:
+            return {}
+        cid_key = str(chat_id)
+        with self._lock:
+            info = self.chat_info.get(cid_key)
+            if not info:
+                return {}
+            # 8 soatlik tekshiruv
+            if (time.time() - info.get("timestamp", 0)) > (config.SESSION_TTL_HOURS * 3600):
+                del self.chat_info[cid_key]
+                self.save_sessions_unlocked()
+                return {}
+            return dict(info)
+
     def reset_session(self, user_id):
         user_key = str(user_id)
         with self._lock:
@@ -161,24 +197,39 @@ class SessionManager:
 
     def clean_expired(self):
         with self._lock:
+            now = time.time()
+            ttl_sec = config.SESSION_TTL_HOURS * 3600
+
             expired_keys = [k for k, s in self.sessions.items() if s.is_expired()]
             for k in expired_keys:
                 del self.sessions[k]
-            if expired_keys:
+
+            expired_chat_keys = [
+                k for k, ci in self.chat_info.items()
+                if (now - ci.get("timestamp", 0)) > ttl_sec
+            ]
+            for k in expired_chat_keys:
+                del self.chat_info[k]
+
+            if expired_keys or expired_chat_keys:
                 self.save_sessions_unlocked()
 
     def reset_all(self):
         with self._lock:
             self.sessions = {}
+            self.chat_info = {}
             self.save_sessions_unlocked()
             print("[SESSIONS] Barcha sessiyalar to'liq tozalandi.")
 
     def save_sessions_unlocked(self):
         try:
             os.makedirs(os.path.dirname(SESSIONS_FILE), exist_ok=True)
-            data = {k: s.to_dict() for k, s in self.sessions.items()}
+            payload = {
+                "sessions": {k: s.to_dict() for k, s in self.sessions.items()},
+                "chat_info": self.chat_info
+            }
             with open(SESSIONS_FILE, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+                json.dump(payload, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"[ERROR] Sessiyani saqlashda xatolik: {e}")
 
@@ -192,7 +243,16 @@ class SessionManager:
         try:
             with open(SESSIONS_FILE, "r", encoding="utf-8-sig") as f:
                 data = json.load(f)
-                for k, v in data.items():
+                
+                # Yangi format: {"sessions": {...}, "chat_info": {...}}
+                if isinstance(data, dict) and ("sessions" in data or "chat_info" in data):
+                    sessions_data = data.get("sessions", {})
+                    self.chat_info = data.get("chat_info", {})
+                else:
+                    sessions_data = data
+                    self.chat_info = {}
+
+                for k, v in sessions_data.items():
                     sess = UserSession.from_dict(v)
                     if not sess.is_expired():
                         self.sessions[k] = sess
