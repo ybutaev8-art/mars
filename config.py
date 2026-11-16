@@ -72,6 +72,7 @@ Tel: +998 71 202 32 32
 
 # Video qo'llanmalar (Havolalar yoki fayllar)
 VIDEO_OYLIK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/148"
+VIDEO_RECEIPT_URL = "https://t.me/POS_Terminal_UzSmart_Bank/151"
 VIDEO_YILLIK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/145"
 VIDEO_CLOCK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/141"
 VIDEO_IKPU_URL = "https://t.me/POS_Terminal_UzSmart_Bank/126"

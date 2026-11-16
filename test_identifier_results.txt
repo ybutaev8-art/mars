@@ -1,0 +1,117 @@
+============================================================
+🚀 IDENTIFIKATORLAR (FM, INN, JSHSHIR, POS ID, X/R) TESTI
+============================================================
+
+[MIJOZ]: /salombot
+  ... Kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+>>> 1-QADAM: Toza INN kiritamiz
+
+[MIJOZ]: 311790999
+  ... Kutmoqda (7s) ...
+[BOT JAVOBI]:
+🏢 **Tashkilot:** `ALISHER BOBO QURILISH MOLLARI DOKONI` OILAVIY KORXONA
+📑 **STIR / INN:** `311790999`
+📌 **Faol kassa apparatlari soni:** **1 ta**
+
+📋 **Apparatlar modeli va holati:**
+  1-aparat: 📟 **SmartOne model kassa apparati**
+
+✅ **Sizda oylik abonent to'lovidan qarzdorlik mavjud emas, aparatingiz oylik abonent tomonlama faol holatda.**
+
+📷 Agar kassa apparatingizda biror nosozlik yoki xatolik bo'lsa, apparat chiqargan xatolikni aparat ekrani to'liq ko'ringan holda (tepasidagi soat va interneti bilan) rasmga olib yuboring — sizni mas'ul texnik mutaxassisimiz bilan bog'laymiz.
+
+Agar apparatingizning yillik fiskal modul to'lovini ham tekshirmoqchi bo'lsangiz, 📟 Yillik fiskal modul to'lovini tekshirish tugmasini bosing.
+
+💳 **Oylik abonent tarifi:** Har bir apparat uchun 100 000 so'm/oy
+🗓 **Shu oyning oxirigacha to'lanishi kerak:** **0 so'm (joriy oy to'langan)**
+📅 **Keyingi oydan boshlab yil oxirigacha (1 oy uchun):** **100 000 so'm**
+
+>>> 2-QADAM: Yillik to'lovni so'raymiz (Apparat raqamini FM deb adashtirmasligi kerak)
+
+[MIJOZ]: yillik tolovimni tekshirib bering
+  ... Kutmoqda (7s) ...
+[BOT JAVOBI]:
+Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini (odatda kassa chekining pastki qismida `VG...` bilan yoziladi) yuboring.
+
+ℹ️ **Ma'lumot uchun:** Fiskal modul raqami aparatingiz chiqargan chekning pastki qismida FM raqami deb yozilgan bo'limda ko'rsatiladi.
+
+>>> 3-QADAM: FM so'ralganda mijoz adashib yana 9 xonali INN yuborsa
+
+[MIJOZ]: 311790999
+  ... Kutmoqda (7s) ...
+[BOT JAVOBI]:
+⚠️ Siz 9 xonali STIR (INN) raqamini yubordingiz: `311790999`
+
+Yillik fiskal modul to'lovini tekshirish uchun esa kassa chekining eng pastki qismida ko'rsatilgan FM raqami (odatda VG bilan boshlanadi, masalan: `VG298430008670`) kerak.
+
+Iltimos, apparatingiz chiqargan chekning pastki qismidagi FM raqamini yuboring.
+
+>>> 4-QADAM: FM so'ralganda mijoz adashib POS ID (UZ...) yuborsa
+
+[MIJOZ]: UZ210317263622
+  ... Kutmoqda (7s) ...
+[BOT JAVOBI]:
+⚠️ Siz kassa apparatining terminal raqamini (POS ID) yubordingiz: `UZ210317263622`
+
+Yillik fiskal modul to'lovini tekshirish uchun esa chekning eng pastki qismidagi FM raqami (odatda VG bilan boshlanadi, masalan: `VG298430008670`) kerak.
+
+Iltimos, chekdagi FM raqamini yuboring.
+
+>>> 5-QADAM: Haqiqiy FM (VG298430008670) yuborilganda
+
+[MIJOZ]: VG298430008670
+  ... Kutmoqda (10s) ...
+[BOT JAVOBI]:
+🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**
+
+📟 **Fiskal Modul raqami:** `VG298430008670`
+✅ **Fiskal modul to'lovi faol holatda!** Yillik to'lovdan qarzdorlik mavjud emas.
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, quyidagilarni tekshiring:
+1. Internet aloqasi (Wi-Fi yoki SIM-karta balansi)
+2. Aparatdagi sana va vaqt to'g'riligi
+3. Aparatni o'chirib qayta yoqing (perezagruzka)
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, aparat ekrani to'liq ko'ringan holda rasm olib tashlang men sizni masul texnik bilan bog'layman.
+
+>>> 6-QADAM: 20 xonali bank hisob raqami (X/R) yuborilganda
+
+[MIJOZ]: 20208000800208044003
+  ... Kutmoqda (7s) ...
+[BOT JAVOBI]:
+💳 Siz 20 xonali bank hisob raqamini (X/R) yubordingiz: `20208000800208044003`
+
+Ushbu raqam to'lov qilish uchun hisob raqamdir.
+
+• Tashkilotingizning oylik abonent to'lovini tekshirish uchun: 9 xonali STIR (INN) yoki 14 xonali JSHSHIR yuboring.
+• Apparatingizning yillik to'lovini tekshirish uchun: kassa chekidagi FM raqamini (masalan: `VG298430008670`) yuboring.
+
+>>> 7-QADAM: Ofis manzili va telefon so'ralganda
+
+[MIJOZ]: ofisingiz qayerda telefon nomeringizni bering
+  ... Kutmoqda (7s) ...
+[BOT JAVOBI]:
+🏢 **MARS ELEKTRON TEXNIKA MCHJ**
+📍 **Manzil:** Qashqadaryo viloyati, Shahrisabz shahar, Sheroziy ko'chasi 1-uy.
+📞 **Aloqa telefonlari:** +998 94 299 77 99, +998 91 945 32 89
+
+============================================================
+🏁 TEST YAKUNLANDI!
+============================================================

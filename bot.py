@@ -355,6 +355,38 @@ class TelegramBot:
                 res = self.api_request("sendAnimation", payload)
         return res
 
+    def send_location(self, chat_id, latitude, longitude, reply_to_message_id=None):
+        """Telegram orqali xaritadagi lokatsiyani (GPS koordinatalar) yuborish"""
+        payload = {
+            "chat_id": chat_id,
+            "latitude": latitude,
+            "longitude": longitude
+        }
+        if reply_to_message_id:
+            payload["reply_to_message_id"] = reply_to_message_id
+        res = self.api_request("sendLocation", payload)
+        if not res.get("ok") and reply_to_message_id:
+            payload.pop("reply_to_message_id", None)
+            res = self.api_request("sendLocation", payload)
+        return res
+
+    def send_venue(self, chat_id, latitude, longitude, title, address, reply_to_message_id=None):
+        """Telegram orqali nom va manzil bilan joylashuv (venue) yuborish"""
+        payload = {
+            "chat_id": chat_id,
+            "latitude": latitude,
+            "longitude": longitude,
+            "title": title,
+            "address": address
+        }
+        if reply_to_message_id:
+            payload["reply_to_message_id"] = reply_to_message_id
+        res = self.api_request("sendVenue", payload)
+        if not res.get("ok") and reply_to_message_id:
+            payload.pop("reply_to_message_id", None)
+            res = self.api_request("sendVenue", payload)
+        return res
+
     def copy_message(self, chat_id, from_chat_id, message_id, caption=None, reply_to_message_id=None, parse_mode=None):
         """Xabarni kanaldan yoki chatdan nusxalab, mijozning xabariga reply (javob tariqasida) qilib yuborish"""
         payload = {
@@ -796,13 +828,20 @@ class MarsBotEngine:
         if not norm_text:
             return False
         t = norm_text.lower()
-        has_kvit = bool(re.search(r"\b(kvitansiya\w*|kvitansa\w*|chek\w*|patta\w*)\b", t))
-        has_how = bool(re.search(r"\b(qanday|qanaqa|qattdan|qayerdan|qayerda|yuklash|olish|yuklay|olay|olaman|yuklayman|topaman|tashlay|yuklanadi|olinadi|oladi|olinsa|qilsa|videosi|darsligi|urgat|o'rgat)\b", t))
-        if has_kvit and has_how:
-            if any(w in t for w in ["qanday to'la", "qayerga to'la", "qancha to'la", "qancha qarz"]):
+        # Oylik abonent to'lash videosi (Post 148) so'ralayotgan bo'lsa, bu kvitansiya yuklash (Post 151) EMAS!
+        if re.search(r"\b(oylik\w*|abanit\w*|abonent\w*)\b", t) and not re.search(r"\b(kvitansi\w*|yuklash|yuklab\s*ol|qayerdan\s*ol)", t):
+            return False
+        if re.search(r"\b(t(?:o'?|o|u)la\w*|t(?:o'?|o|u)lov\w*)\s*video\w*", t) and not re.search(r"\b(kvitansi\w*)", t):
+            return False
+        has_kvit = bool(re.search(r"\b(kvitansi\w*|kvitansa\w*|to'?lov\s*chek\w*|chek\w*|patta\w*)\b", t))
+        has_kvit_how = bool(
+            (re.search(r"\b(qanday|qayerdan|qayerda|qanaqa|qattdan)\b", t) and re.search(r"\b(yukla\w*|ol\w*|tashla\w*|top\w*|video\w*|darslik\w*|qo'?llanma\w*)\b", t)) or
+            re.search(r"\b(kvitansi\w*|chek\w*)\s*(?:yukla\w*|ol\w*)\b", t) or
+            re.search(r"\b(?:click\w*|clik\w*|payme\w*)\w*\s*(?:kvitansi\w*|chek\w*)", t)
+        )
+        if has_kvit and has_kvit_how:
+            if any(w in t for w in ["qanday to'la", "qayerga to'la", "qancha to'la", "qancha qarz", "oylik"]):
                 return False
-            return True
-        if re.search(r"\b(kvitansiya\s*yuklash|kvitansiya\s*olish|kvitansiyani\s*yuklash|kvitansiyani\s*olish|chek\s*olish|chekni\s*olish|clickdan\s*kvitansiya|clikdan\s*kvitansiya|paymedan\s*kvitansiya)\b", t):
             return True
         return False
 
@@ -869,11 +908,15 @@ class MarsBotEngine:
             )
 
     def send_monthly_payment_media(self, chat_id, reply_to_id=None):
-        """Oylik to'lov rekviziti va video qo'llanmasini yangi kanaldan (@POS_Terminal_UzSmart_Bank) mijozga yuborish"""
+        """Oylik to'lov rekviziti va video qo'llanmasini (@POS_Terminal_UzSmart_Bank post 148) mijozga yuborish"""
         cache = load_media_cache()
         channel_id = cache.get("channel_id") or getattr(config, "MATERIALS_CHANNEL_ID", -1001641871516)
-        # @POS_Terminal_UzSmart_Bank kanalidan: post 148 (video) va 85 (rekvizit rasmi)
-        post_ids = [cache.get("oylik_video_msg_id") or 148, cache.get("oylik_rekvizit_msg_id") or 85]
+        # Oylik abonent to'lash videosi doimo post 148 (kvitansiya yuklash videosi 151 ga adashmasligi shart!)
+        oylik_vid = cache.get("oylik_video_msg_id") or 148
+        if oylik_vid == 151:
+            oylik_vid = 148
+        oylik_rek = cache.get("oylik_rekvizit_msg_id") or 85
+        post_ids = [oylik_vid, oylik_rek]
         seen = set()
         unique_post_ids = [x for x in post_ids if not (x in seen or seen.add(x))]
 
@@ -891,7 +934,11 @@ class MarsBotEngine:
                 print(f"[MEDIA] Post #{msg_id} yuborishda xatolik: {e}")
 
         if not sent_any:
-            self.bot.send_message(chat_id, config.REKVIZIT_OYLIK, reply_to_message_id=reply_to_id)
+            resp_text = (
+                f"{config.REKVIZIT_OYLIK}\n\n"
+                f"📹 *Oylik to'lov video qo'llanmasi:* https://t.me/POS_Terminal_UzSmart_Bank/148"
+            )
+            self.bot.send_message(chat_id, resp_text, reply_to_message_id=reply_to_id)
 
     def send_yearly_payment_media(self, chat_id, reply_to_id=None):
         """Yillik to'lov rekviziti va video qo'llanmasini yangi kanaldan (@POS_Terminal_UzSmart_Bank) mijozga yuborish"""
@@ -1225,47 +1272,58 @@ class MarsBotEngine:
         return False
 
     def is_pos_problem(self, norm_text):
-        """Aparat ishlamayapti, nosozlik yoki aparatni tekshirib berish murojaati"""
+        """Aparat ishlamayapti, nosozlik, faollashtirish yoki aparatni tekshirib berish murojaati"""
         # Agar aynan yillik / fiskal modul tekshiruvi so'ralgan bo'lsa, bu yerga kirmaydi
         if any(y in norm_text for y in ["yillik", "fiskal", "modul", "fm"]):
             return False
 
         # 1. Kassa apparati so'zlari
-        pos_words = ["aparat", "apparat", "kassa", "terminal", "pos", "smartone", "p3"]
+        pos_words = ["aparat", "apparat", "aparay", "opparat", "kassa", "terminal", "pos", "smartone", "p3", "mashinka"]
         has_pos = any(w in norm_text for w in pos_words)
 
-        # Muammo yoki tekshirish so'zlari
+        # Muammo, tekshirish yoki faollashtirish/qo'shish so'zlari
         check_or_problem_words = [
             "tekshir", "tekshirish", "tekshirib", "tekshiruv", "tekshiraylik", "tekshiring",
             "ko'rib", "kurib", "ko'rish", "kurish", "qarab", "ko'ring",
             "ishlamay", "ishlamiy", "ishlamadi", "ishlamayabdi", "ishlamayapti", "ishlamayaptiku",
             "xato", "xatolik", "nosozlik", "buzildi", "buzilgan", "qotib", "o'chib", "ochilmay",
             "blok", "bloklandi", "to'xtadi", "to'xtab", "tushmayapti", "muammo", "otkaz",
-            "chek chiqmay", "chek urmay", "chek bermay", "chek urmayapti", "chek chiqmayapti", "chek chiqmayabdi"
+            "chek chiqmay", "chek urmay", "chek bermay", "chek urmayapti", "chek chiqmayapti", "chek chiqmayabdi",
+            "qushib", "qushber", "qushvor", "qo'shib", "qo'shvor", "ochib", "ochber", "yoqib", "yoqvor", "ulab", "ulash",
+            "urommay", "urolmay", "uromay", "urovomiz", "urib bomay", "urib bo'lmay",
+            "ashebka", "ashibka", "oshebka"
         ]
         has_check_or_problem = any(w in norm_text for w in check_or_problem_words)
 
         if has_pos and has_check_or_problem:
             return True
 
-        # 2. Chek chiqmayapti / bermayapti
-        if "chek" in norm_text and any(w in norm_text for w in ["chiqmay", "urmay", "bermay", "tushmay", "chiqarmay", "bermiy", "chiqmidi", "bermidi", "chiqmayapti", "chiqmayabdi"]):
-            return True
-
-        # 3. Aniq nosozlik iboralari
-        if any(w in norm_text for w in [
-            "ishlamayapti", "ishlamayabdi", "ishlamadi", "ishlamayaptiku", "ishlamaydi",
-            "buzildi", "qotib qoldi", "yonmayapti", "ochilmayapti", "nosozlik", "xatolik beryapti"
+        # 2. Chek chiqmayapti / bermayapti / urilmayapti
+        if "chek" in norm_text and any(w in norm_text for w in [
+            "chiqmay", "urmay", "bermay", "tushmay", "chiqarmay", "bermiy", "chiqmidi", "bermidi", "chiqmayapti", "chiqmayabdi",
+            "urommay", "urolmay", "uromay", "urovomiz", "urib bomay", "urib bo'lmay"
         ]):
             return True
 
-        # 4. Apparat so'zi aytilmagan bo'lsa ham aniq kassa/nosozlik iboralari
+        # 3. Aniq nosozlik va faollashtirish iboralari
+        if any(w in norm_text for w in [
+            "ishlamayapti", "ishlamayabdi", "ishlamadi", "ishlamayaptiku", "ishlamaydi",
+            "buzildi", "qotib qoldi", "yonmayapti", "ochilmayapti", "nosozlik", "xatolik beryapti",
+            "ashebka beryapti", "ashebka bervotti", "ashibka beryapti", "oshebka",
+            "savdo to'xtadi", "savdo toxtadi"
+        ]):
+            return True
+
+        # 4. Apparat so'zi aytilmagan bo'lsa ham aniq kassa/nosozlik/faollashtirish iboralari
         phrases = [
             "ishlamayapti", "ishlamayabdi", "ishlamay qoldi", "ishlamay qobdi",
             "cheka chiqmayapti", "chek chiqmayapti", "chek urmayapti", "chek bermayapti", "chek chiqmayabdi",
+            "chek urommayabmiz", "chek urolmayapmiz", "chek uromayapmiz",
             "ishlamayapti aparatim", "nosozlik", "aparat qotib qoldi", "kassada xatolik", "xatolik beryapti", "xato beryapti",
             "tekshirib bering", "tekshirib beriyla", "tekshirib berila", "tekshirib beringlar", "tekshirib ber",
-            "ko'rib bering", "kurib bering", "ko'rib beriyla", "kurib beriyla", "ko'rib beringlar", "kurib berila"
+            "ko'rib bering", "kurib bering", "ko'rib beriyla", "kurib beriyla", "ko'rib beringlar", "kurib berila",
+            "qushib beriyla", "qushberila", "qushib berila", "qo'shib bering", "qo'shib beringlar",
+            "ochib berila", "ochib beringlar", "yoqib berila", "yoqib beringlar", "ulab beriyla"
         ]
         if any(p in norm_text for p in phrases):
             return True
@@ -1741,91 +1799,124 @@ class MarsBotEngine:
 
         return False
 
+    def classify_identifier(self, text):
+        """
+        Matndagi maxsus raqamlar va identifikatorlarni aniq ajratib beradi:
+        - INN: 9 xonali (STIR)
+        - JSHSHIR: 14 xonali (PINFL)
+        - FM: VG, LG, FM, MF prefiksi bilan yoki FM deb belgilangan fiskal modul raqami
+        - POS_ID: UZ... bilan boshlanuvchi terminal/apparat seriya raqami
+        - BANK_ACCOUNT: 20 xonali bank hisob raqami (20... bilan boshlanadi)
+        - PHONE: O'zbekiston telefon raqamlari (+998... yoki 9 xonali mobil raqam)
+        - MFO: 5 xonali bank MFO kodi
+        """
+        if not text:
+            return {"type": None, "value": None}
+
+        raw = str(text).strip()
+        # Havolalar bo'lsa
+        if any(h in raw.lower() for h in ["http://", "https://", "t.me/", "telegram.me/"]):
+            return {"type": None, "value": None}
+
+        clean = re.sub(r"[\s\-_\.:,]", "", raw).upper()
+        digits = re.sub(r"\D", "", raw)
+
+        # 1. Bank hisob raqami (X/R): 20 xonali raqam (20 bilan boshlanadi)
+        m_xr = re.search(r"\b(20\d{18})\b", clean)
+        if m_xr or (len(digits) == 20 and digits.startswith("20")):
+            val = m_xr.group(1) if m_xr else digits
+            return {"type": "BANK_ACCOUNT", "value": val}
+
+        # 2. Fiskal Modul (FM): VG, LG, FM, MF bilan boshlanuvchi (UZ bundan mustasno - UZ bu POS apparat ID)
+        m_fm_prefix = re.search(r"\b(VG|LG|FM|MF|ЛГ|ФМ|МФ)[_\-\s]?(\d{8,14})\b", raw, re.IGNORECASE)
+        if m_fm_prefix:
+            pfx = m_fm_prefix.group(1).upper()
+            pfx = {"ЛГ": "LG", "ФМ": "FM", "МФ": "MF", "ЛG": "LG", "LГ": "LG"}.get(pfx, pfx)
+            return {"type": "FM", "value": f"{pfx}{m_fm_prefix.group(2)}"}
+
+        # "FM" yoki "fiskal modul" deb belgilangan raqam
+        m_fm_word = re.search(r"(?:fm|фм|fiskal\s*modul|фискал\s*модул[ья]?)[:\s\-a-zа-яё]*(\d{8,14})\b", raw, re.IGNORECASE)
+        if m_fm_word:
+            return {"type": "FM", "value": m_fm_word.group(1)}
+
+        # 3. Kassa apparati / POS terminal raqami (UZ bilan boshlanuvchi)
+        m_pos = re.search(r"\b(UZ\d{8,14})\b", clean)
+        if m_pos:
+            return {"type": "POS_ID", "value": m_pos.group(1)}
+
+        # 4. Telefon raqamlari (+998... yoki 998...)
+        m_tel_998 = re.search(r"(?:\+?998)[_\-\s]?(\d{2})[_\-\s]?(\d{3})[_\-\s]?(\d{2})[_\-\s]?(\d{2})\b", raw)
+        if m_tel_998:
+            return {"type": "PHONE", "value": "+998" + "".join(m_tel_998.groups())}
+
+        # Telefon konteksti bo'lsa (tel: 901234567)
+        m_tel_word = re.search(r"(?:tel|telefon|aloqa|nomer)\s*[:\-]?\s*(\d{9})\b", raw, re.IGNORECASE)
+        if m_tel_word:
+            return {"type": "PHONE", "value": m_tel_word.group(1)}
+
+        # 9 xonali mobil telefon raqamlari (90, 91, 92, 93, 94, 95, 97, 98, 99, 33, 88, 77, 50, 55, 20)
+        # Agar matnda aniq "inn" yoki "stir" deb yozilmagan bo'lsa
+        m_tel_9 = re.search(r"\b(90|91|92|93|94|95|97|98|99|33|88|77|50|55)[_\-\s]?(\d{3})[_\-\s]?(\d{2})[_\-\s]?(\d{2})\b", raw)
+        if m_tel_9 and len(digits) == 9 and not re.search(r"(?:inn|stir|инн|стир)", raw, re.IGNORECASE):
+            return {"type": "PHONE", "value": digits}
+
+        # 5. JSHSHIR deb belgilangan yoki aniq 14 xonali son
+        m_jsh_lbl = re.search(r"(?:jshshir|жшшир|pinfl|пинфл)[:\s\-]*([0-9\s\-]{14})\b", raw, re.IGNORECASE)
+        if m_jsh_lbl:
+            d14 = re.sub(r"\D", "", m_jsh_lbl.group(1))
+            if len(d14) == 14:
+                return {"type": "JSHSHIR", "value": d14}
+
+        m_14 = re.findall(r"\b\d{14}\b", clean)
+        if m_14:
+            return {"type": "JSHSHIR", "value": m_14[0]}
+
+        # 6. STIR / INN deb belgilangan yoki aniq 9 xonali son
+        m_inn_lbl = re.search(r"(?:inn|stir|инн|стир)[:\s\-]*([0-9\s\-]{9})\b", raw, re.IGNORECASE)
+        if m_inn_lbl:
+            d9 = re.sub(r"\D", "", m_inn_lbl.group(1))
+            if len(d9) == 9:
+                return {"type": "INN", "value": d9}
+
+        m_9 = re.findall(r"\b\d{9}\b", clean)
+        if m_9:
+            cand = m_9[0]
+            if cand[:2] in ["90", "91", "92", "93", "94", "95", "97", "98", "99", "33", "88", "77", "50", "55"] and not re.search(r"(?:inn|stir|инн|стир)", raw, re.IGNORECASE):
+                return {"type": "PHONE", "value": cand}
+            return {"type": "INN", "value": cand}
+
+        # 7. MFO (5 xonali raqam)
+        m_mfo = re.search(r"(?:mfo|мфо)[:\s\-]*(\d{5})\b", raw, re.IGNORECASE)
+        if m_mfo or (len(digits) == 5 and re.search(r"\b0\d{4}\b", clean)):
+            return {"type": "MFO", "value": m_mfo.group(1) if m_mfo else digits}
+
+        return {"type": None, "value": None}
+
     def extract_inn(self, text):
         """Matndan 9 xonali (INN) yoki 14 xonali (JSHSHIR) raqamni topish (havolalarni inkor qiladi)"""
-        if not text:
-            return None
-        # Agar matnda havola (URL / link) bo'lsa, uni mutlaqo INN deb olmaslik kerak!
-        if any(h in text.lower() for h in ["http://", "https://", "t.me/", "telegram.me/"]):
-            return None
-
-        # 1. Telefon raqam sifatida ko'rsatilgan bo'lsa, uni inkor qilish (masalan: "tel: 901234567")
-        tel_match = re.search(r"(?:tel|telefon|aloqa|nomer)\s*[:\-]?\s*(\d{9})\b", text, re.IGNORECASE)
-        excluded_tel = tel_match.group(1) if tel_match else None
-
-        # 2. INN / STIR / JSHSHIR deb belgilangan raqam:
-        # masalan: "INN 305 123 456", "STIR: 305-123-456", "JSHSHIR 31234567890123"
-        m_inn_labeled = re.search(r"(?:inn|stir|jshshir|инн|стир|жшшир)[:\s\-]*([0-9\s\-]{9,20})", text, re.IGNORECASE)
-        if m_inn_labeled:
-            digits = re.sub(r"\D", "", m_inn_labeled.group(1))
-            if len(digits) == 9 or len(digits) == 14:
-                return digits
-
-        # 3. 3-3-3 ko'rinishida probel yoki tire bilan ajratilgan 9 ta raqam (masalan: 305 123 456 yoki 305-123-456)
-        m_spaced = re.search(r"\b(\d{3})[\s\-](\d{3})[\s\-](\d{3})\b", text)
-        if m_spaced:
-            d9 = f"{m_spaced.group(1)}{m_spaced.group(2)}{m_spaced.group(3)}"
-            if d9 != excluded_tel:
-                return d9
-
-        # 4. So'z chegarasidagi aniq 9 xonali (STIR) yoki 14 xonali (JSHSHIR) raqam
-        matches = re.findall(r"\b\d{9}\b|\b\d{14}\b", text)
-        for m in matches:
-            if m == excluded_tel:
-                continue
-            return m
-
-        # 5. Agar butun matn toza 9 yoki 14 ta raqam bo'lsa (probel va defislardan tozalanganda)
-        clean_text = re.sub(r"[\s\-_]", "", text)
-        clean_matches = re.findall(r"^\d{9}$|^\d{14}$", clean_text)
-        if clean_matches and clean_matches[0] != excluded_tel:
-            return clean_matches[0]
-
+        c = self.classify_identifier(text)
+        if c["type"] in ["INN", "JSHSHIR"]:
+            return c["value"]
         return None
 
     def extract_fm(self, text, is_awaiting_fm=False):
         """Matndan Fiskal Modul (FM) raqamini topish (har qanday vaziyatda)"""
         if not text:
             return None
-        cleaned_text = text.strip()
-        # Havolalarni inkor qilish
-        if any(h in cleaned_text.lower() for h in ["http://", "https://", "t.me/"]):
-            return None
+        c = self.classify_identifier(text)
+        if c["type"] == "FM":
+            return c["value"]
 
-        # 1. Boshida 2 ta harf (Lotin yoki Kirill: LG, FM, MF, ЛГ, ФМ, МФ) va 10-12 ta raqam
-        # masalan: LG420230615712, ЛГ420230615712, FM1234567890, ФМ 1234567890, LG-123456789012
-        m = re.search(r"\b([A-Za-zА-Яа-яЁё]{2})[:\-_\s]?(\d{10,12})\b", cleaned_text)
-        if m:
-            letters_raw = m.group(1).upper()
-            cyr_map = {"ЛГ": "LG", "ФМ": "FM", "МФ": "MF", "ЛG": "LG", "LГ": "LG"}
-            letters = cyr_map.get(letters_raw, letters_raw)
-            if re.match(r"^[A-Z]{2}$", letters):
-                digits = m.group(2)
-                return f"{letters}{digits}"
+        # Agar bot mijozdan aynan FM raqamini so'ragan bo'lsa (AWAITING_FM):
+        if is_awaiting_fm:
+            # Agar foydalanuvchi boshqa aniq identifikator (INN, JSHSHIR, POS_ID, BANK_ACCOUNT, PHONE, MFO) yuborgan bo'lsa:
+            if c["type"] in ["INN", "JSHSHIR", "POS_ID", "BANK_ACCOUNT", "PHONE", "MFO"]:
+                return None
+            clean_alnum = re.sub(r"[^A-Za-z0-9]", "", str(text).upper())
+            if clean_alnum.startswith(("VG", "LG", "FM", "MF")) and 10 <= len(clean_alnum) <= 18:
+                return clean_alnum
 
-        # 2. "FM", "ФМ", "fiskal modul", "фискал модуль" so'zlari bilan birga kelgan 10-12 ta raqam
-        # masalan: "FM 420230615712", "FM raqami: 420230615712", "fiskal modul 420230615712"
-        m_fm_word = re.search(r"(?:fm|фм|fiskal\s*modul|фискал\s*модул[ья]?)[:\s\-a-zа-яё]*(\d{10,12})\b", cleaned_text, re.IGNORECASE)
-        if m_fm_word:
-            clean_d = m_fm_word.group(1)
-            if not (len(clean_d) == 12 and clean_d.startswith("998")):
-                return clean_d
-
-        # 3. Matndagi 10-12 ta toza raqam (998 bilan boshlanadigan 12 xonali tel raqamlar bundan mustasno)
-        # Bu orqali mijoz har qanday vaziyatda shunchaki 10-12 xonali raqam yuborganda ham yillik FM tekshiriladi!
-        all_10_12 = re.findall(r"\b\d{10,12}\b", cleaned_text)
-        for num in all_10_12:
-            if len(num) == 12 and num.startswith("998"):
-                continue
-            return num
-
-        # 4. Probellar yoki defislar bilan yozilgan 10-12 xonali raqam (masalan: 420 230 615 712)
-        clean_digits = re.sub(r"\D", "", cleaned_text)
-        if 10 <= len(clean_digits) <= 12 and not (len(clean_digits) == 12 and clean_digits.startswith("998")):
-            # Agar matnda uzun boshqa so'zlar bo'lmasa
-            words_only = re.findall(r"[a-zA-Zа-яА-Я]{3,}", cleaned_text)
-            if len(words_only) <= 2:
-                return clean_digits
+        return None
 
         return None
 
@@ -1916,6 +2007,253 @@ class MarsBotEngine:
             session_mgr.save_sessions()
         self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
 
+    def execute_ai_action_plan(
+        self, action_plan: dict, session, chat_id: int, message_id: int,
+        reply_to_id: int, user_id: int, first_name: str, username: str,
+        text: str, norm_text: str, message: dict
+    ) -> bool:
+        """
+        AI va Bot integratsiyasining markaziy ijro mexanizmi.
+        Sun'iy intellekt tushungan mijoz niyati va harakatlar rejasiga (action_plan) muvofiq,
+        botning ma'lumotlar bazasi, tekshiruvlari va xizmatlarini to'liq uyg'unlikda ishlatadi.
+        """
+        if not action_plan or not isinstance(action_plan, dict):
+            return False
+
+        intent = action_plan.get("intent")
+        action = action_plan.get("next_action")
+        if session:
+            session.unclear_count = 0
+
+        # 1. PROCESS_POS_ISSUE: Kassa apparati ishlamayapti / chek urilmayapti / qo'shib bering
+        if action == "PROCESS_POS_ISSUE" or intent == "POS_BROKEN":
+            if session:
+                session.last_intent = "pos_broken"
+
+            # 1-QADAM: Tashkilot INN raqamini aniqlash (Sessiya, Reply, Guruh 8 soatlik xotirasi, FM, Baza orqali)
+            inn_to_use = self.resolve_inn(session, text=text, message=message, chat_id=chat_id, user_id=user_id)
+
+            # Agar INN aniqlanmagan bo'lsa -> Mijozdan oylik to'lovni tekshirish uchun INN so'raymiz
+            if not inn_to_use:
+                if session:
+                    session.state = "AWAITING_INN"
+                    session_mgr.save_sessions()
+                resp = (
+                    f"Kassa apparatingiz ishlamayotganining (chek urilmayotganining) sababini aniqlab, faollashtirib berishimiz uchun tashkilotingizning 9 xonali STIR (INN) yoki 14 xonali JSHSHIR raqamini yuboring.\n\n"
+                    f"ℹ️ *Ma'lumot uchun:* Tashkilotingiz INN yoki JSHSHIR raqami kassa aparatingiz chiqargan chekning pastki qismida *STIR* deb yozilgan bo'limda ko'rsatilgan bo'ladi."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return True
+
+            # 2-QADAM: INN aniqlangan bo'lsa -> Oylik abonent holatini tekshiramiz
+            info = excel_service.find_by_identifier(inn_to_use)
+            if not info:
+                # Bazadan topilmasa
+                if session:
+                    session.inn = inn_to_use
+                    session.state = "AWAITING_INN"
+                    session_mgr.save_sessions()
+                resp = (
+                    f"⚠️ `{inn_to_use}` raqami bo'yicha tizimimizda ma'lumot topilmadi.\n\n"
+                    f"Iltimos, kassa apparatingiz chekida ko'rsatilgan 9 xonali STIR (INN) yoki 14 xonali JSHSHIR raqamingizni to'g'riligini tekshirib, qaytadan yuboring."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return True
+
+            is_debtor = info.get("has_debt", False) or (info.get("total_debt", 0) > 0)
+            status = "qarzdor" if is_debtor else "toza"
+            org_name = info.get("org_name", "")
+            debt_str = info.get("total_debt_text") or f"{int(info.get('total_debt', 0)):,} so'm".replace(",", " ")
+            if session:
+                session.inn = inn_to_use
+                session.oylik_holat = status
+                session.preserve_inn = True
+
+            # Guruh xotirasini yangilash
+            if chat_id != user_id:
+                session_mgr.set_chat_info(chat_id, inn_to_use, org_name=org_name)
+
+            # A) Agar oylikdan qarzdor bo'lsa:
+            if status == "qarzdor":
+                resp = (
+                    f"⚠️ Tashkilotingiz (*{org_name}*, STIR: `{inn_to_use}`) ning oylik abonent to'lovida qarzdorlik mavjud (*{debt_str}*).\n\n"
+                    f"Kassa apparatingiz faoliyatini tiklash va chek urish imkoniyatini ochish uchun, iltimos, oylik to'lovni amalga oshiring.\n\n"
+                    f"Oylik abonent to'lovi hisob raqami va to'lov qo'llanmasi quyida yuborildi 👇"
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                self.send_monthly_payment_media(chat_id, reply_to_id=reply_to_id)
+                if session:
+                    session.state = "NORMAL"
+                    session_mgr.save_sessions()
+                return True
+
+            # B) Agar oylik toza bo'lsa (qarzdorlik yo'q):
+            if status == "toza":
+                # Agar mijoz allaqachon rasm yuborgan bo'lsa:
+                if session and getattr(session, "last_photo_file_id", None):
+                    self.notify_technician(
+                        chat_id, message_id, session, first_name, username, user_id,
+                        text=f"Aparat nosozligi / chek urilmayapti (Oylik toza: {org_name}, STIR: {inn_to_use})"
+                    )
+                    return True
+
+                # Rasm bo'lmasa -> Foydalanuvchi so'raganidek, xatolik (oshibka) rasmini so'raymiz!
+                resp = (
+                    f"✅ Tashkilotingiz (*{org_name}*, STIR: `{inn_to_use}`) oylik abonent to'lovida qarzdorlik yo'q, apparat oylik tomonlama faol holatda turibdi.\n\n"
+                    f"📷 Aparatingiz nima sababdan chek urmayotganini va qanday xatolik (oshibka) chiqarayotganini aniqlab, mutaxassisga yetkazishimiz uchun apparat ekranidagi nosozlikni (ekranning yuqori qismidagi soat va internet belgisi ko'ringan holda) **rasmga olib yuboring**.\n\n"
+                    f"Rasm yuborishingiz bilan darhol mas'ul texnik mutaxassisimizga ulaymiz."
+                )
+                if session:
+                    session.state = "AWAITING_ERROR_PHOTO"
+                    session_mgr.save_sessions()
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return True
+
+        # 2. SHOW_PAYMENT_HISTORY: To'lovlar tarixi va hisoboti
+        elif action == "SHOW_PAYMENT_HISTORY" or intent == "PAYMENT_HISTORY":
+            self.handle_payment_history(chat_id, message_id, reply_to_id, session, text=text, message=message, user_id=user_id)
+            return True
+
+        # 3. SEND_RECEIPT_GUIDE: Kvitansiya qanday olinishi videosi (Post 151)
+        elif action == "SEND_RECEIPT_GUIDE" or intent == "DOWNLOAD_RECEIPT_GUIDE":
+            if session:
+                session_mgr.save_sessions()
+            self.send_download_receipt_guide(chat_id, reply_to_id=reply_to_id, is_invalid_screen=False)
+            return True
+
+        # 4. SEND_CLOCK_GUIDE: Soat / vaqt muammosi
+        elif action == "SEND_CLOCK_GUIDE" or intent == "CLOCK_PROBLEM":
+            if session:
+                session.clock_video_sent = True
+                session_mgr.save_sessions()
+            self.send_clock_solution_media(chat_id, reply_to_id=reply_to_id)
+            return True
+
+        # 5. PROCESS_IKPU: IKPU xatoligi
+        elif action == "PROCESS_IKPU" or intent == "IKPU_ERROR":
+            if session:
+                session.ikpu_error_active = True
+            if session and getattr(session, "ikpu_video_sent", False):
+                self.notify_technician(chat_id, message_id, session, first_name, username, user_id, text=text, is_ikpu_exception=True)
+                return True
+            else:
+                if session:
+                    session.ikpu_video_sent = True
+                    session_mgr.save_sessions()
+                self.send_ikpu_solution_media(chat_id, reply_to_id=reply_to_id)
+                return True
+
+        # 6. SEND_MONTHLY_PAY: Oylik to'lov rekviziti va video
+        elif action == "SEND_MONTHLY_PAY" or intent == "PAY_MONTHLY":
+            if session:
+                session.state = "NORMAL"
+                session.last_topic = "pay_monthly"
+                session_mgr.save_sessions()
+            self.send_monthly_payment_media(chat_id, reply_to_id=reply_to_id)
+            return True
+
+        # 7. SEND_YEARLY_PAY: Yillik to'lov rekviziti
+        elif action == "SEND_YEARLY_PAY" or intent == "PAY_YEARLY":
+            if session:
+                session.state = "NORMAL"
+                session.last_topic = "pay_yearly"
+                session_mgr.save_sessions()
+            self.send_yearly_payment_media(chat_id, reply_to_id=reply_to_id)
+            return True
+
+        # 8. CHECK_MONTHLY: Oylik to'lovni tekshirish
+        elif action == "CHECK_MONTHLY" or intent == "CHECK_MONTHLY":
+            inn_to_use = self.resolve_inn(session, text=text, message=message, chat_id=chat_id, user_id=user_id)
+            if inn_to_use:
+                self.process_inn_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, inn_to_use)
+                return True
+            if session:
+                session.state = "AWAITING_INN"
+                session.last_intent = "check_monthly"
+                session_mgr.save_sessions()
+            resp = (
+                f"Tashkilotingizning INN yoki JSHSHIR raqamini yuboring.\n\n"
+                f"ℹ️ *Ma'lumot uchun:* Tashkilotingiz INN yoki JSHSHIR raqami aparatingiz chiqargan chekda *STIR* deb yozilgan bo'limida ko'rsatilgan."
+            )
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return True
+
+        # 9. CHECK_YEARLY: Yillik to'lovni tekshirish
+        elif action == "CHECK_YEARLY" or intent == "CHECK_YEARLY":
+            fm_to_use = getattr(session, "fm_number", None) if session else None
+            inn_to_use = self.resolve_inn(session, text=text, message=message, chat_id=chat_id, user_id=user_id)
+            if not fm_to_use and inn_to_use:
+                info = excel_service.find_by_identifier(inn_to_use)
+                if info and info.get("active_count") == 1 and info.get("pos_list"):
+                    cand = info["pos_list"][0].get("pos_id", "")
+                    if cand and str(cand).upper().startswith(("VG", "LG", "FM", "MF")):
+                        fm_to_use = cand
+
+            if fm_to_use and str(fm_to_use).upper().startswith(("VG", "LG", "FM", "MF")):
+                self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, fm_to_use)
+                return True
+
+            if session:
+                session.state = "AWAITING_FM"
+                session.last_intent = "check_yearly"
+                session_mgr.save_sessions()
+            resp = (
+                f"Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini (odatda kassa chekining pastki qismida `VG...` bilan yoziladi) yuboring.\n\n"
+                f"ℹ️ *Ma'lumot uchun:* Fiskal modul raqami aparatingiz chiqargan chekning pastki qismida **FM raqami** deb yozilgan bo'limda ko'rsatiladi."
+            )
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return True
+
+        # 10. REQUEST_RECEIPT: To'lov qildim deyilganda
+        elif action == "REQUEST_RECEIPT" or intent == "PAYMENT_MADE":
+            if session:
+                session.state = "AWAITING_RECEIPT"
+                session_mgr.save_sessions()
+            resp = "🧾 *To'lovingizni hisobga olishimiz uchun, iltimos, to'lov kvitansiyasini (chek rasmi yoki PDF shaklida) yuboring.*"
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return True
+
+        # 11. CONNECT_OPERATOR: Texnik / Admin so'ralganda
+        elif action == "CONNECT_OPERATOR" or intent == "OPERATOR":
+            if not getattr(session, "last_photo_file_id", None):
+                resp = "Agar aparatingiz baribir ishlamayotgan bo'lsa, aparat ekrani to'liq ko'ringan holda rasm olib tashlang men sizni masul texnik bilan bog'layman."
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return True
+            self.notify_technician(chat_id, message_id, session, first_name, username, user_id, text)
+            return True
+
+        # 12. RESET_SESSION: Suhbatni unutish
+        elif action == "RESET_SESSION" or intent == "FORGET":
+            session_mgr.reset_session(user_id)
+            resp = "🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi va unutilgan holda yangilandi. Yangidan boshlaymiz, sizga qanday yordam bera olaman?"
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return True
+
+        # 13. ASK_REKVIZIT_TYPE: Umumiy rekvizit so'ralganda
+        elif action == "ASK_REKVIZIT_TYPE" or intent == "GENERAL_REKVIZIT":
+            resp = (
+                f"💳 *Sizga qaysi to'lov rekviziti kerak?*\n\n"
+                f"1️⃣ *Oylik abonent to'lovi* rekviziti\n"
+                f"2️⃣ *Yillik Fiskal Modul (FM)* to'lovi rekviziti\n\n"
+                f"Iltimos, *[Oylik to'lov rekviziti]* yoki *[Yillik to'lov rekviziti]* deb yozing."
+            )
+            if session:
+                session.state = "AWAITING_REKVIZIT_CHOICE"
+                session_mgr.save_sessions()
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return True
+
+        # 14. REPLY_GREETING / REPLY_GENERAL: Tayyor AI javobi bo'lsa
+        elif action in ["REPLY_GREETING", "REPLY_GENERAL"] or action_plan.get("ai_reply"):
+            reply_text = action_plan.get("ai_reply")
+            if reply_text:
+                if session:
+                    session_mgr.save_sessions()
+                self.bot.send_message(chat_id, reply_text, reply_to_message_id=reply_to_id)
+                return True
+
+        return False
+
     def handle_channel_post(self, post):
         """Telegram kanalga tashlangan yangi hisob-kitob jadvallari, video va rasmlarni avtomatik qabul qilish"""
         chat_id = post["chat"]["id"]
@@ -1956,21 +2294,27 @@ class MarsBotEngine:
             cache["channel_id"] = chat_id
             mid = post["message_id"]
 
-            if any(k in c_low for k in ["yillik", "fiskal modul", "feskal modul", "ofd"]):
+            if any(k in c_low for k in ["kvitansiya", "kvitansa", "tasdiqlangandan", "yuklab olish", "yuklash"]) or mid == 151:
+                cache["receipt_download_video_msg_id"] = mid
+                cache["receipt_download_video_file_id"] = file_id
+                print(f"[KANAL] 🎬 Kvitansiya yuklash video qo'llanmasi post ID #{mid} saqlandi!")
+            elif any(k in c_low for k in ["yillik", "fiskal modul", "feskal modul", "ofd"]) or mid == 145:
                 cache["yillik_video_msg_id"] = mid
                 cache["yillik_video_file_id"] = file_id
                 print(f"[KANAL] 🎬 Yillik to'lov video qo'llanmasi post ID #{mid} saqlandi!")
-            elif any(k in c_low for k in ["sana", "vaqt", "soat"]):
+            elif any(k in c_low for k in ["sana", "vaqt", "soat"]) or mid == 141:
                 cache["clock_video_msg_id"] = mid
                 print(f"[KANAL] 🎬 Soat / sana sozlash video qo'llanmasi post ID #{mid} saqlandi!")
-            elif any(k in c_low for k in ["ikpu", "mxik", "o'lchov", "olchov", "dastur"]):
+            elif any(k in c_low for k in ["ikpu", "mxik", "o'lchov", "olchov", "dastur"]) or mid == 126:
                 cache["ikpu_video_msg_id"] = mid
                 print(f"[KANAL] 🎬 IKPU / dastur video qo'llanmasi post ID #{mid} saqlandi!")
-            else:
-                cache["oylik_video_msg_id"] = mid
+            elif any(k in c_low for k in ["oylik", "abanit", "abonent", "100 000", "100000"]) or mid == 148:
+                cache["oylik_video_msg_id"] = 148 if mid == 148 else mid
                 cache["oylik_video_file_id"] = file_id
                 cache["oylik_video_caption"] = caption or config.VIDEO_OYLIK_CAPTION
                 print(f"[KANAL] 🎬 Oylik to'lov video qo'llanmasi post ID #{mid} saqlandi!")
+            else:
+                print(f"[KANAL] ℹ️ Boshqa video post #{mid} keldi.")
             save_media_cache(cache)
 
         # 3. Yangi Rasm yoki Matn (Click rekvizit rasmi / matni)
@@ -2137,9 +2481,11 @@ class MarsBotEngine:
             if not fm_to_use and inn_to_use:
                 info = excel_service.find_by_identifier(inn_to_use)
                 if info and info.get("active_count") == 1 and info.get("pos_list"):
-                    fm_to_use = info["pos_list"][0].get("pos_id")
+                    cand = info["pos_list"][0].get("pos_id", "")
+                    if cand and str(cand).upper().startswith(("VG", "LG", "FM", "MF")):
+                        fm_to_use = cand
 
-            if fm_to_use:
+            if fm_to_use and str(fm_to_use).upper().startswith(("VG", "LG", "FM", "MF")):
                 self.process_fm_check(chat_id, message_id, reply_target_id, session, from_user.get("first_name", ""), from_user.get("username", ""), user_id, "", "", fm_to_use)
                 return
 
@@ -2151,8 +2497,8 @@ class MarsBotEngine:
                     session.inn = inn_to_use
                 session_mgr.save_sessions()
             resp = (
-                "Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini yuboring.\n\n"
-                "ℹ️ *Ma'lumot uchun:* Fiskal modul raqami aparatingiz chiqargan chekning pastki qismida *FM raqami* deb yozilgan bo'limda ko'rsatiladi."
+                "Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini (odatda kassa chekining pastki qismida `VG...` bilan yoziladi) yuboring.\n\n"
+                "ℹ️ *Ma'lumot uchun:* Fiskal modul raqami aparatingiz chiqargan chekning pastki qismida **FM raqami** deb yozilgan bo'limda ko'rsatiladi."
             )
             self.bot.send_message(chat_id, resp, reply_to_message_id=reply_target_id)
             return
@@ -3703,6 +4049,8 @@ class MarsBotEngine:
             photo_arr = message.get("photo", [])
             if photo_arr:
                 file_id = photo_arr[-1]["file_id"]
+                # Rasm tahlili jarayonida foydalanuvchiga bot ishlayotganini ko'rsatish (typing indikatori)
+                self.bot.api_request("sendChatAction", {"chat_id": chat_id, "action": "typing"})
 
                 # Rasmni yuklab olamiz
                 temp_img_path = os.path.join(config.DATA_DIR, f"check_{int(time.time())}_{user_id}.jpg")
@@ -4114,9 +4462,11 @@ class MarsBotEngine:
                 if not fm_to_use and inn_to_use:
                     info = excel_service.find_by_identifier(inn_to_use)
                     if info and info.get("active_count") == 1 and info.get("pos_list"):
-                        fm_to_use = info["pos_list"][0].get("pos_id")
+                        cand = info["pos_list"][0].get("pos_id", "")
+                        if cand and str(cand).upper().startswith(("VG", "LG", "FM", "MF")):
+                            fm_to_use = cand
 
-                if fm_to_use:
+                if fm_to_use and str(fm_to_use).upper().startswith(("VG", "LG", "FM", "MF")):
                     self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, fm_to_use)
                     return
 
@@ -4126,8 +4476,8 @@ class MarsBotEngine:
                     session.inn = inn_to_use
                 session_mgr.save_sessions()
                 resp = (
-                    "Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini yuboring.\n\n"
-                    "ℹ️ *Ma'lumot uchun:* Fiskal modul raqami aparatingiz chiqargan chekning pastki qismida *FM raqami* deb yozilgan bo'limda ko'rsatiladi."
+                    "Yillik fiskal modul to'lovingizni tekshirib berishimni istasangiz, aparatingizning fiskal modul raqamini (odatda kassa chekining pastki qismida `VG...` bilan yoziladi) yuboring.\n\n"
+                    "ℹ️ *Ma'lumot uchun:* Fiskal modul raqami aparatingiz chiqargan chekning pastki qismida **FM raqami** deb yozilgan bo'limda ko'rsatiladi."
                 )
                 self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
                 return
@@ -4194,25 +4544,119 @@ class MarsBotEngine:
             self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
             return
 
-        # HAR QANDAY VAZIYATDA: agar mijoz INN, JSHSHIR yoki FM raqami yuborgan bo'lsa,
-        # darhol birinchi navbatda oylik yoki yillik to'lovni tekshirib beramiz!
+        # Identifikatorlarni chuqur tahlil qilish va aniq ajratish (INN, JSHSHIR, FM, POS_ID, BANK_ACCOUNT, PHONE, MFO)
+        ident_info = self.classify_identifier(text)
+        ident_type = ident_info.get("type")
+        ident_val = ident_info.get("value")
+
         found_inn = self.extract_inn(text)
-        found_fm = self.extract_fm(text)
+        found_fm = self.extract_fm(text, is_awaiting_fm=(session.state == "AWAITING_FM"))
 
-        # Agar bitta raqam adashib ikkalasiga ham tushib qolgan bo'lsa:
-        if found_inn and found_fm == found_inn:
-            found_fm = None
+        # 1. Agar bot aynan FM (yillik fiskal modul) kutayotgan bo'lsa (AWAITING_FM):
+        if session.state == "AWAITING_FM":
+            if found_fm or ident_type == "FM":
+                fm_code = found_fm or ident_val
+                self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, fm_code)
+                return
+            elif ident_type == "INN":
+                resp = (
+                    f"⚠️ **Siz 9 xonali STIR (INN) raqamini yubordingiz:** `{ident_val}`\n\n"
+                    f"Yillik fiskal modul to'lovini tekshirish uchun esa kassa chekining eng pastki qismida ko'rsatilgan **FM raqami** (odatda VG bilan boshlanadi, masalan: `VG298430008670`) kerak.\n\n"
+                    f"Iltimos, apparatingiz chiqargan chekning pastki qismidagi **FM raqamini** yuboring."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
+            elif ident_type == "JSHSHIR":
+                resp = (
+                    f"⚠️ **Siz 14 xonali JSHSHIR raqamini yubordingiz:** `{ident_val}`\n\n"
+                    f"Yillik fiskal modul to'lovini tekshirish uchun kassa chekining eng pastki qismidagi **FM raqami** kerak.\n\n"
+                    f"Iltimos, chekdagi **FM raqamini** (odatda VG bilan boshlanadi) yuboring."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
+            elif ident_type == "POS_ID":
+                resp = (
+                    f"⚠️ **Siz kassa apparatining terminal raqamini (POS ID) yubordingiz:** `{ident_val}`\n\n"
+                    f"Yillik fiskal modul to'lovini tekshirish uchun esa chekning eng pastki qismidagi **FM raqami** (odatda VG bilan boshlanadi, masalan: `VG298430008670`) kerak.\n\n"
+                    f"Iltimos, chekdagi FM raqamini yuboring."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
+            elif ident_type == "BANK_ACCOUNT":
+                resp = (
+                    f"⚠️ **Siz 20 xonali bank hisob raqamini (X/R) yubordingiz:** `{ident_val}`\n\n"
+                    f"Bu to'lov uchun hisob raqamdir. Yillik to'lovni tekshirish uchun esa kassa chekidagi **FM raqami** kerak.\n\n"
+                    f"Iltimos, chekdagi FM raqamini yuboring."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
 
-        if found_inn:
-            self.process_inn_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, found_inn)
-            # Faqat ayni xabarda alohida boshqa FM raqami ham birga yozilgan bo'lsa:
-            if found_fm and found_fm != found_inn:
+        # 2. Agar bot oylik tekshirish uchun STIR kutayotgan bo'lsa (AWAITING_INN):
+        if session.state == "AWAITING_INN":
+            if ident_type in ["INN", "JSHSHIR"] or found_inn:
+                inn_code = found_inn or ident_val
+                self.process_inn_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, inn_code)
+                return
+            elif ident_type == "FM":
+                self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, ident_val)
+                return
+            elif ident_type == "POS_ID":
+                resp = (
+                    f"⚠️ **Siz kassa apparatining terminal raqamini (POS ID) yubordingiz:** `{ident_val}`\n\n"
+                    f"Tashkilotingizning oylik abonent to'lovini tekshirishimiz uchun esa 9 xonali **STIR (INN)** yoki 14 xonali **JSHSHIR** raqamini yuboring (u kassa chekida STIR deb yozilgan bo'limda ko'rsatiladi)."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
+            elif ident_type == "BANK_ACCOUNT":
+                resp = (
+                    f"⚠️ **Siz 20 xonali bank hisob raqamini (X/R) yubordingiz:** `{ident_val}`\n\n"
+                    f"Bu to'lov hisob raqamidir. Tashkilotingiz oylik abonent to'lovini tekshirish uchun 9 xonali **STIR (INN)** yoki 14 xonali **JSHSHIR** raqamini yuboring."
+                )
+                self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+                return
+
+        # 3. Har qanday boshqa holatda aniq identifikatorlar:
+        if found_inn or ident_type in ["INN", "JSHSHIR"]:
+            inn_code = found_inn or ident_val
+            self.process_inn_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, inn_code)
+            if found_fm and found_fm != inn_code:
                 self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, found_fm)
             return
 
-        if found_fm:
-            self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, found_fm)
+        if found_fm or ident_type == "FM":
+            fm_code = found_fm or ident_val
+            self.process_fm_check(chat_id, message_id, reply_to_id, session, first_name, username, user_id, text, norm_text, fm_code)
             return
+
+        if ident_type == "BANK_ACCOUNT":
+            resp = (
+                f"💳 **Siz 20 xonali bank hisob raqamini (X/R) yubordingiz:** `{ident_val}`\n\n"
+                f"Ushbu raqam to'lov qilish uchun hisob raqamdir.\n\n"
+                f"• Tashkilotingizning **oylik abonent to'lovini** tekshirish uchun: 9 xonali **STIR (INN)** yoki 14 xonali **JSHSHIR** yuboring.\n"
+                f"• Apparatingizning **yillik to'lovini** tekshirish uchun: kassa chekidagi **FM raqami**ni (masalan: `VG298430008670`) yuboring."
+            )
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return
+
+        if ident_type == "POS_ID":
+            resp = (
+                f"📟 **Siz kassa apparatining terminal raqamini (POS ID) yubordingiz:** `{ident_val}`\n\n"
+                f"• Tashkilotingizning **oylik abonent to'lovini** tekshirish uchun 9 xonali **STIR (INN)** yoki 14 xonali **JSHSHIR** yuboring.\n"
+                f"• Apparatingizning **yillik fiskal modul to'lovini** tekshirish uchun esa chekning pastki qismidagi **FM raqami**ni (odatda VG bilan boshlanadi) yuboring."
+            )
+            self.bot.send_message(chat_id, resp, reply_to_message_id=reply_to_id)
+            return
+
+        # AI VA BOT INTEGRATSIYASI: Sun'iy intellekt harakatlar rejasini markaziy ijro etish
+        # Mijoz shevada, imlo xatolar bilan yoki so'zlashuv tilida yozgan har qanday murojaatni
+        # AI tahlil qilgan action_plan bo'yicha botning ma'lumotlar bazasi va servislari orqali to'liq hal qilish:
+        if ai_result and ai_result.get("next_action"):
+            handled = self.execute_ai_action_plan(
+                ai_result, session, chat_id, message_id, reply_to_id,
+                user_id, first_name, username, text, norm_text, message
+            )
+            if handled:
+                return
 
         # 1.8. IKPU xatoligi haqida matn yozilgan bo'lsa:
         if self.is_ikpu_error_text(text) or self.is_ikpu_error_text(norm_text) or ai_intent == "IKPU_ERROR":
@@ -4600,7 +5044,8 @@ class MarsBotEngine:
         # Userbot fon monitoring xizmatini ishga tushirish (txkmbot)
         # 'Абонент тулови' guruhidan yangi Excel hisob-kitoblarni avtomatik kanalga forward qilish
         try:
-            ofd_bridge.start_background()
+            if not os.environ.get("NO_USERBOT"):
+                ofd_bridge.start_background()
         except Exception as e_ub:
             print(f"[USERBOT] Boshlashda xatolik: {e_ub}")
 

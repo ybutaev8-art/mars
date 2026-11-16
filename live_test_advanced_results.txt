@@ -1,0 +1,280 @@
+==================================================
+🚀 CHUQUR VA TURLI XIL VAZIYATLAR TESTI BOSHLANDI
+Vaqt: 2026-11-13 15:54:49
+==================================================
+Bot topildi: txkm (@txkmrobot)
+
+==================================================
+👉 SSENARIY 1: ASABIY / SHOSHILINCH: 'savdo toxtab qoldi odamlar navbatda turibdi'
+==================================================
+
+[MIJOZ]: /salombot
+  ... Bot javobini kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+[MIJOZ]: e nega ishlamayapti kassa nima qildilaring savdo toxtab qoldi odamlar navbatda turibdi tez ulab berilar
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+✅ Tashkilotingiz (**ЯТТ KULMURADOVA DILRABO SHAVDIROVNA**, STIR: `40305805740011`) oylik abonent to'lovida qarzdorlik yo'q, apparat oylik tomonlama faol holatda turibdi.
+
+📷 Aparatingiz nima sababdan chek urmayotganini va qanday xatolik (oshibka) chiqarayotganini aniqlab, mutaxassisga yetkazishimiz uchun apparat ekranidagi nosozlikni (ekranning yuqori qismidagi soat va internet belgisi ko'ringan holda) rasmga olib yuboring.
+
+Rasm yuborishingiz bilan darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+[MIJOZ]: 40305805740011
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+🏢 **Tashkilot:** ЯТТ KULMURADOVA DILRABO SHAVDIROVNA
+📑 **STIR / INN:** `40305805740011`
+📌 **Faol kassa apparatlari soni:** **1 ta**
+
+📋 **Apparatlar modeli va holati:**
+  1-aparat: 📟 **SmartOne model kassa apparati**
+
+✅ **Sizda oylik abonent to'lovidan qarzdorlik mavjud emas, aparatingiz oylik abonent tomonlama faol holatda.**
+
+📷 Agar kassa apparatingizda biror nosozlik yoki xatolik bo'lsa, apparat chiqargan xatolikni aparat ekrani to'liq ko'ringan holda (tepasidagi soat va interneti bilan) rasmga olib yuboring — sizni mas'ul texnik mutaxassisimiz bilan bog'laymiz.
+
+Agar apparatingizning yillik fiskal modul to'lovini ham tekshirmoqchi bo'lsangiz, 📟 Yillik fiskal modul to'lovini tekshirish tugmasini bosing.
+
+💰 **Hisobingizda:** **600 so'm** ortiqcha to'lov (avans) mavjud.
+**Dekabr** oyi to'liq yopilishi uchun yana **99 400 so'm** to'lashingiz kerak (yil oxirigacha: **99 400 so'm**).
+
+[MIJOZ (Rasm tashladi)]: photo_2_2026-11-13_14-31-54.jpg (Caption: mana ekrandagi xatosi tez korilar)
+  ... Bot javobini kutmoqda (8s) ...
+[BOT JAVOBI]: (Javob kelmadi yoki kechikdi!)
+
+==================================================
+👉 SSENARIY 2: ARALASH TIL: 'kassa apparat zablokirovalsya oshibka bervotti chek urib bomayapti'
+==================================================
+
+[MIJOZ]: /salombot
+  ... Bot javobini kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+[MIJOZ]: kassa apparat zablokirovalsya oshibka bervotti chek urib bomayapti
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+✅ Tashkilotingiz (**ЯТТ KULMURADOVA DILRABO SHAVDIROVNA**, STIR: `40305805740011`) oylik abonent to'lovida qarzdorlik yo'q, apparat oylik tomonlama faol holatda turibdi.
+
+📷 Aparatingiz nima sababdan chek urmayotganini va qanday xatolik (oshibka) chiqarayotganini aniqlab, mutaxassisga yetkazishimiz uchun apparat ekranidagi nosozlikni (ekranning yuqori qismidagi soat va internet belgisi ko'ringan holda) rasmga olib yuboring.
+
+Rasm yuborishingiz bilan darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+==================================================
+👉 SSENARIY 3: UMUMIY REKVIZIT SO'ROVI -> OYLIK TANLASH -> YILLIK SO'RASH
+==================================================
+
+[MIJOZ]: /salombot
+  ... Bot javobini kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+[MIJOZ]: menga to'lov rekvizit tashlanglar
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+💳 **Sizga qaysi to'lov rekviziti kerak?**
+
+1️⃣ **Oylik abonent to'lovi** rekviziti
+2️⃣ **Yillik Fiskal Modul (FM)** to'lovi rekviziti
+
+Iltimos, **[Oylik to'lov rekviziti]** yoki **[Yillik to'lov rekviziti]** deb yozing.
+
+[MIJOZ]: oylik to'lov rekviziti
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]: [MEDIA: MessageMediaDocument]
+click dasturida kvitansiyani yuklash
+
+to'lov kvitansiyasi to'lov qo'liq tasdiqlangandan kiyin [ to'lov to'liq o'tgandan kiyin] ko'rinadi
+[BOT JAVOBI]: [MEDIA: MessageMediaPhoto]
+CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi          
+
+
+Clik dasturiga kirasiz > tolovlar bolimida >  Rekvizit bo'yicha to'lov > Rasmdagi kurinishda tuldiriladi 
+
+
+Abanet tulov uchun shot
+
+«MARS ELEKTRON TEXNIKA» МЧЖ
+Манзил: г. Шахрисабз улица Шерозий 1 
+Абонент  Х/Р:  20 20 8000 800 208 044 003  
+Банк: «Ипак Йули» АИТ банки Шахрисабз
+ филиали МФО: 01048     ИНН: 302568138
+Тел: +998 94 299 77 99,    моб:+99891-945-32-89
+Тулов максади: Абонент тулов 100 000 сум бир ойлик
+
+[MIJOZ]: yillik to'lov rekviziti
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]: [MEDIA: MessageMediaDocument]
+yillik feskal modul tulovini Click dasturi orqali toʻlash
+
+👇👇👇👇👇👇
+**
+****Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**
+[BOT JAVOBI]: [MEDIA: MessageMediaPhoto]
+Yillik Fiscal modil tulovi uchun shot
+
+«Yangi Tehnologiyalar» DUK
+Х'Р:2021 0000 1004 3120 0010
+АТБ «Капиталбанк»    МФО:01018
+ИНН: 201 589 463
+Tulov kodi 00668 
+Tulov maqsadi: INN ______________fiskal modulning yillik tulovi
+Tulov summasi 440 000
+Телефон: +99871-202-32-32  
+
+**Tulov qilingandan sung 2 soatdan 24 soat ichida ishlab ketadi Fiscal modul**
+
+==================================================
+👉 SSENARIY 4: IKPU XATOSI -> VIDEO -> 'FOYDASI BO'LMADI' -> DARHOL TEXNIKKA ULASH
+==================================================
+
+[MIJOZ]: /salombot
+  ... Bot javobini kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+[MIJOZ]: aparatda ikpu xatosi beryapti tovar kodi chiqmayapti
+  ... Bot javobini kutmoqda (8s) ...
+[BOT JAVOBI]: [MEDIA: MessageMediaDocument]
+Tavarlar tarkibidagi ulchov birliklarini tug'irlash uchun yuriqnoma.
+[BOT JAVOBI]:
+⚠️ **Kassa apparatingizda 'Проверка кода ИКПУ устарела' (IKPU kodi eskirgan) xatoligi yuz bergan.**
+
+📹 Ushbu xatolikni bartaraf etish uchun yuqoridagi video qo'llanmada ko'rsatilgan amallarni bajaring.
+
+ℹ️ **Eslatma:** Agar videodagi ko'rsatmalarni bajarganingizdan keyin ham xatolik bartaraf bo'lmasa yoki yordam kerak bo'lsa, xabar qoldiring — sizni darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+[MIJOZ]: videoni kordim baribir ishlamayapti foydasi bolmadi
+  ... Bot javobini kutmoqda (8s) ...
+[BOT JAVOBI]:
+✅ Tashkilotingiz (**ЯТТ KULMURADOVA DILRABO SHAVDIROVNA**, STIR: `40305805740011`) oylik abonent to'lovida qarzdorlik yo'q, apparat oylik tomonlama faol holatda turibdi.
+
+📷 Aparatingiz nima sababdan chek urmayotganini va qanday xatolik (oshibka) chiqarayotganini aniqlab, mutaxassisga yetkazishimiz uchun apparat ekranidagi nosozlikni (ekranning yuqori qismidagi soat va internet belgisi ko'ringan holda) rasmga olib yuboring.
+
+Rasm yuborishingiz bilan darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+==================================================
+👉 SSENARIY 5: TO'LOV QILINGANLIGI HAQIDA XABAR: 'pul tashladim 100 ming'
+==================================================
+
+[MIJOZ]: /salombot
+  ... Bot javobini kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+[MIJOZ]: pul tashladim 100 ming o'tkazdim
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+🧾 **To'lovingizni hisobga olishimiz uchun, iltimos, to'lov kvitansiyasini (chek rasmi yoki PDF shaklida) yuboring.**
+
+==================================================
+👉 SSENARIY 6: OFIS MANZILI, TELEFONLAR VA MINNATDORCHILIK
+==================================================
+
+[MIJOZ]: /salombot
+  ... Bot javobini kutmoqda (4s) ...
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan tozalandi. Yangitdan boshlaymiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+[MIJOZ]: ofisingiz qayerda telefon nomeringizni bering
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+Kechirasiz, men faqat kassa apparatingizni (SmartOne / P3) tekshirish va texnik xizmat ko'rsatish bo'yicha yordam bera olaman.
+
+Kassa apparatingizni tekshirish uchun tashkilotingizning 9 xonali STIR (INN) yoki 14 xonali JSHSHIR raqamini yuboring.
+
+[MIJOZ]: rahmat katta ishlarizga omad
+  ... Bot javobini kutmoqda (7s) ...
+[BOT JAVOBI]:
+Arzimaydi! Kassa apparatingiz doimo benuqson ishlashini tilaymiz. Yana savol yoki murojaatingiz bo'lsa, bemalol murojaat qiling! 😊
+
+==================================================
+🏁 CHUQUR TESTLARNING BARCHASI YAKUNLANDI!
+==================================================

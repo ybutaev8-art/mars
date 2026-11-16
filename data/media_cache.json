@@ -2,8 +2,9 @@
   "channel_id": -1001641871516,
   "channel_username": "POS_Terminal_UzSmart_Bank",
   "channel_link": "https://t.me/POS_Terminal_UzSmart_Bank",
-  "oylik_video_msg_id": 151,
+  "oylik_video_msg_id": 148,
   "oylik_rekvizit_msg_id": 85,
+  "receipt_download_video_msg_id": 151,
   "yillik_video_msg_id": 145,
   "yillik_rekvizit_msg_id": 34,
   "clock_video_msg_id": 141,
@@ -12,6 +13,7 @@
   "guide_videos": {
     "oylik_tulov": 148,
     "oylik_rekvizit": 85,
+    "kvitansiya_yuklash": 151,
     "yillik_tulov": 145,
     "yillik_rekvizit": 34,
     "sana_vaqt": 141,
@@ -24,6 +26,6 @@
     "narxni_ozgartirish": 140,
     "dastur_yangilash": 142
   },
-  "oylik_video_file_id": "BAACAgIAAx0CYdz4nAADl2r1bVUpOOA4_9JSdQxbY8aWdCUKAAIhpgACSuOwSxTo8QnXSpnRPQQ",
-  "oylik_video_caption": "to'lov kvitansiyasi to'lov qo'liq tasdiqlangandan kiyin [ to'lov to'liq o'tgandan kiyin] ko'rinadi"
+  "oylik_video_caption": "Oylik abanit tulovni Clickdan utkazish varianti\n👇👇👇👇👇👇\nTulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!",
+  "receipt_video_caption": "to'lov kvitansiyasi to'lov to'liq tasdiqlangandan kiyin [ to'lov to'liq o'tgandan kiyin] ko'rinadi"
 }

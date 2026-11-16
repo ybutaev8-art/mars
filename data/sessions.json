@@ -5,17 +5,17 @@
       "chat_id": 1966874161,
       "first_name": "Quvonchbek",
       "username": "Quvonchbek_admin",
-      "created_at": 1794477024.1449494,
-      "last_activity": 1794481119.1745741,
+      "created_at": 1794829346.2741756,
+      "last_activity": 1794829356.186383,
       "state": "NORMAL",
-      "inn": "302568138",
-      "org_name": "`MARS ELEKTRON TEXNIKA` MChJ",
-      "oylik_qarz": 0,
-      "oylik_holat": "toza",
+      "inn": null,
+      "org_name": null,
+      "oylik_qarz": null,
+      "oylik_holat": null,
       "fm_number": null,
       "fm_holat": null,
       "last_intent": null,
-      "last_topic": null,
+      "last_topic": "pay_monthly",
       "unclear_count": 0,
       "last_photo_file_id": null,
       "last_photo_caption": null,
@@ -26,5 +26,11 @@
       "pending_receipt": null
     }
   },
-  "chat_info": {}
+  "chat_info": {
+    "1966874161": {
+      "inn": "311842877",
+      "org_name": "\"MADINA KUMUSH TILLA\" MAS'ULIYATI CHEKLANGAN JAMIYAT",
+      "timestamp": 1794806766.5274467
+    }
+  }
 }

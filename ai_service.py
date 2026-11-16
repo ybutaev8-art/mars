@@ -102,6 +102,11 @@ class AIService:
         t = t.replace("н", "n").replace("о", "o").replace("п", "p").replace("р", "r")
         t = t.replace("с", "s").replace("т", "t").replace("у", "u").replace("ф", "f")
         t = t.replace("ц", "ts").replace("ы", "i")
+        # Imlo xatolari va so'zlashuv shevalarini unifikatsiya qilish
+        t = re.sub(r"\boppara[tdy]\w*", "aparat", t)
+        t = re.sub(r"\bapara[tdy]\w*", "aparat", t)
+        t = re.sub(r"\bash[ei]bka\w*", "ashebka", t)
+        t = re.sub(r"\bosh[ei]bka\w*", "ashebka", t)
         t = re.sub(r"\s+", " ", t)
         return t
 
@@ -136,7 +141,7 @@ class AIService:
             return {"intent": "IKPU_ERROR", "ai_reply": None}
 
         # 5. To'lovlar tarixi / Norozilik (Payment History / Dispute)
-        if re.search(r"\b(tarix|tarixini|hisobot|hisobotini|xisobot|oyma-oy|oyma\s*oy|kesimida)\b", norm):
+        if re.search(r"\b(tarix\w*|hisobot\w*|xisobot\w*|oyma-oy|oyma\s*oy|kesimida)\b", norm):
             return {"intent": "PAYMENT_HISTORY", "ai_reply": None}
         if re.search(r"\b(to'laganman|to'lagandim|tulaganman|tulagandim|to'lab\s*qo'ygan|tulab\s*quygandim|dekabrgacha|yil\s*oxirigacha|avval\s*to'langan)\b", norm):
             if re.search(r"\b(qani|qayerga\s*ketdi|nega\s*qarz|nimaga\s*qarz|adash|xato|noto'g'ri|qarzim\s*yo'q|ku|edi\s*ku|pulim)\b", norm):
@@ -147,12 +152,17 @@ class AIService:
             if not re.search(r"\b(oldingi|avval|dekabr|oxirigacha|nega|nimaga|qani|tarix)\b", norm):
                 return {"intent": "PAYMENT_MADE", "ai_reply": None}
 
-        # 6.1 To'lov kvitansiyasini qanday yuklab olish/olish bo'yicha video qo'llanma so'rovi (DOWNLOAD_RECEIPT_GUIDE)
-        if re.search(r"\b(kvitansiya\w*|kvitansa\w*|chek\w*|patta\w*)\b", norm):
-            if re.search(r"\b(qanday\s*(yuklash|olish|yuklay|olay|tashlay|yuklanadi|olinadi)|qayerdan\s*(olamiz|olaman|yuklayman|topaman|olinadi)|yuklash\s*(tartibi|qollanmasi|videosi)|qanday\s*yuklasa|qayerda\s*boladi|qayerda\s*turadi|topa\s*olmayapman)\b", norm):
+        # 6.1 To'lov kvitansiyasini qanday yuklab olish/olish bo'yicha video qo'llanma so'rovi (DOWNLOAD_RECEIPT_GUIDE - Post 151)
+        # Oylik abonent to'lash videosi (Post 148) bilan aslo adashmasligi shart:
+        has_kvit = bool(re.search(r"\b(kvitansi\w*|kvitansa\w*|patta\w*|to'?lov\s*chek\w*|chek\w*)\b", norm))
+        has_kvit_how = bool(
+            (re.search(r"\b(qanday|qayerdan|qayerda|qanaqa|qattdan)\b", norm) and re.search(r"\b(yukla\w*|ol\w*|tashla\w*|top\w*|video\w*|darslik\w*|qo'?llanma\w*)\b", norm)) or
+            re.search(r"\b(kvitansi\w*|chek\w*)\s*(?:yukla\w*|ol\w*)\b", norm) or
+            re.search(r"\b(?:click\w*|clik\w*|payme\w*)\w*\s*(?:kvitansi\w*|chek\w*)", norm)
+        )
+        if has_kvit and has_kvit_how:
+            if not re.search(r"\b(oylik\w*|abanit\w*|abonent\w*|to'?lash\s*videosi|tolash\s*videosi|to'?lov\s*videosi)\b", norm):
                 return {"intent": "DOWNLOAD_RECEIPT_GUIDE", "ai_reply": None}
-        if re.search(r"\b(kvitansiya\s*yuklash|kvitansiya\s*olish|kvitansiyani\s*yuklash|kvitansiyani\s*olish|chek\s*olish|chekni\s*olish|clickdan\s*kvitansiya|clikdan\s*kvitansiya|paymedan\s*kvitansiya)\b", norm):
-            return {"intent": "DOWNLOAD_RECEIPT_GUIDE", "ai_reply": None}
 
         # To'lov harakatlari va so'rovlari:
         # to'lamoqchi, tulamoqchi, tolamoqchi, tulamoqchiydimda, to'lamoqchi edim, to'lasam, to'lay, to'lash, to'lov, rekvizit, shot, click, video va h.k.
@@ -171,7 +181,10 @@ class AIService:
         ctx_fm = getattr(session, "fm_holat", None) if session else None
         ctx_offline = getattr(session, "offline_limit_error_active", False) if session else None
 
-        # 7. Oylik to'lov niyati (PAY_MONTHLY)
+        # 7. Oylik to'lov niyati (PAY_MONTHLY - Post 148 video va Post 85 rekvizit)
+        # Oylik to'lash videosi yoki rekvizit so'ralganda:
+        if has_monthly and re.search(r"\b(video\w*|darslik\w*|qo'?llanma\w*)\b", norm):
+            return {"intent": "PAY_MONTHLY", "ai_reply": None}
         # Aniq oylik + to'lov so'zlari (masalan: "oylik tulamoqchiydimda", "oylik tolamoqchiman", "oylik to'lasam degandim", "oylik rekvizit tashlang")
         if has_monthly and has_pay_action and not has_check_action:
             return {"intent": "PAY_MONTHLY", "ai_reply": None}
@@ -207,11 +220,29 @@ class AIService:
         if re.search(r"\b(rekvizit\w*|rekvizet\w*|shot\s*raqam|hisob\s*raqam)\b", norm) and not has_monthly and not has_yearly:
             return {"intent": "GENERAL_REKVIZIT", "ai_reply": None}
 
-        # 12. Apparat ishlamayapti / Nosozlik / Ko'rib berish so'rovi (POS_BROKEN)
-        if re.search(r"\b(aparat\w*|apparat\w*|kassa\w*|terminal\w*|smartone|p3)\b", norm):
-            if re.search(r"\b(ishlamay\w*|buzil\w*|xato\w*|qotib\w*|o'chib\w*|chek\s*chiq\w*|ko'rib\s*ber\w*|tekshir\w*)\b", norm):
-                return {"intent": "POS_BROKEN", "ai_reply": None}
-        if re.search(r"\b(ishlamayapti|ishlamayabdi|buzildi|qotib\s*qoldi|chek\s*chiqmayapti|chek\s*urmayapti|chek\s*bermayapti|ko'rib\s*bering|tekshirib\s*bering)\b", norm):
+        # 12. Apparat ishlamayapti / Nosozlik / Qo'shib bering / Chek urilmayapti (POS_BROKEN)
+        pos_nouns = r"\b(aparat\w*|apparat\w*|kassa\w*|terminal\w*|smartone|p3|mashinka\w*)\b"
+        has_pos_noun = bool(re.search(pos_nouns, norm))
+
+        act_verbs = r"\b(q(?:o'?|u)sh\w*|och\w*|yoq\w*|ul(?:a|an)\w*|faollashtir\w*|k(?:o'?|u)r\w*|t(?:o'?|u)g'irl\w*|tuzat\w*|qarab\w*)\b"
+        has_act_verb = bool(re.search(act_verbs, norm))
+
+        check_noun = bool(re.search(r"\b(chek\w*|savdo\w*)\b", norm))
+
+        fail_verbs = r"\b(ur(?:o|a)[lmv]?\w*|urib\s*b(?:o'?|u)m\w*|urmay\w*|chiq(?:a|a)r\w*m\w*|chiq\w*may\w*|ishla\w*m\w*|to'?xta\w*|qot\w*|o'?ch\w*|o'?xsha\w*m\w*|blok\w*|ashebka\w*|nosoz\w*|xato\w*)\b"
+        has_fail_verb = bool(re.search(fail_verbs, norm))
+
+        if (has_pos_noun or check_noun) and (has_act_verb or has_fail_verb):
+            return {"intent": "POS_BROKEN", "ai_reply": None}
+        if has_fail_verb and (has_pos_noun or check_noun or has_act_verb):
+            return {"intent": "POS_BROKEN", "ai_reply": None}
+        if re.search(r"\b(ashebka|nosozlik|xatolik)\b", norm):
+            return {"intent": "POS_BROKEN", "ai_reply": None}
+        if re.search(r"\b(savdo|ish)\s*to'?xta", norm):
+            return {"intent": "POS_BROKEN", "ai_reply": None}
+        if re.search(r"\b(chek\s*ur|chek\s*chiq)", norm) and (has_fail_verb or has_act_verb):
+            return {"intent": "POS_BROKEN", "ai_reply": None}
+        if re.search(r"\b(q(?:o'?|u)sh\w*|och\w*|yoq\w*|ul\w*)\s*(?:ber\w*|vor\w*|yubor\w*|ishlat\w*)", norm):
             return {"intent": "POS_BROKEN", "ai_reply": None}
 
         # 13. Salomlashish (GREETING)
@@ -292,10 +323,108 @@ class AIService:
                 }
         return None
 
+    def build_action_plan(self, intent: str, text: str, session=None, ai_reply: str=None) -> dict:
+        """
+        AI va Bot integratsiyasining aqlli harakatlar rejasi (Action Plan).
+        Mijozning imlo xatolar, ko'cha tili yoki shevalarda yozgan matnini chuqur tahlil qilib,
+        botga keyingi qadamda qaysi ma'lumotlarni tekshirish yoki qanday harakat qilish lozimligini
+        aniq ko'rsatib beradi.
+        """
+        plan = {
+            "intent": intent,
+            "underlying_goal": "",
+            "next_action": "",
+            "explanation": "",
+            "ai_reply": ai_reply
+        }
+
+        if intent == "POS_BROKEN":
+            plan["underlying_goal"] = "Mijoz kassa apparatida chek urmoqchi yoki apparatni ishlatmoqchi, biroq apparat ishlamayapti / bloklangan / xatolik bermoqda."
+            plan["next_action"] = "PROCESS_POS_ISSUE"
+            plan["explanation"] = "Bot birinchi navbatda INN orqali oylik abonent holatini tekshirishi kerak. Agar oylik qarzdor bo'lsa, to'lov rekviziti beriladi. Agar oylik toza bo'lsa, xatolik (oshibka) sababini aniqlash uchun apparat ekrani rasmi so'raladi. Rasm olingach darhol texnikka ulanadi."
+
+        elif intent == "PAYMENT_HISTORY":
+            plan["underlying_goal"] = "Mijoz oylik to'lovlar tarixini, hisobotini bilmoqchi yoki to'lagan pullarining hisob-kitobidan norozi."
+            plan["next_action"] = "SHOW_PAYMENT_HISTORY"
+            plan["explanation"] = "Bot INN bo'yicha to'lovlar tarixini chiqarib berishi kerak. Agar INN ma'lum bo'lmasa, INN so'raydi."
+
+        elif intent == "DOWNLOAD_RECEIPT_GUIDE":
+            plan["underlying_goal"] = "Mijoz to'lov kvitansiyasini (chek) qanday yuklab olishni bilmoqchi."
+            plan["next_action"] = "SEND_RECEIPT_GUIDE"
+            plan["explanation"] = "Bot Click/Payme orqali to'lov kvitansiyasini yuklab olish bo'yicha 151-postdagi video qo'llanmani yuborishi kerak."
+
+        elif intent == "CLOCK_PROBLEM":
+            plan["underlying_goal"] = "Kassa apparatida soat orqada qolgan yoki vaqt noto'g'ri ko'rsatmoqda."
+            plan["next_action"] = "SEND_CLOCK_GUIDE"
+            plan["explanation"] = "Bot soatni to'g'irlash video qo'llanmasi va parollarni yuborishi kerak."
+
+        elif intent == "IKPU_ERROR":
+            plan["underlying_goal"] = "Kassa apparatida IKPU / tovar kodi bo'yicha xatolik yuzaga kelgan."
+            plan["next_action"] = "PROCESS_IKPU"
+            plan["explanation"] = "Bot IKPU videosini yuborishi, agar video allaqachon yuborilgan bo'lsa darhol mas'ul texnikka ulashi lozim."
+
+        elif intent == "PAY_MONTHLY":
+            plan["underlying_goal"] = "Mijoz oylik abonent to'lovini amalga oshirmoqchi."
+            plan["next_action"] = "SEND_MONTHLY_PAY"
+            plan["explanation"] = "Bot oylik to'lov rekvizitlari va Click video qo'llanmasini yuborishi kerak."
+
+        elif intent == "PAY_YEARLY":
+            plan["underlying_goal"] = "Mijoz yillik fiskal modul to'lovini to'lamoqchi."
+            plan["next_action"] = "SEND_YEARLY_PAY"
+            plan["explanation"] = "Bot yillik to'lov hisob raqami rekvizitlarini yuborishi kerak."
+
+        elif intent == "CHECK_MONTHLY":
+            plan["underlying_goal"] = "Mijoz oylik to'lovi holatini yoki qarzini bilmoqchi."
+            plan["next_action"] = "CHECK_MONTHLY"
+            plan["explanation"] = "Bot INN bo'yicha oylik to'lovni tekshirishi yoki INN so'rashi kerak."
+
+        elif intent == "CHECK_YEARLY":
+            plan["underlying_goal"] = "Mijoz fiskal modul muddatini tekshirmoqchi."
+            plan["next_action"] = "CHECK_YEARLY"
+            plan["explanation"] = "Bot FM raqami bo'yicha tekshirishi yoki FM so'rashi kerak."
+
+        elif intent == "PAYMENT_MADE":
+            plan["underlying_goal"] = "Mijoz to'lov amalga oshirganini bildirdi."
+            plan["next_action"] = "REQUEST_RECEIPT"
+            plan["explanation"] = "Bot to'lovni hisobga olish uchun kvitansiya (chek rasmi yoki PDF) so'rashi lozim."
+
+        elif intent == "OPERATOR":
+            plan["underlying_goal"] = "Mijoz texnik mutaxassis / usta / admin bilan bog'lanmoqchi."
+            plan["next_action"] = "CONNECT_OPERATOR"
+            plan["explanation"] = "Agar rasm bo'lsa darhol texnikka ulanadi, aks holda apparat ekranidagi muammoni rasmga olib yuborish aytiladi."
+
+        elif intent == "FORGET":
+            plan["underlying_goal"] = "Mijoz suhbatni tozalash va unutishni so'ramoqda."
+            plan["next_action"] = "RESET_SESSION"
+            plan["explanation"] = "Bot sessiya xotirasini tozalab, yangidan boshlashi kerak."
+
+        elif intent == "GENERAL_REKVIZIT":
+            plan["underlying_goal"] = "Mijoz to'lov rekvizitini so'radi, lekin oylik yoki yillik ekanligini aytmadi."
+            plan["next_action"] = "ASK_REKVIZIT_TYPE"
+            plan["explanation"] = "Bot oylik yoki yillik rekvizit kerakligini so'rashi kerak."
+
+        elif intent == "GREETING":
+            plan["underlying_goal"] = "Mijoz salomlashdi."
+            plan["next_action"] = "REPLY_GREETING"
+            plan["explanation"] = "Bot muloyim va samimiy salomlashib, yordam taklif qiladi."
+
+        elif intent == "GENERAL_ANSWER":
+            plan["underlying_goal"] = "Umumiy murojaat, manzil, telefon yoki minnatdorchilik."
+            plan["next_action"] = "REPLY_GENERAL"
+            plan["explanation"] = "Bot tayyor samimiy javobni qaytaradi."
+
+        else:
+            plan["underlying_goal"] = "Noma'lum murojaat."
+            plan["next_action"] = "UNKNOWN"
+            plan["explanation"] = "Mijozga kassa apparati tekshiruvi uchun INN so'rash taklif qilinadi."
+
+        return plan
+
     def analyze_message(self, text, session=None):
         """
         Mijoz xabarini sun'iy intellekt (Semantik NLP + Google Gemini) orqali tahlil qiladi.
         Faqat matnli xabarlar uchun ishlaydi (toza raqamlar bot tomonidan tekshiriladi).
+        Natija sifatida to'liq ActionPlan obyektini qaytaradi.
         """
         if not text:
             return None
@@ -313,7 +442,12 @@ class AIService:
         # 1-BOSQICH: Yuqori aniqlikdagi mahalliy semantik intellekt (Bir zumda va 100% barqaror ishlaydi)
         semantic_res = self.detect_semantic_intent(clean_text, session=session)
         if semantic_res and semantic_res.get("intent"):
-            return semantic_res
+            return self.build_action_plan(
+                semantic_res["intent"],
+                clean_text,
+                session=session,
+                ai_reply=semantic_res.get("ai_reply")
+            )
 
         # 2-BOSQICH: Agar semantik qolipga tushmagan murakkab/badiiy matn bo'lsa va Gemini API kaliti faol bo'lsa
         if self.api_key and not self._gemini_api_disabled:
@@ -335,7 +469,12 @@ class AIService:
                 try:
                     res = self._call_gemini_api(model_name, user_prompt, timeout=5)
                     if res and res.get("intent"):
-                        return res
+                        return self.build_action_plan(
+                            res["intent"],
+                            clean_text,
+                            session=session,
+                            ai_reply=res.get("ai_reply")
+                        )
                 except urllib.error.HTTPError as http_err:
                     if http_err.code == 401:
                         # Kalit noto'g'ri bo'lsa, qayta-qayta serverni bezovta qilmaslik uchun API chaqiruvni o'chiradi
