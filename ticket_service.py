@@ -366,17 +366,30 @@ class TicketService:
         else:
             return f"{header}\n\n" + "\n\n".join(entries)
 
-    def close_ticket(self, user_id):
-        """Murojaatni yopish (arxivlash)"""
-        user_id = str(user_id)
-        ticket = self.user_tickets.pop(user_id, None)
+    def close_ticket(self, user_id, chat_id=None):
+        """Murojaatni yopish (arxivlash) va barcha xotirani tozalash"""
+        user_id_str = str(user_id) if user_id else None
+        chat_id_str = str(chat_id) if chat_id else None
+        ticket = None
+        if user_id_str:
+            ticket = self.user_tickets.pop(user_id_str, None)
+        if chat_id_str:
+            t_chat = self.user_tickets.pop(chat_id_str, None)
+            if not ticket:
+                ticket = t_chat
         if ticket:
             ticket["status"] = "closed"
-            # self.tickets lug'atidan ushbu tiketga tegishli barcha murojaat kalitlarini tozalaymiz
-            keys_to_remove = [k for k, v in list(self.tickets.items()) if v == ticket or str(v.get("user_id")) == user_id]
-            for k in keys_to_remove:
-                self.tickets.pop(k, None)
-            self.save_tickets()
+        keys_to_remove = []
+        for k, v in list(self.tickets.items()):
+            if v == ticket:
+                keys_to_remove.append(k)
+            elif user_id_str and str(v.get("user_id")) == user_id_str:
+                keys_to_remove.append(k)
+            elif chat_id_str and str(v.get("chat_id")) == chat_id_str:
+                keys_to_remove.append(k)
+        for k in keys_to_remove:
+            self.tickets.pop(k, None)
+        self.save_tickets()
         return ticket
 
     def clean_expired(self, max_age_hours=8):

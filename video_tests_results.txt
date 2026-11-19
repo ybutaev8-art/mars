@@ -1,0 +1,226 @@
+==================================================
+🎥 BARCHA VIDEO DARSLIKLARNI BIRMA-BIR TEKSHIRISH
+Boshlangan vaqt: 2026-11-19 09:39:11
+==================================================
+Ulandi: @txkmrobot (txkm)
+
+[MIJOZ]: /salombot
+[BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan butunlay tozalandi va unutildi. Sizni yangi mijoz sifatida qabul qilamiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+--- 1. Oylik to'lov videosi (Post 148) ---
+
+[MIJOZ]: oylik abonent to'lovini qanday to'layman video qo'llanmasi bormi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Oylik abanit tulovni Clickdan utkazish varianti
+
+ 👇👇👇👇👇👇
+**
+**[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**](https://t.me/POS_Terminal_UzSmart_Bank/148)
+[BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi          
+
+
+Clik dasturiga kirasiz > tolovlar bolimida >  Rekvizit bo'yicha to'lov > Rasmdagi kurinishda tuldiriladi 
+
+
+Abanet tulov uchun shot
+
+«MARS ELEKTRON TEXNIKA» МЧЖ
+Манзил: г. Шахрисабз улица Шерозий 1 
+Абонент  Х/Р:  20 20 8000 800 208 044 003  
+Банк: «Ипак Йули» АИТ банки Шахрисабз
+ филиали МФО: 01048     ИНН: 302568138
+Тел: +998 94 299 77 99,    моб:+99891-945-32-89
+Тулов максади: Абонент тулов 100 000 сум бир ойлик
+
+--- 2. Kvitansiya yuklab olish videosi (Post 151) ---
+
+[MIJOZ]: clickdan kvitansiya yuklab olish videosini tashlang
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+📹 **Click dasturida to'lov kvitansiyasini yuklab olish bo'yicha video qo'llanma:**
+
+To'lov amalga oshirilgach, rasmiy to'lov kvitansiyasini yuklab olib botga yuborishingiz mumkin.
+
+--- 3. Yillik to'lov videosi (Post 145) ---
+
+[MIJOZ]: yillik to'lovni clickdan to'lash videosi bormi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+yillik feskal modul tulovini Click dasturi orqali toʻlash
+
+👇👇👇👇👇👇
+**
+****Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**
+[BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+Yillik Fiscal modil tulovi uchun shot
+
+«Yangi Tehnologiyalar» DUK
+Х'Р:2021 0000 1004 3120 0010
+АТБ «Капиталбанк»    МФО:01018
+ИНН: 201 589 463
+Tulov kodi 00668 
+Tulov maqsadi: INN ______________fiskal modulning yillik tulovi
+Tulov summasi 440 000
+Телефон: +99871-202-32-32  
+
+**Tulov qilingandan sung 2 soatdan 24 soat ichida ishlab ketadi Fiscal modul**
+
+--- 4. Kassa soatini to'g'rilash videosi (Post 141) ---
+
+[MIJOZ]: kassaning soatini to'g'rilash videosi bormi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+sana va vaqtni tug'irlash
+[BOT JAVOBI]:
+🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**
+
+📹 Kassa apparatingiz soatini to'g'ri sozlash uchun yuqoridagi video qo'llanmada ko'rsatilgan amallarni bajaring.
+
+👉 Videoda ko'rsatilgandek apparat sozlamalariga kiring va sana hamda vaqtni to'g'rilab qo'ying.
+
+🔐 **Parol bo'yicha muhim ko'rsatma:**
+Agar aparatingiz soatni to'g'irlash jarayonida parol so'rasa yoki **«Parol noto'g'ri»** desa, quyidagi parollarni terib ko'ring:
+1️⃣ `12341234`
+2️⃣ `123498765`
+
+--- 5. IKPU kodini to'g'rilash videosi (Post 126) ---
+
+[MIJOZ]: ikpu xatoligini to'g'rilash videosi kerak
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Tavarlar tarkibidagi ulchov birliklarini tug'irlash uchun yuriqnoma.
+[BOT JAVOBI]:
+⚠️ **Kassa apparatingizda 'Проверка кода ИКПУ устарела' (IKPU kodi eskirgan) xatoligi yuz bergan.**
+
+📹 Ushbu xatolikni bartaraf etish uchun yuqoridagi video qo'llanmada ko'rsatilgan amallarni bajaring.
+
+ℹ️ **Eslatma:** Agar videodagi ko'rsatmalarni bajarganingizdan keyin ham xatolik bartaraf bo'lmasa yoki yordam kerak bo'lsa, xabar qoldiring — sizni darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+--- 6. Ma'lumotlarni yuklash videosi (Post 138) ---
+
+[MIJOZ]: malumotlarni yuklash vediosi bormi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+malumotlarni yuklash
+[BOT JAVOBI]:
+📹 **Ma'lumotlarni yuklash (sinxronizatsiya) videosi**
+
+Serverdan kassa apparatiga ma'lumotlarni (tovarlar va narxlarni) yuklash bo'yicha video qo'llanma.
+
+--- 7. Tovar qo'shish videosi (Post 15) ---
+
+[MIJOZ]: qanday tavar qushiladi bunga tovar qo'shish videosi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Tavarlarni qushish va MIXK kod kiritish
+[BOT JAVOBI]:
+📹 **Tovarlarni qo'shish va MXIK kod kiritish videosi**
+
+Kassa apparatiga yangi tovar qo'shish hamda MXIK (IKPU) kodini to'g'ri kiritish bo'yicha video qo'llanma.
+
+--- 8. Tovar narxini o'zgartirish videosi (Post 140) ---
+
+[MIJOZ]: tovar narxini o'zgartirish videosini tashlang
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+narxni o'zgartirish
+[BOT JAVOBI]:
+📹 **Tovar narxini o'zgartirish videosi**
+
+Kassadagi mavjud tovarlar narxini tahrirlash va yangilash bo'yicha video qo'llanma.
+
+--- 9. Tovarni atkaz qilish videosi (Post 53) ---
+
+[MIJOZ]: tovarni atkaz qilish bekor qilish videosi bormi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Tavarni atkas qilish va qaytadan urish,. 
+
+Eng kup uchrayotgan muammoga yechim!
+[BOT JAVOBI]:
+📹 **Tovarni qaytarish (atkaz qilish) va qayta urish videosi**
+
+Xato urilgan tovarni bekor qilish (atkaz qilish) va chekni to'g'ri qayta urish bo'yicha video qo'llanma.
+
+--- 10. Chek urish va Z hisobot videosi (Post 2) ---
+
+[MIJOZ]: chek urish va z hisobot olish videosi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Sizlar uchun kassa aparatda 
+
+✅ Chik urush tartibi,
+✅ X va Z atchoyt olish tartibi,
+✅ Eng kup uchrayotgan muammolarni bartaraf etish,
+✅ Tavarlarni qushib chiqish va ularga MXIK kod quyish tartiblari,
+
+Kursatilgan! Arzimagan muammo uchun qimmatli vaqtingizni ketqazib ofisga kelib utirmang shunchake shu vedioni kurib chiqing! 
+
+Qanaqadir muammo bulsa albatta admin javob beradi!
+[BOT JAVOBI]:
+📹 **Chek urish hamda X va Z hisobot olish videosi**
+
+Savdo chekini urish hamda smena oxirida X va Z hisobotlarini chiqarish bo'yicha video qo'llanma.
+
+--- 11. Kassa dasturini yangilash videosi (Post 142) ---
+
+[MIJOZ]: kassa dasturini yangilash videosi bormi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Дастур янгилаш
+[BOT JAVOBI]:
+📹 **Kassa dasturini yangilash videosi**
+
+Kassa apparatidagi savdo dasturini eng so'nggi versiyaga yangilash bo'yicha video qo'llanma.
+
+--- 12. 2D skaner ishlatish videosi (Post 27) ---
+
+[MIJOZ]: 2d skaner ishlatish videosi
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+__2D ruchnoy sikaner aparatini ishlatish va tavarglarni kiritish__
+[BOT JAVOBI]:
+📹 **2D skaner ishlatish va tovar kiritish videosi**
+
+2D shtrix-kod skanerini ulash, tovarlarni skaner orqali tezkor kiritish va sotish bo'yicha video qo'llanma.
+
+--- 13. Markirovkani o'chirish videosi (Post 139) ---
+
+[MIJOZ]: markirovkani o'chirish videosini tashlang
+[BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+markirofkani o'chirish
+[BOT JAVOBI]:
+📹 **Markirovkani o'chirish videosi**
+
+Kassa apparatida markirovka talabini vaqtinchalik o'chirish / sozlash bo'yicha video qo'llanma.
+
+--- 14. Barcha videolar ro'yxati ---
+
+[MIJOZ]: barcha video darsliklar ro'yxatini tashlang
+[BOT JAVOBI]:
+📚 **MARS ELEKTRON TEXNIKA MCHJ rasmiy video darsliklar ro'yxati:**
+
+1. 💳 [Oylik abonent to'lovini Clickdan to'lash](https://t.me/POS_Terminal_UzSmart_Bank/148)
+2. 🧾 [Clickdan to'lov kvitansiyasini yuklab olish](https://t.me/POS_Terminal_UzSmart_Bank/151)
+3. 📟 [Yillik Fiskal Modul to'lovini to'lash](https://t.me/POS_Terminal_UzSmart_Bank/145)
+4. ⏰ [Kassa soati va vaqtini to'g'rilash](https://t.me/POS_Terminal_UzSmart_Bank/141) (Parollar: `12341234` / `123498765`)
+5. ⚠️ [IKPU / MXIK kodini to'g'rilash](https://t.me/POS_Terminal_UzSmart_Bank/126)
+6. 📥 [Ma'lumotlarni yuklash (sinxronizatsiya)](https://t.me/POS_Terminal_UzSmart_Bank/138)
+7. ➕ [Tovarlarni qo'shish va MXIK kod kiritish](https://t.me/POS_Terminal_UzSmart_Bank/15)
+8. 🏷 [Tovar narxini o'zgartirish](https://t.me/POS_Terminal_UzSmart_Bank/140)
+9. ↩️ [Tovarni qaytarish (atkaz qilish) va qayta urish](https://t.me/POS_Terminal_UzSmart_Bank/53)
+10. 📊 [Chek urish hamda X va Z hisobot olish](https://t.me/POS_Terminal_UzSmart_Bank/2)
+11. 🔄 [Kassa dasturini yangilash](https://t.me/POS_Terminal_UzSmart_Bank/142)
+12. 📷 [2D skaner ishlatish va tovar kiritish](https://t.me/POS_Terminal_UzSmart_Bank/27)
+13. 🏷 [Markirovkani o'chirish](https://t.me/POS_Terminal_UzSmart_Bank/139)
+
+👉 **Kerakli darslik nomini yozsangiz (masalan: «tovar qo'shish videosi» yoki «ma'lumotlarni yuklash videosi»), bot sizga aynan o'sha videoni to'g'ridan-to'g'ri yuboradi.**
+
+==================================================
+✅ BARCHA VIDEO DARSLIKLARNI TEKSHIRISH TUGADI!
+==================================================

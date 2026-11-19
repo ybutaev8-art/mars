@@ -5,9 +5,9 @@
       "chat_id": 1966874161,
       "first_name": "Quvonchbek",
       "username": "Quvonchbek_admin",
-      "created_at": 1794829346.2741756,
-      "last_activity": 1794829356.186383,
-      "state": "NORMAL",
+      "created_at": 1795063432.661965,
+      "last_activity": 1795063432.6884952,
+      "state": "START",
       "inn": null,
       "org_name": null,
       "oylik_qarz": null,
@@ -15,22 +15,25 @@
       "fm_number": null,
       "fm_holat": null,
       "last_intent": null,
-      "last_topic": "pay_monthly",
+      "last_topic": null,
       "unclear_count": 0,
       "last_photo_file_id": null,
       "last_photo_caption": null,
       "last_msg_id": null,
-      "ikpu_video_sent": false,
-      "ikpu_error_active": false,
+      "ikpu_video_sent": true,
+      "ikpu_error_active": true,
       "offline_limit_error_active": false,
-      "pending_receipt": null
+      "pending_receipt": null,
+      "history_shown": false,
+      "dialog_history": [
+        {
+          "role": "user",
+          "text": "aparatimiz ikpu diyabdida chek urib bumayabdi",
+          "intent": null,
+          "timestamp": 1795063432.6904926
+        }
+      ]
     }
   },
-  "chat_info": {
-    "1966874161": {
-      "inn": "311842877",
-      "org_name": "\"MADINA KUMUSH TILLA\" MAS'ULIYATI CHEKLANGAN JAMIYAT",
-      "timestamp": 1794806766.5274467
-    }
-  }
+  "chat_info": {}
 }

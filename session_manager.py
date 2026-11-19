@@ -36,6 +36,42 @@ class UserSession:
         self.ikpu_error_active = False
         self.offline_limit_error_active = False
         self.pending_receipt = None
+        self.history_shown = False
+        self.dialog_history = []  # 8 soatlik to'liq suhbat xabarlari (role, text, intent, timestamp)
+
+    def add_dialog_message(self, role: str, text: str, intent: str = None):
+        """Mijoz yoki botning xabarini 8 soatlik suhbat tarixiga qo'shish"""
+        if not hasattr(self, "dialog_history") or self.dialog_history is None:
+            self.dialog_history = []
+        if not text:
+            return
+        entry = {
+            "role": role,  # "user" yoki "bot"
+            "text": str(text)[:300],  # xotira va tezlik uchun ixcham saqlash
+            "intent": intent,
+            "timestamp": time.time()
+        }
+        self.dialog_history.append(entry)
+        # Oxirgi 20 ta xabarni saqlash 8 soatlik dinamik kontekst uchun yetarli
+        if len(self.dialog_history) > 20:
+            self.dialog_history = self.dialog_history[-20:]
+
+    def get_recent_dialog(self, limit: int = 10) -> list:
+        """Oxirgi suhbat xabarlarini olish"""
+        if not hasattr(self, "dialog_history") or not self.dialog_history:
+            return []
+        return self.dialog_history[-limit:]
+
+    def get_dialog_summary(self, limit: int = 6) -> str:
+        """AI tahlili uchun 8 soatlik suhbat oqimining qisqacha kontekst matni"""
+        history = self.get_recent_dialog(limit)
+        if not history:
+            return ""
+        lines = []
+        for h in history:
+            role_name = "Mijoz" if h.get("role") == "user" else "Bot"
+            lines.append(f"{role_name}: {h.get('text', '')}")
+        return "\n".join(lines)
 
     def reset_for_new_target(self, preserve_photo=False, preserve_fm=False, preserve_inn=False):
         """Mijoz yangi INN yoki yangi FM kiritganda avvalgi suhbat va aparat xotirasini tozalash (agar preserve_photo=True bo'lsa rasm saqlanadi, preserve_fm=True bo'lsa FM va oflayn xatolik saqlanadi, preserve_inn=True bo'lsa INN va tashkilot saqlanadi)"""
@@ -67,6 +103,9 @@ class UserSession:
         self.ikpu_error_active = False
         self.offline_limit_error_active = saved_off
         self.pending_receipt = None
+        if not preserve_inn:
+            self.history_shown = False
+            self.dialog_history = []
         self.update_activity()
 
     def update_activity(self):
@@ -100,6 +139,8 @@ class UserSession:
             "ikpu_error_active": getattr(self, "ikpu_error_active", False),
             "offline_limit_error_active": getattr(self, "offline_limit_error_active", False),
             "pending_receipt": getattr(self, "pending_receipt", None),
+            "history_shown": getattr(self, "history_shown", False),
+            "dialog_history": getattr(self, "dialog_history", []),
         }
 
     @classmethod
@@ -124,6 +165,8 @@ class UserSession:
         session.ikpu_error_active = data.get("ikpu_error_active", False)
         session.offline_limit_error_active = data.get("offline_limit_error_active", False)
         session.pending_receipt = data.get("pending_receipt")
+        session.history_shown = data.get("history_shown", False)
+        session.dialog_history = data.get("dialog_history", [])
         return session
 
 
@@ -188,12 +231,18 @@ class SessionManager:
                 return {}
             return dict(info)
 
-    def reset_session(self, user_id):
-        user_key = str(user_id)
+    def reset_session(self, user_id, chat_id=None):
+        """Foydalanuvchi va chat xotirasidagi barcha ma'lumotlarni (sessiya, INN, FM, tashkilot nomi) butunlay tozalash"""
+        user_key = str(user_id) if user_id else None
         with self._lock:
-            if user_key in self.sessions:
-                del self.sessions[user_key]
-                self.save_sessions_unlocked()
+            if user_key:
+                self.sessions.pop(user_key, None)
+                self.chat_info.pop(user_key, None)
+            if chat_id:
+                cid_key = str(chat_id)
+                self.sessions.pop(cid_key, None)
+                self.chat_info.pop(cid_key, None)
+            self.save_sessions_unlocked()
 
     def clean_expired(self):
         with self._lock:
