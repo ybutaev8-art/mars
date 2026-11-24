@@ -5,13 +5,13 @@
       "chat_id": 1966874161,
       "first_name": "Quvonchbek",
       "username": "Quvonchbek_admin",
-      "created_at": 1795063432.661965,
-      "last_activity": 1795063432.6884952,
-      "state": "START",
-      "inn": null,
-      "org_name": null,
-      "oylik_qarz": null,
-      "oylik_holat": null,
+      "created_at": 1795506543.0452979,
+      "last_activity": 1795513531.0055518,
+      "state": "DEBT_EXISTS",
+      "inn": "309744744",
+      "org_name": "`G`OYIBOV MIRZO PISHRIQLARI` OK",
+      "oylik_qarz": 100000.0,
+      "oylik_holat": "qarzdor",
       "fm_number": null,
       "fm_holat": null,
       "last_intent": null,
@@ -20,20 +20,19 @@
       "last_photo_file_id": null,
       "last_photo_caption": null,
       "last_msg_id": null,
-      "ikpu_video_sent": true,
-      "ikpu_error_active": true,
+      "ikpu_video_sent": false,
+      "ikpu_error_active": false,
       "offline_limit_error_active": false,
       "pending_receipt": null,
       "history_shown": false,
-      "dialog_history": [
-        {
-          "role": "user",
-          "text": "aparatimiz ikpu diyabdida chek urib bumayabdi",
-          "intent": null,
-          "timestamp": 1795063432.6904926
-        }
-      ]
+      "dialog_history": []
     }
   },
-  "chat_info": {}
+  "chat_info": {
+    "1966874161": {
+      "inn": "309744744",
+      "org_name": "`G`OYIBOV MIRZO PISHRIQLARI` OK",
+      "timestamp": 1795513531.011548
+    }
+  }
 }

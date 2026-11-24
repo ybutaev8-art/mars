@@ -1,0 +1,288 @@
+{
+  "total": 26,
+  "passed": 26,
+  "percentage": 100,
+  "details": [
+    {
+      "id": "1.1",
+      "name": "Oddiy 9 xonali STIR",
+      "input": "302568138",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🏢 **Tashkilot:** `MARS ELEKTRON TEXNIKA` MChJ 📑 **STIR / INN:** `302568138` 📌 **Faol kassa apparatlari soni:** **2 ta** "
+      ]
+    },
+    {
+      "id": "1.2",
+      "name": "Matn ichida STIR",
+      "input": "Iltimos 302568138 ni oylik qarzini ko'rib bering",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🏢 **Tashkilot:** `MARS ELEKTRON TEXNIKA` MChJ 📑 **STIR / INN:** `302568138` 📌 **Faol kassa apparatlari soni:** **2 ta** "
+      ]
+    },
+    {
+      "id": "1.3",
+      "name": "Bazada yo'q STIR",
+      "input": "200111222",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🏢 **STIR / INN:** `200111222`  ⚠️ Ushbu INN yoki JSHSHIR bo'yicha hisob-kitob jadvalidan ma'lumot topilmadi. Iltimos, ra"
+      ]
+    },
+    {
+      "id": "1.4",
+      "name": "14 xonali JSHSHIR",
+      "input": "32608935480024",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🏢 **STIR / INN:** `32608935480024`  ⚠️ Ushbu INN yoki JSHSHIR bo'yicha hisob-kitob jadvalidan ma'lumot topilmadi. Iltimo"
+      ]
+    },
+    {
+      "id": "2.1",
+      "name": "Katta harflarda UZ200715068777",
+      "input": "UZ200715068777",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**  📟 **Fiskal Modul raqami:** `UZ200715068777` ✅ "
+      ]
+    },
+    {
+      "id": "2.2",
+      "name": "Kichik harflarda uz200715068777",
+      "input": "uz200715068777",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**  📟 **Fiskal Modul raqami:** `UZ200715068777` ✅ "
+      ]
+    },
+    {
+      "id": "2.3",
+      "name": "Boshqa FM prefiksi (VG/LG)",
+      "input": "VG2028081065",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**  📟 **Fiskal Modul raqami:** `VG2028081065`  ⚠️ "
+      ]
+    },
+    {
+      "id": "2.4",
+      "name": "Matn ichida FM raqami",
+      "input": "Fiskal modulim UZ200715068777 yilligini tekshiring",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**  📟 **Fiskal Modul raqami:** `UZ200715068777` ✅ "
+      ]
+    },
+    {
+      "id": "3.1",
+      "name": "Shotdan to'lov + Apparat soati",
+      "input": "Shotdan to'lasa bo'ladimi? Apparat soati noto'g'ri bo'lib qoldi",
+      "passed": true,
+      "replies_count": 6,
+      "replies_preview": [
+        "1️⃣ **1-savolingiz bo'yicha:**  Ha, bo'ladi! Men sizga to'lov uchun rekvizitni yuborganman (quyida ham qayta yubormoqdam",
+        "Oylik abanit tulovni Clickdan utkazish varianti   👇👇👇👇👇👇 ** **[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini ",
+        "CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi             Clik dasturiga kirasiz > tolovlar bolimida ",
+        "2️⃣ **2-savolingiz bo'yicha:**  📹 Kassa apparatida vaqt va soatni to'g'irlash bo'yicha video qo'llanma quyida yuborildi ",
+        "sana va vaqtni tug'irlash",
+        "2️⃣ **2-savolingiz bo'yicha:**  🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**  📹 Kassa apparatingiz soatin"
+      ]
+    },
+    {
+      "id": "3.2",
+      "name": "STIR oylik qarz + Z-otchyot",
+      "input": "302568138 oylik qarzim bormi, yana z-otchyot qanday olinadi?",
+      "passed": true,
+      "replies_count": 4,
+      "replies_preview": [
+        "1️⃣ **1-savolingiz (Oylik to'lov) bo'yicha:**  🏢 **Tashkilot:** `MARS ELEKTRON TEXNIKA` MChJ 📑 **STIR / INN:** `30256813",
+        "2️⃣ **2-savolingiz («z-otchyot qanday olinadi...») bo'yicha:**  📹 **Chek urish hamda X va Z hisobot olish videosi** bo'y",
+        "Sizlar uchun kassa aparatda   ✅ Chik urush tartibi, ✅ X va Z atchoyt olish tartibi, ✅ Eng kup uchrayotgan muammolarni ba",
+        "2️⃣ **2-savolingiz («z-otchyot qanday olinadi...») bo'yicha:**  📹 **Chek urish hamda X va Z hisobot olish videosi**  Sav"
+      ]
+    },
+    {
+      "id": "3.3",
+      "name": "Lenta solish + Oylik rekvizit",
+      "input": "Lenta qanday qo'yiladi va yana oylik to'lov rekvizitini bering",
+      "passed": true,
+      "replies_count": 4,
+      "replies_preview": [
+        "1️⃣ **1-savolingiz bo'yicha:**  🧾 **Kassa apparatiga lenta (qog'oz) qo'yish va o'lchami:**  1️⃣ Lenta qo'yish tartibi: K",
+        "2️⃣ **2-savolingiz bo'yicha:**  Oylik abonent to'lovi hisob raqami va to'lov videosi quyida yuborildi 👇",
+        "Oylik abanit tulovni Clickdan utkazish varianti   👇👇👇👇👇👇 ** **[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini ",
+        "CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi             Clik dasturiga kirasiz > tolovlar bolimida "
+      ]
+    },
+    {
+      "id": "3.4",
+      "name": "Click videosi + Soat xatoligi",
+      "input": "Clickdan to'lash videosi kerak? Keyin apparat soati orqada qolyapti",
+      "passed": true,
+      "replies_count": 6,
+      "replies_preview": [
+        "1️⃣ **1-savolingiz bo'yicha:**  Oylik abonent to'lovi hisob raqami va to'lov videosi quyida yuborildi 👇",
+        "Oylik abanit tulovni Clickdan utkazish varianti   👇👇👇👇👇👇 ** **[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini ",
+        "CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi             Clik dasturiga kirasiz > tolovlar bolimida ",
+        "2️⃣ **2-savolingiz bo'yicha:**  📹 Kassa apparatida vaqt va soatni to'g'irlash bo'yicha video qo'llanma quyida yuborildi ",
+        "sana va vaqtni tug'irlash",
+        "2️⃣ **2-savolingiz bo'yicha:**  🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**  📹 Kassa apparatingiz soatin"
+      ]
+    },
+    {
+      "id": "4.1",
+      "name": "Shotdan to'lasam bo'ladimi?",
+      "input": "Shotdan to'lasam bo'ladimi?",
+      "passed": true,
+      "replies_count": 3,
+      "replies_preview": [
+        "Ha, bo'ladi! Men sizga to'lov uchun rekvizitni yuborganman (quyida ham qayta yubormoqdaman):  O'z tashkilotingiz hisob r",
+        "Oylik abanit tulovni Clickdan utkazish varianti   👇👇👇👇👇👇 ** **[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini ",
+        "CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi             Clik dasturiga kirasiz > tolovlar bolimida "
+      ]
+    },
+    {
+      "id": "4.2",
+      "name": "Paymedan to'lasa bo'ladimi?",
+      "input": "Paymedan to'lasa bo'ladimi?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "Ha, bo'ladi! Payme ilovasida «To'lov» yoki «O'tkazmalar» bo'limidan «Hisob raqamga to'lov» yoki «Rekvizit bo'yicha to'lo"
+      ]
+    },
+    {
+      "id": "4.3",
+      "name": "Paymedan to'lash videosi bormi?",
+      "input": "Paymedan to'lash videosi bormi?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "Afsuski, bizda faqat Click dasturida to'lash video darsligi bor.  Lekin siz Payme (yoki boshqa istalgan to'lov ilovasi) "
+      ]
+    },
+    {
+      "id": "4.4",
+      "name": "Alif ilovasidan to'lasa bo'ladimi?",
+      "input": "Alif ilovasidan to'lasa bo'ladimi?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "Ha, bo'ladi! Alif ilovasida «To'lov» yoki «O'tkazmalar» bo'limidan «Hisob raqamga to'lov» yoki «Rekvizit bo'yicha to'lov"
+      ]
+    },
+    {
+      "id": "5.1",
+      "name": "Z-otchyot / hisobot olish videosi",
+      "input": "Z-otchyot qanday olinadi?",
+      "passed": true,
+      "replies_count": 2,
+      "replies_preview": [
+        "Sizlar uchun kassa aparatda   ✅ Chik urush tartibi, ✅ X va Z atchoyt olish tartibi, ✅ Eng kup uchrayotgan muammolarni ba",
+        "📹 **Chek urish hamda X va Z hisobot olish videosi**  Savdo chekini urish hamda smena oxirida X va Z hisobotlarini chiqar"
+      ]
+    },
+    {
+      "id": "5.2",
+      "name": "Kassa apparatiga lenta solish videosi",
+      "input": "Kassa apparatiga lenta qanday solinadi?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "🧾 **Kassa apparatiga lenta (qog'oz) qo'yish va o'lchami:**  1️⃣ Lenta qo'yish tartibi: Kassa apparatining yuqori qismida"
+      ]
+    },
+    {
+      "id": "5.3",
+      "name": "Apparatda soatni to'g'rilash videosi va parollari",
+      "input": "Apparatda soatni to'g'rilash videosi",
+      "passed": true,
+      "replies_count": 2,
+      "replies_preview": [
+        "sana va vaqtni tug'irlash",
+        "🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**  📹 Kassa apparatingiz soatini to'g'ri sozlash uchun yuqorida"
+      ]
+    },
+    {
+      "id": "5.4",
+      "name": "Kassadan chek chiqarish qo'llanmasi",
+      "input": "Kassadan qanday chek uriladi?",
+      "passed": true,
+      "replies_count": 2,
+      "replies_preview": [
+        "Sizlar uchun kassa aparatda   ✅ Chik urush tartibi, ✅ X va Z atchoyt olish tartibi, ✅ Eng kup uchrayotgan muammolarni ba",
+        "📹 **Chek urish hamda X va Z hisobot olish videosi**  Savdo chekini urish hamda smena oxirida X va Z hisobotlarini chiqar"
+      ]
+    },
+    {
+      "id": "6.1",
+      "name": "Noodatiy texnik savol (ekran qizishi)",
+      "input": "Aparatim g'alati qizib ketyapti nima qilsam bo'ladi?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "👨‍💻 Sizning savolingizga mas'ul mutaxassisimiz javob beradi, iltimos kutib turing!"
+      ]
+    },
+    {
+      "id": "6.2",
+      "name": "Noma'lum xizmatlar haqidagi savol",
+      "input": "Sizlarda kassa apparatidan tashqari yana qanday xizmatlar bor?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "👨‍💻 Sizning savolingizga mas'ul mutaxassisimiz javob beradi, iltimos kutib turing!"
+      ]
+    },
+    {
+      "id": "6.3",
+      "name": "Kassa apparatini ijaraga olish haqida savol",
+      "input": "Sizlarda kassa apparatini ijaraga olsa bo'ladimi?",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "👨‍💻 Sizning savolingizga mas'ul mutaxassisimiz javob beradi, iltimos kutib turing!"
+      ]
+    },
+    {
+      "id": "7.1",
+      "name": "/salombot buyrug'i",
+      "input": "/salombot",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "Assalomu alaykum, **Quvonchbek**!  Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / "
+      ]
+    },
+    {
+      "id": "7.2",
+      "name": "/start buyrug'i",
+      "input": "/start",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "Assalomu alaykum, **Quvonchbek**!  Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (NKA) bo'yic"
+      ]
+    },
+    {
+      "id": "7.3",
+      "name": "Boshidan boshlash so'zi",
+      "input": "boshidan boshlash",
+      "passed": true,
+      "replies_count": 1,
+      "replies_preview": [
+        "Assalomu alaykum, **Quvonchbek**!  Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / "
+      ]
+    }
+  ]
+}

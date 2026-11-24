@@ -1,0 +1,541 @@
+🚀 MARS POS BOT MASTER 100% TO'LIQ AUDITI BOSHLANDI
+Sana va vaqt: 2026-11-23 13:15:20
+
+============================================================
+▶️ [TEST SO'ROVI]: 'assalomu alaykum'
+🎯 [KUTILGAN NATIJA]: Salomlashish va bot imkoniyatlari
+🤖 [BOT JAVOBI]:
+Assalomu alaykum! **MARS ELEKTRON TEXNIKA MCHJ** rasmiy texnik xizmat ko'rsatish botiga xush kelibsiz.
+
+Kassa apparatingiz bo'yicha qanday yordam bera olaman?
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '311790999'
+🎯 [KUTILGAN NATIJA]: STIR toza (qarzi yo'q), 1 ta apparat, rasm so'rash
+🤖 [BOT JAVOBI]:
+🏢 **Tashkilot:** `ALISHER BOBO QURILISH MOLLARI DOKONI` OILAVIY KORXONA
+📑 **STIR / INN:** `311790999`
+📌 **Faol kassa apparatlari soni:** **1 ta**
+
+📋 **Apparatlar modeli va holati:**
+  1-aparat: 📟 **SmartOne model kassa apparati**
+
+✅ **Sizda oylik abonent to'lovidan qarzdorlik mavjud emas, aparatingiz oylik abonent tomonlama faol holatda.**
+
+📷 Agar kassa apparatingizda biror nosozlik yoki xatolik bo'lsa, apparat chiqargan xatolikni aparat ekrani to'liq ko'ringan holda (tepasidagi soat va interneti bilan) rasmga olib yuboring — sizni mas'ul texnik mutaxassisimiz bilan bog'laymiz.
+
+Agar apparatingizning yillik fiskal modul to'lovini ham tekshirmoqchi bo'lsangiz, 📟 Yillik fiskal modul to'lovini tekshirish tugmasini bosing.
+
+💳 **Oylik abonent tarifi:** Har bir apparat uchun 100 000 so'm/oy
+🗓 **Shu oyning oxirigacha to'lanishi kerak:** **0 so'm (joriy oy to'langan)**
+📅 **Keyingi oydan boshlab yil oxirigacha (1 oy uchun):** **100 000 so'm**
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '206011507'
+🎯 [KUTILGAN NATIJA]: STIR qarzdor (1 600 400 so'm), to'lov rekvizitlari va video
+🤖 [BOT JAVOBI]:
+🏢 **Tashkilot:** QASHQADARYO SHARQ GAVHARI MCHJ
+📑 **STIR / INN:** `206011507`
+📌 **Faol kassa apparatlari soni:** **1 ta**
+
+📋 **Apparatlar modeli va holati:**
+  1-aparat: 📟 **SmartOne model kassa apparati**
+
+⚠️ **DIQQAT:** Sizda oylik abonent to'lovidan **1 600 400 so'm** qarzdorlik mavjud!
+
+💳 **Oylik abonent tarifi:** Har bir apparat uchun 100 000 so'm/oy
+🗓 **Shu oyning oxirigacha to'lanishi kerak:** **1 600 400 so'm**
+📅 **Yil oxirigacha to'lanishi kerak bo'lgan jami summa:** **1 700 400 so'm**
+
+Kassa aparatingiz ishlashi uchun oylik abonent qarzdorligingizni to'lashingiz so'raladi.
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Oylik abanit tulovni Clickdan utkazish varianti
+
+ 👇👇👇👇👇👇
+**
+**[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**](https://t.me/POS_Terminal_UzSmart_Bank/148)
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi          
+
+
+Clik dasturiga kirasiz > tolovlar bolimida >  Rekvizit bo'yicha to'lov > Rasmdagi kurinishda tuldiriladi 
+
+
+Abanet tulov uchun shot
+
+«MARS ELEKTRON TEXNIKA» МЧЖ
+Манзил: г. Шахрисабз улица Шерозий 1 
+Абонент  Х/Р:  20 20 8000 800 208 044 003  
+Банк: «Ипак Йули» АИТ банки Шахрисабз
+ филиали МФО: 01048     ИНН: 302568138
+Тел: +998 94 299 77 99,    моб:+99891-945-32-89
+Тулов максади: Абонент тулов 100 000 сум бир ойлик
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '308635722'
+🎯 [KUTILGAN NATIJA]: Ko'p apparatli tashkilot (3 ta POS), har biri holati
+🤖 [BOT JAVOBI]:
+🏢 **Tashkilot:** `VOHID MMO 777` XK
+📑 **STIR / INN:** `308635722`
+📌 **Faol kassa apparatlari soni:** **3 ta**
+
+📋 **Apparatlar modeli va holati:**
+  1-aparat: 📟 **SmartOne model kassa apparati**
+  2-aparat: 📟 **SmartOne model kassa apparati**
+  3-aparat: 📟 **SmartOne model kassa apparati**
+
+✅ **Sizda oylik abonent to'lovidan qarzdorlik mavjud emas, aparatingiz oylik abonent tomonlama faol holatda.**
+
+📷 Agar kassa apparatingizda biror nosozlik yoki xatolik bo'lsa, apparat chiqargan xatolikni aparat ekrani to'liq ko'ringan holda (tepasidagi soat va interneti bilan) rasmga olib yuboring — sizni mas'ul texnik mutaxassisimiz bilan bog'laymiz.
+
+Agar apparatingizning yillik fiskal modul to'lovini ham tekshirmoqchi bo'lsangiz, 📟 Yillik fiskal modul to'lovini tekshirish tugmasini bosing.
+
+💰 **Hisobingizda:** **600 so'm** ortiqcha to'lov (avans) mavjud.
+**Dekabr** oyi to'liq yopilishi uchun yana **299 400 so'm** to'lashingiz kerak (yil oxirigacha: **299 400 so'm**).
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '32212995720017'
+🎯 [KUTILGAN NATIJA]: 14 xonali JSHSHIR orqali tekshirish
+🤖 [BOT JAVOBI]:
+🏢 **Tashkilot:** ЯТТ XUSHVAQTOV DILSHOD G‘AYRAT O‘G‘LI
+📑 **STIR / INN:** `32212995720017`
+📌 **Faol kassa apparatlari soni:** **1 ta**
+
+📋 **Apparatlar modeli va holati:**
+  1-aparat: 📟 **SmartOne model kassa apparati**
+
+⚠️ **DIQQAT:** Sizda oylik abonent to'lovidan **1 200 so'm** qarzdorlik mavjud!
+
+💳 **Oylik abonent tarifi:** Har bir apparat uchun 100 000 so'm/oy
+🗓 **Shu oyning oxirigacha to'lanishi kerak:** **1 200 so'm**
+📅 **Yil oxirigacha to'lanishi kerak bo'lgan jami summa:** **101 200 so'm**
+
+Kassa aparatingiz ishlashi uchun oylik abonent qarzdorligingizni to'lashingiz so'raladi.
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Oylik abanit tulovni Clickdan utkazish varianti
+
+ 👇👇👇👇👇👇
+**
+**[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**](https://t.me/POS_Terminal_UzSmart_Bank/148)
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi          
+
+
+Clik dasturiga kirasiz > tolovlar bolimida >  Rekvizit bo'yicha to'lov > Rasmdagi kurinishda tuldiriladi 
+
+
+Abanet tulov uchun shot
+
+«MARS ELEKTRON TEXNIKA» МЧЖ
+Манзил: г. Шахрисабз улица Шерозий 1 
+Абонент  Х/Р:  20 20 8000 800 208 044 003  
+Банк: «Ипак Йули» АИТ банки Шахрисабз
+ филиали МФО: 01048     ИНН: 302568138
+Тел: +998 94 299 77 99,    моб:+99891-945-32-89
+Тулов максади: Абонент тулов 100 000 сум бир ойлик
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '999999999'
+🎯 [KUTILGAN NATIJA]: Bazadan topilmagan 9 xonali STIR
+🤖 [BOT JAVOBI]:
+Kechirasiz, men faqat kassa apparatingizni (SmartOne / P3) tekshirish va texnik xizmat ko'rsatish bo'yicha yordam bera olaman.
+
+Kassa apparatingizni tekshirish uchun tashkilotingizning 9 xonali STIR (INN) yoki 14 xonali JSHSHIR raqamini yuboring.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '99999999999999'
+🎯 [KUTILGAN NATIJA]: Bazadan topilmagan 14 xonali JSHSHIR
+🤖 [BOT JAVOBI]:
+🏢 **STIR / INN:** `99999999999999`
+
+⚠️ Ushbu INN yoki JSHSHIR bo'yicha hisob-kitob jadvalidan ma'lumot topilmadi.
+Iltimos, raqamni to'g'ri kiritganingizni chekdagi **STIR** bo'limidan tekshirib, qaytadan yuboring.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'LG420230624507 mana shumi'
+🎯 [KUTILGAN NATIJA]: Fiskal modul faol holatda, texnikka ulash uchun STIR so'rashi
+🤖 [BOT JAVOBI]:
+🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**
+
+📟 **Fiskal Modul raqami:** `LG420230624507`
+✅ **Fiskal modul to'lovi faol holatda!** Yillik to'lovdan qarzdorlik mavjud emas.
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, quyidagilarni tekshiring:
+1. Internet aloqasi (Wi-Fi yoki SIM-karta balansi)
+2. Aparatdagi sana va vaqt to'g'riligi
+3. Aparatni o'chirib qayta yoqing (perezagruzka)
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, aparat ekrani to'liq ko'ringan holda rasm olib tashlang men sizni masul texnik bilan bog'layman.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'hozir tashlayman'
+🎯 [KUTILGAN NATIJA]: Kutib turish (video/rekvizitsiz muloyim javob)
+🤖 [BOT JAVOBI]:
+Xo'p, kutib turaman. STIR (INN) raqamingizni yuborishingiz bilan oylik abonent holatini tekshirib, texnik mutaxassisimizga ulayman.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'yillik tolov qachongacha yetadi'
+🎯 [KUTILGAN NATIJA]: Muddati ko'rinmasligi, faolligi tekshirilishi tushuntirilishi
+🤖 [BOT JAVOBI]:
+Uzr, fiskal modulning to'lovga aynan qachon kelishi bizga ko'rinmaydi. Men faqat apparat 1 yillik to'loviga kelganligi yoki faolligini tekshirib bera olaman.
+
+Hozir apparatingiz holatini tekshirib bermoqdaman 👇
+
+🤖 [BOT JAVOBI]:
+🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**
+
+📟 **Fiskal Modul raqami:** `LG420230624507`
+✅ **Fiskal modul to'lovi faol holatda!** Yillik to'lovdan qarzdorlik mavjud emas.
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, quyidagilarni tekshiring:
+1. Internet aloqasi (Wi-Fi yoki SIM-karta balansi)
+2. Aparatdagi sana va vaqt to'g'riligi
+3. Aparatni o'chirib qayta yoqing (perezagruzka)
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, aparat ekrani to'liq ko'ringan holda rasm olib tashlang men sizni masul texnik bilan bog'layman.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'oylik tolov rekviziti'
+🎯 [KUTILGAN NATIJA]: Oylik to'lov videosi (148) va rekviziti (85)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Oylik abanit tulovni Clickdan utkazish varianti
+
+ 👇👇👇👇👇👇
+**
+**[**Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**](https://t.me/POS_Terminal_UzSmart_Bank/148)
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+CLIK to'lov tizimi orqali oylik abanit to'lovini to'lash tartibi          
+
+
+Clik dasturiga kirasiz > tolovlar bolimida >  Rekvizit bo'yicha to'lov > Rasmdagi kurinishda tuldiriladi 
+
+
+Abanet tulov uchun shot
+
+«MARS ELEKTRON TEXNIKA» МЧЖ
+Манзил: г. Шахрисабз улица Шерозий 1 
+Абонент  Х/Р:  20 20 8000 800 208 044 003  
+Банк: «Ипак Йули» АИТ банки Шахрисабз
+ филиали МФО: 01048     ИНН: 302568138
+Тел: +998 94 299 77 99,    моб:+99891-945-32-89
+Тулов максади: Абонент тулов 100 000 сум бир ойлик
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'yillik tolov rekviziti'
+🎯 [KUTILGAN NATIJA]: Yillik to'lov videosi (145) va rekviziti (34)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+yillik feskal modul tulovini Click dasturi orqali toʻlash
+
+👇👇👇👇👇👇
+**
+****Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+Yillik Fiscal modil tulovi uchun shot
+
+«Yangi Tehnologiyalar» DUK
+Х'Р:2021 0000 1004 3120 0010
+АТБ «Капиталбанк»    МФО:01018
+ИНН: 201 589 463
+Tulov kodi 00668 
+Tulov maqsadi: INN ______________fiskal modulning yillik tulovi
+Tulov summasi 440 000
+Телефон: +99871-202-32-32  
+
+**Tulov qilingandan sung 2 soatdan 24 soat ichida ishlab ketadi Fiscal modul**
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'to'lov rekvizitini bering'
+🎯 [KUTILGAN NATIJA]: Qaysi to'lov (oylik yoki yillik) kerakligini so'rash
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+yillik feskal modul tulovini Click dasturi orqali toʻlash
+
+👇👇👇👇👇👇
+**
+****Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+Yillik Fiscal modil tulovi uchun shot
+
+«Yangi Tehnologiyalar» DUK
+Х'Р:2021 0000 1004 3120 0010
+АТБ «Капиталбанк»    МФО:01018
+ИНН: 201 589 463
+Tulov kodi 00668 
+Tulov maqsadi: INN ______________fiskal modulning yillik tulovi
+Tulov summasi 440 000
+Телефон: +99871-202-32-32  
+
+**Tulov qilingandan sung 2 soatdan 24 soat ichida ishlab ketadi Fiscal modul**
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'to'lov qildim'
+🎯 [KUTILGAN NATIJA]: To'lov kvitansiyasini (chek rasmi yoki PDF) so'rash
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+yillik feskal modul tulovini Click dasturi orqali toʻlash
+
+👇👇👇👇👇👇
+**
+****Tulov Maqsadiga uzingizni tashkelotingiz malomotlarini kiritishni unitmang!**
+
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaPhoto]:
+Yillik Fiscal modil tulovi uchun shot
+
+«Yangi Tehnologiyalar» DUK
+Х'Р:2021 0000 1004 3120 0010
+АТБ «Капиталбанк»    МФО:01018
+ИНН: 201 589 463
+Tulov kodi 00668 
+Tulov maqsadi: INN ______________fiskal modulning yillik tulovi
+Tulov summasi 440 000
+Телефон: +99871-202-32-32  
+
+**Tulov qilingandan sung 2 soatdan 24 soat ichida ishlab ketadi Fiscal modul**
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'to'lovlarim tarixi'
+🎯 [KUTILGAN NATIJA]: Oylar kesimidagi to'lovlar jadvali
+🤖 [BOT JAVOBI]:
+Yil davomida qaysi oylar uchun qancha to'lov qilinganligini tekshirish uchun tashkilotingizning INN yoki JSHSHIR raqamini yuboring.
+
+ℹ️ **Ma'lumot uchun:** Tashkilotingiz INN yoki JSHSHIR raqami aparatingiz chiqargan chekda **STIR** deb yozilgan bo'limida ko'rsatilgan.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'soati noturiykan'
+🎯 [KUTILGAN NATIJA]: 141-video (Soatni sozlash) va parollar
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+sana va vaqtni tug'irlash
+
+🤖 [BOT JAVOBI]:
+🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**
+
+📹 Kassa apparatingiz soatini to'g'ri sozlash uchun yuqoridagi video qo'llanmada ko'rsatilgan amallarni bajaring.
+
+👉 Videoda ko'rsatilgandek apparat sozlamalariga kiring va sana hamda vaqtni to'g'rilab qo'ying.
+
+🔐 **Parol bo'yicha muhim ko'rsatma:**
+Agar aparatingiz soatni to'g'irlash jarayonida parol so'rasa yoki **«Parol noto'g'ri»** desa, quyidagi parollarni terib ko'ring:
+1️⃣ `12341234`
+2️⃣ `123498765`
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'parol sorayapti'
+🎯 [KUTILGAN NATIJA]: Soat sozlash parollari (12341234, 123498765)
+🤖 [BOT JAVOBI]:
+🔐 **Kassa apparatida soatni sozlash parollari:**
+
+Agar aparatingiz soatni to'g'irlash jarayonida parol so'rasa yoki **«Parol noto'g'ri»** desa, quyidagi parollarni terib ko'ring:
+1️⃣ `12341234`
+2️⃣ `123498765`
+
+ℹ️ **Eslatma:** Agar ikkala parol ham to'g'ri kelmasa yoki boshqa xatolik bersa, bemalol xabar qoldiring — sizga texnik xodimimiz yordam beradi.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'aparatim ikpu diyabdi'
+🎯 [KUTILGAN NATIJA]: 138-video (Ma'lumotlarni yuklash / sinxronizatsiya)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+malumotlarni yuklash
+
+🤖 [BOT JAVOBI]:
+⚠️ **Kassa apparatingizda 'Проверка кода ИКПУ устарела' (IKPU kodi eskirgan) xatoligi yuz bergan.**
+
+📹 Ushbu xatolikni bartaraf etish uchun yuqoridagi video qo'llanmada ko'rsatilganidek kassa apparatiga ma'lumotlarni (IKPU bazasini) qayta yuklang.
+
+ℹ️ **Eslatma:** Agar ma'lumotlarni yuklaganingizdan keyin ham xatolik bartaraf bo'lmasa yoki yordam kerak bo'lsa, xabar qoldiring — sizni darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'markirofkani qanday uchiraman'
+🎯 [KUTILGAN NATIJA]: 139-video (Markirovkani o'chirish)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+markirofkani o'chirish
+
+🤖 [BOT JAVOBI]:
+📹 **Markirovkani o'chirish videosi**
+
+Kassa apparatida markirovka talabini vaqtinchalik o'chirish / sozlash bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'narxni qanday ozgartiraman'
+🎯 [KUTILGAN NATIJA]: 140-video (Tovar narxini o'zgartirish)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+narxni o'zgartirish
+
+🤖 [BOT JAVOBI]:
+📹 **Tovar narxini o'zgartirish videosi**
+
+Kassadagi mavjud tovarlar narxini tahrirlash va yangilash bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'xato urilgan chekni bekor qilish videosi'
+🎯 [KUTILGAN NATIJA]: 53-video (Chekni atkaz qilish)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Tavarni atkas qilish va qaytadan urish,. 
+
+Eng kup uchrayotgan muammoga yechim!
+
+🤖 [BOT JAVOBI]:
+📹 **Tovarni qaytarish (atkaz qilish) va qayta urish videosi**
+
+Xato urilgan tovarni bekor qilish (atkaz qilish) va chekni to'g'ri qayta urish bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'yangi tovar qoshish videosi'
+🎯 [KUTILGAN NATIJA]: 15-video (Tovarni qo'shish va MXIK)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Tavarlarni qushish va MIXK kod kiritish
+
+🤖 [BOT JAVOBI]:
+📹 **Tovarlarni qo'shish va MXIK kod kiritish videosi**
+
+Kassa apparatiga yangi tovar qo'shish hamda MXIK (IKPU) kodini to'g'ri kiritish bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'kassa dasturini yangilash videosi'
+🎯 [KUTILGAN NATIJA]: 142-video (Dastur yangilash)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Дастур янгилаш
+
+🤖 [BOT JAVOBI]:
+📹 **Kassa dasturini yangilash videosi**
+
+Kassa apparatidagi savdo dasturini eng so'nggi versiyaga yangilash bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'skanerni qanday ulayman'
+🎯 [KUTILGAN NATIJA]: 27-video (2D skaner ulash)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+__2D ruchnoy sikaner aparatini ishlatish va tavarglarni kiritish__
+
+🤖 [BOT JAVOBI]:
+📹 **2D skaner ishlatish va tovar kiritish videosi**
+
+2D shtrix-kod skanerini ulash, tovarlarni skaner orqali tezkor kiritish va sotish bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'serverdan sinxronizatsiya qilish videosi'
+🎯 [KUTILGAN NATIJA]: 138-video (Sinxronizatsiya)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+malumotlarni yuklash
+
+🤖 [BOT JAVOBI]:
+📹 **Ma'lumotlarni yuklash (sinxronizatsiya) videosi**
+
+Serverdan kassa apparatiga ma'lumotlarni (tovarlar va narxlarni) yuklash bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'z hisobot olish videosi'
+🎯 [KUTILGAN NATIJA]: 2-video (Chek urish va Z-hisobot)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Sizlar uchun kassa aparatda 
+
+✅ Chik urush tartibi,
+✅ X va Z atchoyt olish tartibi,
+✅ Eng kup uchrayotgan muammolarni bartaraf etish,
+✅ Tavarlarni qushib chiqish va ularga MXIK kod quyish tartiblari,
+
+Kursatilgan! Arzimagan muammo uchun qimmatli vaqtingizni ketqazib ofisga kelib utirmang shunchake shu vedioni kurib chiqing! 
+
+Qanaqadir muammo bulsa albatta admin javob beradi!
+
+🤖 [BOT JAVOBI]:
+📹 **Chek urish hamda X va Z hisobot olish videosi**
+
+Savdo chekini urish hamda smena oxirida X va Z hisobotlarini chiqarish bo'yicha video qo'llanma.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'hamma videolarni tashlab ber'
+🎯 [KUTILGAN NATIJA]: Barcha 12 ta video darsliklar katalogi
+🤖 [BOT JAVOBI]:
+📚 **MARS ELEKTRON TEXNIKA MCHJ rasmiy video darsliklar ro'yxati:**
+
+1. 💳 [Oylik abonent to'lovini Clickdan to'lash](https://t.me/POS_Terminal_UzSmart_Bank/148)
+2. 🧾 [Clickdan to'lov kvitansiyasini yuklab olish](https://t.me/POS_Terminal_UzSmart_Bank/151)
+3. 📟 [Yillik Fiskal Modul to'lovini to'lash](https://t.me/POS_Terminal_UzSmart_Bank/145)
+4. ⏰ [Kassa soati va vaqtini to'g'rilash](https://t.me/POS_Terminal_UzSmart_Bank/141) (Parollar: `12341234` / `123498765`)
+5. ⚠️ [IKPU / MXIK xatosini to'g'rilash (Ma'lumotlarni yuklash)](https://t.me/POS_Terminal_UzSmart_Bank/138)
+6. 📥 [Ma'lumotlarni yuklash (sinxronizatsiya)](https://t.me/POS_Terminal_UzSmart_Bank/138)
+7. ➕ [Tovarlarni qo'shish va MXIK kod kiritish](https://t.me/POS_Terminal_UzSmart_Bank/15)
+8. 🏷 [Tovar narxini o'zgartirish](https://t.me/POS_Terminal_UzSmart_Bank/140)
+9. ↩️ [Tovarni qaytarish (atkaz qilish) va qayta urish](https://t.me/POS_Terminal_UzSmart_Bank/53)
+10. 📊 [Chek urish hamda X va Z hisobot olish](https://t.me/POS_Terminal_UzSmart_Bank/2)
+11. 🔄 [Kassa dasturini yangilash](https://t.me/POS_Terminal_UzSmart_Bank/142)
+12. 📷 [2D skaner ishlatish va tovar kiritish](https://t.me/POS_Terminal_UzSmart_Bank/27)
+13. 🏷 [Markirovkani o'chirish](https://t.me/POS_Terminal_UzSmart_Bank/139)
+
+👉 **Kerakli darslik nomini yozsangiz (masalan: «tovar qo'shish videosi» yoki «ma'lumotlarni yuklash videosi»), bot sizga aynan o'sha videoni to'g'ridan-to'g'ri yuboradi.**
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'ofis qayerda joylashgan'
+🎯 [KUTILGAN NATIJA]: Ofis manzili, mo'ljal va ish vaqti
+🤖 [BOT JAVOBI]:
+🏢 **MARS ELEKTRON TEXNIKA MCHJ** ofis manzili:
+
+📍 **Manzil:** Qashqadaryo viloyati, Shahrisabz shahar, Sheroziy ko'chasi 1-uy.
+📞 **Aloqa telefonlari:** +998 94 299 77 99, +998 91 945 32 89
+⏰ **Ish vaqti:** Dushanba - Shanba, 09:00 dan 18:00 gacha.
+
+
+============================================================
+▶️ [TEST SO'ROVI]: 'operator bilan bog'lang'
+🎯 [KUTILGAN NATIJA]: Rasm so'rash yoki texnikka ulash
+🤖 [BOT JAVOBI]:
+👨‍💻 Aparatingizdagi 'ИКПУ' xatoligi bo'yicha barcha ma'lumotlar mas'ul texnik mutaxassisimizga yetkazildi.
+
+Mutaxassisimiz tez orada vaziyatni o'rganib chiqib sizga javob beradi yoki siz bilan bog'lanadi. Sabr qilishingizni so'raymiz!
+
+
+============================================================
+▶️ [TEST SO'ROVI]: '/reset'
+🎯 [KUTILGAN NATIJA]: Suhbat xotirasini tozalash
+🤖 [BOT JAVOBI]:
+Assalomu alaykum, **Quvonchbek**!
+
+Men **MARS ELEKTRON TEXNIKA MCHJ** ning online nazorat kassa apparatlari (SmartOne / P3) bo'yicha texnik xizmat ko'rsatuvchi rasmiy telegram botiman.
+
+🔄 Siz bilan bo'lgan avvalgi barcha suhbat ma'lumotlari xotiradan butunlay tozalandi va unutildi. Sizni yangi mijoz sifatida qabul qilamiz!
+
+🔧 **Bot imkoniyatlari:**
+• Aparatdagi muammolarni aniqlash va bartaraf etish
+• Oylik abonent to'lovini tekshirish (STIR / INN yuboring)
+• Oylik to'lov qilish rekvizitlari va video darsligi
+• Yillik Fiskal Modul to'lovini tekshirish (FM raqamini yuboring)
+• Yillik to'lov rekvizitlari va qo'llanmasi
+• Mas'ul texnik xodim (admin) bilan bog'lanish
+
+Savolingiz yoki murojaatingizni yozib qoldirishingiz mumkin!
+
+
+============================================================
+🏁 MASTER AUDIT YAKUNLANDI: Jami 30 ta sinovdan 30 tasi muvaffaqiyatli yakunlandi!

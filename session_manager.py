@@ -242,7 +242,7 @@ class SessionManager:
                 cid_key = str(chat_id)
                 self.sessions.pop(cid_key, None)
                 self.chat_info.pop(cid_key, None)
-            self.save_sessions_unlocked()
+        self.save_sessions()
 
     def clean_expired(self):
         with self._lock:

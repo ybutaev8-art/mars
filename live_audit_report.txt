@@ -1,0 +1,153 @@
+🚀 JONLI TELEGRAM AUDITI BOSHLANDI (@txkmrobot)
+Vaqt: 2026-11-23 13:03:29
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'soati noturiykan'
+🎯 [KUTILGAN NATIJA]: 141-video (Soatni sozlash videosi)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+sana va vaqtni tug'irlash
+
+🤖 [BOT JAVOBI]:
+🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**
+
+📹 Kassa apparatingiz soatini to'g'ri sozlash uchun yuqoridagi video qo'llanmada ko'rsatilgan amallarni bajaring.
+
+👉 Videoda ko'rsatilgandek apparat sozlamalariga kiring va sana hamda vaqtni to'g'rilab qo'ying.
+
+🔐 **Parol bo'yicha muhim ko'rsatma:**
+Agar aparatingiz soatni to'g'irlash jarayonida parol so'rasa yoki **«Parol noto'g'ri»** desa, quyidagi parollarni terib ko'ring:
+1️⃣ `12341234`
+2️⃣ `123498765`
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'soatni qanday tugirlasam buladi'
+🎯 [KUTILGAN NATIJA]: 141-video (Soatni sozlash videosi)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+sana va vaqtni tug'irlash
+
+🤖 [BOT JAVOBI]:
+🕒 **Kassa apparatida sana va vaqtni (soatni) to'g'rilash:**
+
+📹 Kassa apparatingiz soatini to'g'ri sozlash uchun yuqoridagi video qo'llanmada ko'rsatilgan amallarni bajaring.
+
+👉 Videoda ko'rsatilgandek apparat sozlamalariga kiring va sana hamda vaqtni to'g'rilab qo'ying.
+
+🔐 **Parol bo'yicha muhim ko'rsatma:**
+Agar aparatingiz soatni to'g'irlash jarayonida parol so'rasa yoki **«Parol noto'g'ri»** desa, quyidagi parollarni terib ko'ring:
+1️⃣ `12341234`
+2️⃣ `123498765`
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'parol sorayapti'
+🎯 [KUTILGAN NATIJA]: Soat sozlash parollari (12341234, 123498765)
+🤖 [BOT JAVOBI]:
+🔐 **Kassa apparatida soatni sozlash parollari:**
+
+Agar aparatingiz soatni to'g'irlash jarayonida parol so'rasa yoki **«Parol noto'g'ri»** desa, quyidagi parollarni terib ko'ring:
+1️⃣ `12341234`
+2️⃣ `123498765`
+
+ℹ️ **Eslatma:** Agar ikkala parol ham to'g'ri kelmasa yoki boshqa xatolik bersa, bemalol xabar qoldiring — sizga texnik xodimimiz yordam beradi.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'aparatim ikpu diyabdi'
+🎯 [KUTILGAN NATIJA]: 138-video (Ma'lumotlarni yuklash / sinxronizatsiya)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+malumotlarni yuklash
+
+🤖 [BOT JAVOBI]:
+⚠️ **Kassa apparatingizda 'Проверка кода ИКПУ устарела' (IKPU kodi eskirgan) xatoligi yuz bergan.**
+
+📹 Ushbu xatolikni bartaraf etish uchun yuqoridagi video qo'llanmada ko'rsatilganidek kassa apparatiga ma'lumotlarni (IKPU bazasini) qayta yuklang.
+
+ℹ️ **Eslatma:** Agar ma'lumotlarni yuklaganingizdan keyin ham xatolik bartaraf bo'lmasa yoki yordam kerak bo'lsa, xabar qoldiring — sizni darhol mas'ul texnik mutaxassisimizga ulaymiz.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'markirofkani qanday uchiraman'
+🎯 [KUTILGAN NATIJA]: 139-video (Markirovkani o'chirish)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+markirofkani o'chirish
+
+🤖 [BOT JAVOBI]:
+📹 **Markirovkani o'chirish videosi**
+
+Kassa apparatida markirovka talabini vaqtinchalik o'chirish / sozlash bo'yicha video qo'llanma.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'narxni qanday ozgartiraman'
+🎯 [KUTILGAN NATIJA]: 140-video (Tovar narxini o'zgartirish)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+narxni o'zgartirish
+
+🤖 [BOT JAVOBI]:
+📹 **Tovar narxini o'zgartirish videosi**
+
+Kassadagi mavjud tovarlar narxini tahrirlash va yangilash bo'yicha video qo'llanma.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'xato urilgan chekni bekor qilish videosi'
+🎯 [KUTILGAN NATIJA]: 53-video (Chekni atkaz qilish)
+🤖 [BOT JAVOBI] [MEDIA: MessageMediaDocument]:
+Tavarni atkas qilish va qaytadan urish,. 
+
+Eng kup uchrayotgan muammoga yechim!
+
+🤖 [BOT JAVOBI]:
+📹 **Tovarni qaytarish (atkaz qilish) va qayta urish videosi**
+
+Xato urilgan tovarni bekor qilish (atkaz qilish) va chekni to'g'ri qayta urish bo'yicha video qo'llanma.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'yillik tolov qachongacha yetadi'
+🎯 [KUTILGAN NATIJA]: Yillik to'lov muddati botda ko'rinmasligi, faqat toza/qarzdorlik tekshirilishi tushuntirilishi
+🤖 [BOT JAVOBI]:
+Uzr, men faqat yillik to'loviga kelgani yoki faolligini tekshirib bera olaman, qachon kelishi menga ko'rinmaydi.
+
+Aparatingiz to'lovga kelgan yoki kelmaganini tekshirish uchun chekning pastki qismidagi FM raqamini yuboring.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'LG420230624507 mana shumi'
+🎯 [KUTILGAN NATIJA]: Fiskal modul toza deb, texnikka ulash uchun STIR so'rashi
+🤖 [BOT JAVOBI]:
+🔍 **Davlat Soliq Qo'mitasi OFD tizimi (****@ofd943_bot****) ma'lumoti:**
+
+📟 **Fiskal Modul raqami:** `LG420230624507`
+✅ **Fiskal modul to'lovi faol holatda!** Yillik to'lovdan qarzdorlik mavjud emas.
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, quyidagilarni tekshiring:
+1. Internet aloqasi (Wi-Fi yoki SIM-karta balansi)
+2. Aparatdagi sana va vaqt to'g'riligi
+3. Aparatni o'chirib qayta yoqing (perezagruzka)
+
+Agar aparatingiz baribir ishlamayotgan bo'lsa, aparat ekrani to'liq ko'ringan holda rasm olib tashlang men sizni masul texnik bilan bog'layman.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: 'hozir tashlayman'
+🎯 [KUTILGAN NATIJA]: Kutib turaman deyishi (video yoki rekvizit tashlamasdan!)
+🤖 [BOT JAVOBI]:
+Xo'p, kutib turaman. STIR (INN) raqamingizni yuborishingiz bilan oylik abonent holatini tekshirib, texnik mutaxassisimizga ulayman.
+
+
+==================================================
+▶️ [MIJOZ SO'ROVI]: '302568138'
+🎯 [KUTILGAN NATIJA]: Oylik abonent holatini to'g'ridan-to'g'ri tekshirib berishi (hech narsa so'ramasdan)
+🤖 [BOT JAVOBI]:
+🏢 **Tashkilot:** `MARS ELEKTRON TEXNIKA` MChJ
+📑 **STIR / INN:** `302568138`
+📌 **Faol kassa apparatlari soni:** **2 ta**
+
+✅ **Kassa aparatingizning oylik va yillik to'lovlarida qarzdorlik yo'q (ikkalasi ham toza).**
+
+📷 Ekranda ko'rsatilayotgan ushbu nosozlikni bartaraf etish uchun mas'ul texnik mutaxassisimizga yetkazishimiz lozim. Iltimos, aparat ekranidagi xatolikni (soat va interneti ko'ringan holda) rasmga olib yuboring — darhol texnikka ulaymiz.
+
+
+✅ JONLI AUDIT TO'LIQ YAKUNLANDI!

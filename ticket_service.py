@@ -373,19 +373,19 @@ class TicketService:
         ticket = None
         if user_id_str:
             ticket = self.user_tickets.pop(user_id_str, None)
+            if not ticket and user_id_str.isdigit():
+                ticket = self.user_tickets.pop(int(user_id_str), None)
         if chat_id_str:
             t_chat = self.user_tickets.pop(chat_id_str, None)
+            if not t_chat and chat_id_str.isdigit():
+                t_chat = self.user_tickets.pop(int(chat_id_str), None)
             if not ticket:
                 ticket = t_chat
         if ticket:
             ticket["status"] = "closed"
         keys_to_remove = []
         for k, v in list(self.tickets.items()):
-            if v == ticket:
-                keys_to_remove.append(k)
-            elif user_id_str and str(v.get("user_id")) == user_id_str:
-                keys_to_remove.append(k)
-            elif chat_id_str and str(v.get("chat_id")) == chat_id_str:
+            if v == ticket or (user_id_str and str(v.get("user_id")) == user_id_str) or (chat_id_str and str(v.get("chat_id")) == chat_id_str):
                 keys_to_remove.append(k)
         for k in keys_to_remove:
             self.tickets.pop(k, None)
@@ -417,7 +417,16 @@ class TicketService:
         return t
 
     def find_ticket_by_user_id(self, user_id):
-        t = self.user_tickets.get(str(user_id))
+        self.load_tickets()
+        uid_str = str(user_id) if user_id else ""
+        t = self.user_tickets.get(uid_str)
+        if not t and user_id in self.user_tickets:
+            t = self.user_tickets.get(user_id)
+        if not t:
+            for tk in self.tickets.values():
+                if str(tk.get("user_id")) == uid_str:
+                    t = tk
+                    break
         if t and t.get("status") == "closed":
             return None
         return t

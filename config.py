@@ -75,7 +75,7 @@ VIDEO_OYLIK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/148"
 VIDEO_RECEIPT_URL = "https://t.me/POS_Terminal_UzSmart_Bank/151"
 VIDEO_YILLIK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/145"
 VIDEO_CLOCK_URL = "https://t.me/POS_Terminal_UzSmart_Bank/141"
-VIDEO_IKPU_URL = "https://t.me/POS_Terminal_UzSmart_Bank/126"
+VIDEO_IKPU_URL = "https://t.me/POS_Terminal_UzSmart_Bank/138"
 
 # Sun'iy intellekt (Google Gemini AI) integratsiyasi
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AQ.Ab8RN6JD8ZebojWkiSMDLE9qyxmjftSna03tFS744MoifNIj5g")

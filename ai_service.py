@@ -72,7 +72,7 @@ MUMKIN BO'LGAN NIYATLAR (INTENTS):
 12. "OFFICE_LOCATION": Kompaniya ofisi qayerdaligi, lokatsiyasi, manzili yoki kelish yo'li so'ralganda.
     Misollar: "ofis qayerda", "ishxonalaring qayda joylashgan", "lokatsa tashlang", "adresingiz qayerda", "qayerga borsak bo'ladi".
 
-13. "FORGET": Suhbatni unutish, tozalash, boshidan boshlash.
+13. "FORGET": Faqat mijoz /salombot buyrug'ini yuborganida suhbatni tozalash.
 
 14. "GENERAL_REKVIZIT": Umumiy to'lov rekviziti so'ralganda (oylik yoki yillik ekanligi belgilanmagan holda).
 
@@ -147,10 +147,8 @@ class AIService:
         raw = text.strip()
         norm = self.normalize_for_ai(raw)
 
-        # 1. Reset / Forget (Suhbatni unutish)
+        # 1. Reset / Forget (Suhbatni unutish) - FAQAT /salombot buyrug'i
         if re.search(r"^[\/\\#]?(?:salom[\s_]?bot)(?:@\w+)?(?:\s.*)?$", norm) or re.search(r"^salom\s+bot$", norm) or re.search(r"[\/\\#]salom[\s_]?bot\b", norm):
-            return {"intent": "FORGET", "ai_reply": None}
-        if re.search(r"\b(suhbat(ni|imizni|ingizni)?\s*unut|meni\s*unut|esdan\s*chiqar|boshidan\s*boshla|tozala|reset|clear)\b", norm):
             return {"intent": "FORGET", "ai_reply": None}
 
         # 2. Operator / Tirik mutaxassis / Usta bilan bog'lanish
@@ -186,8 +184,10 @@ class AIService:
 
         # 3. Soat / Vaqt nosozligi
         if re.search(r"\b(soat|soati|vaqt|vaqti)\b", norm):
-            if re.search(r"\b(xato|noto'g'ri|notugri|notogri|orqada|to'g'irlash|togirlash|tugirlash|adashgan|sozlash|o'tib|notog'ri)\b", norm):
+            if re.search(r"\b(xato|noto'?g'?ri|notugri|notogri|orqada|to'?g'?irlash|to'?g'?rilash|togirlash|togrilash|tugirlash|tugrilash|adashgan|sozlash|sozlay|o'?tib|notog'?ri|video\w*|vedio\w*|vidyo\w*|darslik\w*|qo'?llanma\w*|parol\w*)\b", norm):
                 return {"intent": "CLOCK_PROBLEM", "ai_reply": None}
+        if re.search(r"\b(?:soat|vaqt)\w*\s*(?:ni\s*)?(?:to'?g'?ril\w*|to'?g'?irl\w*|tugirl\w*|tugril\w*|sozl\w*|tuzat\w*|video\w*|darslik\w*)\b", norm):
+            return {"intent": "CLOCK_PROBLEM", "ai_reply": None}
 
         # 4. IKPU / MXIK / Tovar kodi xatosi
         if re.search(r"\b(ikpu|mxik|shtrix\s*kod|kod\s*chiqmayapti|tovar\s*kodi|mknu|mkny)\b", norm):
@@ -216,7 +216,7 @@ class AIService:
             return {"intent": "CHECK_YEARLY_EXPIRATION", "ai_reply": None}
 
         # Z-Hisobot / Smena yopish so'rovi (Z_REPORT - bu to'lovlar tarixi emas!)
-        if re.search(r"\b(z\s*hisobot\w*|z\s*otchet\w*|z\s*otchyot\w*|x\s*hisobot\w*|smena\s*yop\w*|kun\s*yop\w*)\b", norm):
+        if re.search(r"\b(z[\s\-]*hisobot\w*|z[\s\-]*otchet\w*|z[\s\-]*otchyot\w*|x[\s\-]*hisobot\w*|smena\s*yop\w*|kun\s*yop\w*)\b", norm):
             if re.search(r"\b(video\w*|vedio\w*|vidyo\w*|darslik\w*|qo'?llanma\w*|rolik\w*|chek\s*ur\w*|chek\s*chiqar\w*)\b", norm):
                 return {"intent": "GUIDE_PRINT_CHECK_Z", "ai_reply": None}
             return {
@@ -312,7 +312,9 @@ class AIService:
             return {"intent": "GUIDE_CANCEL_CHECK", "ai_reply": None}
 
         # F) Chek urish va X/Z hisobot videosi (Post 2)
-        if (re.search(r"\b(chek\s*ur\w*|z\s*hisobot|x\s*hisobot|smena\s*yop\w*)\b", norm) and is_video_query):
+        if re.search(r"\b(chek\s*(?:ur\w*|chiqar\w*|bos\w*)|z\s*hisobot|x\s*hisobot|smena\s*yop\w*)\b", norm) and (is_video_query or re.search(r"\b(qanday|tartibi|yo'?li|qo'?llanma|darslik|video)\b", norm)):
+            return {"intent": "GUIDE_PRINT_CHECK_Z", "ai_reply": None}
+        if re.search(r"\b(?:kassa\w*\s+)?qanday\s+chek\s+uril\w*\b", norm) or re.search(r"\bchek\s+(?:qanday\s+)?urish\b", norm):
             return {"intent": "GUIDE_PRINT_CHECK_Z", "ai_reply": None}
 
         # G) Dasturni yangilash videosi (Post 142)
@@ -343,6 +345,14 @@ class AIService:
         ctx_oylik = getattr(session, "oylik_holat", None) if session else None
         ctx_fm = getattr(session, "fm_holat", None) if session else None
         ctx_offline = getattr(session, "offline_limit_error_active", False) if session else None
+
+        # 6.9. To'lov usullari / Boshqa to'lov ilovalari (Payme, Uzum, Alif) / Shotdan to'lov (PAYMENT_METHOD_INQUIRY)
+        # Masalan: "shotdan to'lasa bo'ladimi", "paymedan to'lasa bo'ladimi", "paymedan to'lash videosi bormi", "alifdan bo'ladimi"
+        is_pay_method_inquiry = bool(
+            re.search(r'(?:\b(shot\w*|hisob\s*raqam\w*|perechislen\w*|bank\w*)\s*(?:dan)?\s*(?:ham\s*)?(?:t(?:o\'?|o|u)la\w*|o\'?tkaz\w*|utkaz\w*|otkaz\w*)\s*(?:bo\'?ladimi|mumkinmi|qilsa\s*bo\'?ladimi)\b|\b(payme\w*|payi\w*|uzum\w*|alif\w*|paynet\w*|peynet\w*|anor\w*|zoomrad\w*)\b.*?\b(?:t(?:o\'?|o|u)la\w*|o\'?tkaz\w*|utkaz\w*|otkaz\w*|b(?:o\'?|u)ladimi|mumkinmi|video\w*|vedio\w*|darslik\w*)\b|\b(shot|hisob\s*raqam|bank)\w*\b.*?\b(t(?:o\'?|o|u)la\w*|o\'?tkaz\w*|utkaz\w*|otkaz\w*|b(?:o\'?|u)ladimi|mumkinmi)\b)', norm)
+        )
+        if is_pay_method_inquiry:
+            return {"intent": "PAYMENT_METHOD_INQUIRY", "ai_reply": None}
 
         # 7. Oylik to'lov niyati (PAY_MONTHLY - Post 148 video va Post 85 rekvizit)
         # Oylik to'lash videosi yoki rekvizit so'ralganda:
@@ -440,7 +450,7 @@ class AIService:
             }
 
         # 12.3. Z-hisobot / Smena yopish (Z_REPORT)
-        if re.search(r"\b(z\s*hisobot\w*|z\s*otchet\w*|z\s*otchyot\w*|x\s*hisobot\w*|smena\s*yop\w*|kun\s*yop\w*)\b", norm):
+        if re.search(r"\b(z[\s\-]*hisobot\w*|z[\s\-]*otchet\w*|z[\s\-]*otchyot\w*|x[\s\-]*hisobot\w*|smena\s*yop\w*|kun\s*yop\w*)\b", norm):
             return {
                 "intent": "Z_REPORT",
                 "ai_reply": (
@@ -506,9 +516,10 @@ class AIService:
             return {
                 "intent": "CASSETTE_PAPER",
                 "ai_reply": (
-                    f"🧾 *Kassa apparati qog'ozi (termolenta):*\n\n"
-                    f"SmartOne va PAX P3 kassa apparatlari uchun standart **57 mm** o'lchamdagi termolentalardan foydalaniladi.\n\n"
-                    f"Kassa lentalarini bizning ofisimizdan yoki har qanday kantselyariya do'konlaridan xarid qilishingiz mumkin.\n"
+                    f"🧾 *Kassa apparatiga lenta (qog'oz) qo'yish va o'lchami:*\n\n"
+                    f"1️⃣ **Lenta qo'yish tartibi:** Kassa apparatining yuqori qismidagi qopqoqni sekin oching. Termolentani qog'oz uchi pastdan chiqadigan holatda ichkariga joylashtiring va lentaning bir uchini 2-3 sm chiqarib qopqoqni zich yoping.\n\n"
+                    f"2️⃣ **Lenta o'lchami:** SmartOne va PAX P3 apparatlari uchun standart **57 mm** o'lchamdagi termolenta ishlatiladi.\n\n"
+                    f"Lentalarni bizning ofisimizdan yoki kantselyariya do'konlaridan olishingiz mumkin.\n"
                     f"🏢 *Ofisimiz:* Qashqadaryo viloyati, Shahrisabz shahar, Sheroziy ko'chasi 1-uy."
                 )
             }
@@ -667,7 +678,7 @@ class AIService:
             plan["next_action"] = "SEND_CANCEL_CHECK_GUIDE"
             plan["explanation"] = "Bot 53-postdagi tovarni atkaz qilish va qayta urish videosini yuborishi kerak."
 
-        elif intent == "GUIDE_PRINT_CHECK_Z":
+        elif intent in ["GUIDE_PRINT_CHECK_Z", "Z_REPORT"]:
             plan["underlying_goal"] = "Mijoz chek urish va X/Z hisobot olish videosini so'radi."
             plan["next_action"] = "SEND_PRINT_CHECK_Z_GUIDE"
             plan["explanation"] = "Bot 2-postdagi chek urish va X/Z hisobot videosini yuborishi kerak."
@@ -696,6 +707,11 @@ class AIService:
             plan["underlying_goal"] = "Kassa apparatida IKPU / tovar kodi bo'yicha xatolik yuzaga kelgan."
             plan["next_action"] = "PROCESS_IKPU"
             plan["explanation"] = "Bot IKPU videosini yuborishi, agar video allaqachon yuborilgan bo'lsa darhol mas'ul texnikka ulashi lozim."
+
+        elif intent == "PAYMENT_METHOD_INQUIRY":
+            plan["underlying_goal"] = "Mijoz shotdan (hisob raqamdan) yoki Payme/boshqa ilova orqali to'lash mumkinligini yoki uning videosini so'radi."
+            plan["next_action"] = "HANDLE_PAYMENT_METHOD_INQUIRY"
+            plan["explanation"] = "Bot mijozga ha bo'ladi deb, to'lov yoki o'tkazmalar bo'limidan hisob raqamga to'lov/rekvizit orqali to'lash mumkinligini va rekvizitlar yuborilganini tushuntirishi lozim."
 
         elif intent == "PAY_MONTHLY":
             plan["underlying_goal"] = "Mijoz oylik abonent to'lovini amalga oshirmoqchi."
@@ -747,8 +763,8 @@ class AIService:
             plan["next_action"] = "REPLY_GREETING"
             plan["explanation"] = "Bot muloyim va samimiy salomlashib, yordam taklif qiladi."
 
-        elif intent == "GENERAL_ANSWER":
-            plan["underlying_goal"] = "Umumiy murojaat, manzil, telefon yoki minnatdorchilik."
+        elif intent in ["GENERAL_ANSWER", "CASSETTE_PAPER", "BUY_POS", "YTT_JSHSHIR_GUIDE"]:
+            plan["underlying_goal"] = "Umumiy murojaat, lenta, yangi apparat xaridi yoki tushuntirish."
             plan["next_action"] = "REPLY_GENERAL"
             plan["explanation"] = "Bot tayyor samimiy javobni qaytaradi."
 
@@ -758,29 +774,71 @@ class AIService:
             plan["explanation"] = "Bot odam texnik kabi muloyim javob berib, ma'lumot kelishi bilan darhol ko'rib berishini bildiradi va kutish holatini saqlab qoladi."
 
         else:
-            plan["underlying_goal"] = "Noma'lum murojaat."
-            plan["next_action"] = "UNKNOWN"
-            plan["explanation"] = "Mijozga kassa apparati tekshiruvi uchun INN so'rash taklif qilinadi."
+            plan["underlying_goal"] = "Noma'lum yoki bot tushunmagan savol."
+            plan["next_action"] = "NOTIFY_TECHNICIAN_UNCLEAR"
+            plan["explanation"] = "Mijozning maxsus yoki bot tushunmagan savoli bo'yicha istisno tariqasida mas'ul mutaxassisga ulanadi."
 
         return plan
+
+    def split_multi_queries(self, text: str) -> list:
+        """Matndagi bir nechta mustaqil savol va so'rovlarni ajratish"""
+        if not text:
+            return []
+        raw = text.strip()
+        pattern = r"(?:\n+|\?+\s+|;\s*|,\s*(?:yana|keyin|qolaversa|shuningdek|hamda)\s+|\b(?:va\s+yana|va\s+keyin|yana\s+bitta\s+savol|yana\s+bir\s+savol|ikkinchi\s+savol(?:im)?)\b)"
+        parts = re.split(pattern, raw, flags=re.IGNORECASE)
+        cleaned_parts = []
+        for p in parts:
+            p_clean = p.strip(" ?!,.\t\r\n")
+            if len(p_clean) >= 4 and len(p_clean.split()) >= 1:
+                cleaned_parts.append(p_clean)
+        return cleaned_parts
 
     def analyze_message(self, text, session=None):
         """
         Mijoz xabarini sun'iy intellekt (Semantik NLP + Google Gemini) orqali tahlil qiladi.
-        Faqat matnli xabarlar uchun ishlaydi (toza raqamlar bot tomonidan tekshiriladi).
+        Bir xabarda bir nechta savol bo'lsa (multi-intent), barcha savollarni alohida-alohida ajratib oladi.
         Natija sifatida to'liq ActionPlan obyektini qaytaradi.
         """
         if not text:
             return None
 
         clean_text = text.strip()
-        # Agar xabar faqat raqamlardan iborat bo'lsa (masalan: 9 xonali INN, 14 xonali JSHSHIR yoki FM),
-        # sun'iy intellektga yuborilmaydi — botning o'zi to'g'ridan-to'g'ri aniq tekshiradi!
         digits_only = re.sub(r"\D", "", clean_text)
         if len(digits_only) in [9, 10, 11, 12, 14] and len(clean_text) <= 18:
             return None
 
         if len(clean_text) < 2:
+            return None
+
+        # 0-BOSQICH: Multi-savol tekshiruvi (Bir xabarda 2 yoki undan ortiq savol bo'lsa):
+        parts = self.split_multi_queries(clean_text)
+        if len(parts) >= 2:
+            multi_plans = []
+            seen_actions = set()
+            for part in parts:
+                p_plan = self.analyze_single_message(part, session=session)
+                if p_plan and p_plan.get("next_action"):
+                    action_key = p_plan.get("next_action")
+                    if action_key not in seen_actions:
+                        seen_actions.add(action_key)
+                        p_plan["sub_text"] = part
+                        multi_plans.append(p_plan)
+
+            if len(multi_plans) >= 2:
+                print(f"[AI_MULTI] Topilgan mustaqil savollar: {len(multi_plans)} ta -> {[p.get('next_action') for p in multi_plans]}")
+                return {
+                    "is_multi": True,
+                    "plans": multi_plans,
+                    "intent": "MULTI_QUERY",
+                    "next_action": "EXECUTE_MULTI"
+                }
+
+        return self.analyze_single_message(clean_text, session=session)
+
+    def analyze_single_message(self, clean_text, session=None):
+        """Yagona savol yoki qismni semantik va Gemini AI orqali tahlil qilish"""
+        if not clean_text or len(clean_text) < 2:
             return None
 
         # 1-BOSQICH: Yuqori aniqlikdagi mahalliy semantik intellekt (Bir zumda va 100% barqaror ishlaydi)
@@ -835,7 +893,7 @@ class AIService:
                 except Exception as e:
                     print(f"[AI_SERVICE] Google Gemini ({model_name}) xatolik: {e}")
 
-        return None
+        return self.build_action_plan("UNKNOWN", clean_text, session=session)
 
 
 ai_service = AIService()

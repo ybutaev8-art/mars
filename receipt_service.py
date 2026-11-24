@@ -105,12 +105,70 @@ class ReceiptService:
             print(f"[RECEIPT] Rasmni OCR qilishda xatolik: {e}")
             return ""
 
+    def is_bankomat_receipt(self, text: str) -> bool:
+        """Bankomat yoki infokiosk orqali to'langan qog'oz to'lov cheki/slipi ekanligini aniqlash"""
+        if not text:
+            return False
+        t = text.lower()
+
+        # Bankomat va infokiosklarga xos to'g'ridan-to'g'ri kalit so'zlar
+        atm_direct_markers = [
+            "bankomat", "банкомат", "infokiosk", "инфокиоск", "киоск", "kiosk",
+            "atm", "cash-in", "cash in", "самообслуживания", "terminal id", "терминал id",
+            "kod avtorizatsii", "код авторизации", "kod operatsii", "код операции",
+            "slip", "слип", "bankomat cheki"
+        ]
+        has_direct_atm = any(m in t for m in atm_direct_markers)
+
+        # Banklar ro'yxati
+        bank_names = [
+            "xalq bank", "agrobank", "hamkorbank", "kapitalbank", "ipoteka bank", "ipotekabank",
+            "nbu", "milliy bank", "asakabank", "infinbank", "aloqabank", "turonbank",
+            "mikrokreditbank", "ipak yo'li", "ipak yoli", "sqb", "o'zsanoatqurilishbank", "davr bank",
+            "savdogar bank", "universal bank", "orient finance", "anorbank", "tbc", "ravnaq", "kdb"
+        ]
+        has_bank = any(b in t for b in bank_names)
+
+        # Chek / slip maydonlari
+        slip_fields = [
+            "tid", "mid", "rrn", "stan", "kassir", "кассир", "savdo", "чек:", "chek:", "чек №",
+            "chek no", "amaliyot:", "операция:", "terminal:", "терминал:", "tranzaksiya:",
+            "транзакция:", "qabul qiluvchi:", "получатель:", "to'lov turi:", "turi:", "pan:",
+            "karta:", "карта:", "kupkassi", "naqd pul"
+        ]
+        field_count = sum(1 for f in slip_fields if f in t)
+
+        has_amount = any(w in t for w in ["so'm", "som", "сум", "uzs"])
+        has_pay_word = any(w in t for w in ["to'lov", "tulov", "оплата", "платеж", "chek", "чек", "muvaffaqiyatli", "успешно"])
+
+        # 1. Bevosita bankomat/kiosk so'zi bo'lsa va summa/to'lov mavjud bo'lsa
+        if has_direct_atm and (has_amount or has_pay_word or field_count >= 1):
+            return True
+
+        # 2. Bank nomi + slip maydonlari (tid/rrn/kassir/stan) + summa bo'lsa (bankomat yoki kassa qog'oz cheki)
+        if has_bank and field_count >= 2 and (has_amount or has_pay_word):
+            return True
+
+        # 3. Bankomat slip rekvizitlari: tid/mid + rrn/stan + summa
+        if any(k in t for k in ["tid", "mid"]) and any(k in t for k in ["rrn", "stan"]) and has_amount:
+            return True
+
+        return False
+
     def is_payment_receipt(self, text: str) -> bool:
         """Matn to'lov kvitansiyasiga tegishli ekanligini aniqlash"""
         if not text:
             return False
 
         t = text.lower()
+
+        # Bankomat cheki har doim to'lov kvitansiyasi deb qabul qilinadi
+        if self.is_bankomat_receipt(text):
+            return True
+
+        # Mobil ilova o'tkazma ekrani (skrinshot) bo'lsa - rasmiy kvitansiya emas
+        if self.is_transfer_screenshot(text):
+            return False
 
         # Asosiy to'lov va kvitansiya belgilari
         primary_markers = [
@@ -199,12 +257,16 @@ class ReceiptService:
         }
 
     def is_transfer_screenshot(self, text: str) -> bool:
-        """Foydalanuvchi rasmiy kvitansiya o'rniga mobil ilovaning o'tkazma/hisobot skrinshotini yuborganini aniqlash"""
+        """Foydalanuvchi rasmiy kvitansiya o'rniga mobil ilovaning to'lov cheki, rekviziti yoki o'tkazma/hisobot tafsilotlari skrinshotini yuborganini aniqlash"""
         if not text:
             return False
         t = text.lower()
 
-        # Rasmiy kvitansiya sarlavhalari bo'lsa, bu skrinshot emas, rasmiy hujjat:
+        # Bankomat qog'oz cheki hech qachon skrinshot emas!
+        if self.is_bankomat_receipt(text):
+            return False
+
+        # Rasmiy bank to'lov topshirig'nomasi yoki memorial order bo'lsa, bu skrinshot emas, rasmiy hujjat:
         official_headers = [
             "patta", "патт", "мемориальный ордер", "платежное поручение",
             "to'lov topshirig'nomasi", "tolov topshirignomasi", "электронная квитанция"
@@ -212,6 +274,7 @@ class ReceiptService:
         if any(h in t for h in official_headers):
             return False
 
+        # Mobil ilovadagi to'lov cheki, tafsilotlar yoki rekvizitlar skrinshoti belgilari:
         app_screen_markers = [
             "hisobotlar", "muvaffaqiyatli", "yechiladigan summa", "pul yechish",
             "takrorlash", "to'lovni saqlash", "tolovni saqlash", "to'lovlar tarixi", "tolovlar tarixi",
@@ -225,10 +288,21 @@ class ReceiptService:
             "to'lov amalga oshirildi", "tolov amalga oshirildi", "o'tkazma bajarildi", "otkazma bajarildi",
             "to'lov cheki", "tolov cheki", "to'lov muvaffaqiyatli", "tolov muvaffaqiyatli",
             "operatsiya tafsilotlari", "tranzaksiya", "o'tkazildi", "otkazildi",
-            "to'landi", "tolandi", "click pass", "click", "payme", "uzum"
+            "to'landi", "tolandi", "click pass", "click", "payme", "uzum", "paynet", "apelsin",
+            "hisob raqam", "hisobraqam", "rekvizit", "mfo"
         ]
         matches = [m for m in app_screen_markers if m in t]
-        if len(matches) >= 2 or any(m in t for m in ["hisobotlar", "kvitansiya yukl", "xarid cheki", "takrorlash", "to'lov tafsilotlari", "tolov tafsilotlari", "детали платежа"]):
+
+        # Birinchi darajali aniq skrinshot belgilari (bitta bo'lsa ham yetarli)
+        single_strong_markers = [
+            "hisobotlar", "kvitansiya yukl", "kvitansiyani yukl", "скачать квитанцию", "скачать чек",
+            "xarid cheki", "takrorlash", "to'lov tafsilotlari", "tolov tafsilotlari", "детали платежа",
+            "to'lov cheki", "tolov cheki", "rekvizitlar bo'yicha to'lov", "rekvizitlar boyicha tolov"
+        ]
+        if any(m in t for m in single_strong_markers):
+            return True
+
+        if len(matches) >= 2:
             return True
         return False
 

@@ -11,6 +11,7 @@ from PIL import Image
 # Kvitansiya, to'lov cheki va bank operatsiyalari kalit so'zlari
 RECEIPT_KEYWORDS = [
     "kvitansiya", "квитанция", "chek raqami", "chek no", "чек №", "чек номер",
+    "bankomat", "банкомат", "infokiosk", "инфокиоск", "slip", "слип",
     "amaliyot muvaffaqiyatli", "муваффақиятли", "операция успешна", "o'tkazma muvaffaqiyatli",
     "муваффақиятли тўланди", "muvaffaqiyatli to'landi", "muvaffaqiyatli tolandi",
     "to'lov topshirig'nomasi", "tolov topshirignomasi", "платежное поручение",
@@ -166,6 +167,24 @@ def classify_image_type(image_path: str) -> dict:
         "patta", "chek raqami", "amaliyot muvaffaqiyatli", "o'tkazma muvaffaqiyatli", 
         "kvitansiyani yuklab olish", "qabul qiluvchi", "talaba", "kontrakt to'lovi"
     ])
+
+    # 1. Bankomat to'lov cheki yoki mobil ilova o'tkazma/to'lov tafsilotlari tekshiruvi:
+    from receipt_service import receipt_service
+    if receipt_service.is_bankomat_receipt(full_detected_text):
+        return {
+            "category": "KVITANSIYA",
+            "reason": "Bankomat / infokiosk to'lov cheki aniqlandi",
+            "text": full_detected_text,
+            "pos_analysis": None
+        }
+
+    if receipt_service.is_transfer_screenshot(full_detected_text):
+        return {
+            "category": "KVITANSIYA",
+            "reason": "Mobil ilova to'lov cheki / tafsilotlari skrinshoti aniqlandi",
+            "text": full_detected_text,
+            "pos_analysis": None
+        }
 
     # KASSA_APARAT ekanligini tasdiqlash
     if has_pos_error_or_serial or has_brand or pos_count >= 1:
