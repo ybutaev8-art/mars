@@ -2,56 +2,50 @@
   "sessions": {
     "1966874161": {
       "user_id": "1966874161",
-      "chat_id": 1966874161,
+      "chat_id": -1004409414211,
       "first_name": "Quvonchbek",
       "username": "Quvonchbek_admin",
-      "created_at": 1795602265.0599575,
-      "last_activity": 1795602270.2264795,
-      "state": "ADMIN_BOGLANISH",
-      "inn": "302568138",
-      "org_name": "`MARS ELEKTRON TEXNIKA` MChJ",
+      "created_at": 1795770398.9013555,
+      "last_activity": 1795772071.552179,
+      "state": "AWAITING_INN_HISTORY",
+      "inn": null,
+      "org_name": null,
       "oylik_qarz": null,
       "oylik_holat": null,
       "fm_number": null,
       "fm_holat": null,
       "last_intent": null,
-      "last_topic": "payment_history",
+      "last_topic": null,
       "unclear_count": 0,
-      "last_photo_file_id": null,
-      "last_photo_caption": null,
-      "last_msg_id": null,
+      "last_photo_file_id": "AgACAgIAAxkBAAILXGsJRu_zRiulyH5fjYtCaHXU4y06AAJHKWsbNaBQSBE1kT9hr5LRAQADAgADeQADPQQ",
+      "last_photo_caption": "",
+      "last_msg_id": 2921,
       "ikpu_video_sent": false,
       "ikpu_error_active": false,
-      "offline_limit_error_active": false,
+      "offline_limit_error_active": true,
       "pending_receipt": null,
-      "history_shown": true,
+      "history_shown": false,
       "dialog_history": [
         {
           "role": "user",
-          "text": "302568138 tolovlar tarixi",
+          "text": "36888 xatolik chiqyapti",
           "intent": null,
-          "timestamp": 1795602265.1008017
-        },
-        {
-          "role": "bot",
-          "text": "📊 *`MARS ELEKTRON TEXNIKA` MChJ bo'yicha to'lovlar hisoboti:*\n📑 STIR / INN: `302568138`\n📌 Kassa apparatlari soni: *2 ta*\n📅 *Apparatlar ro'yxatga olingan sanalari:*\n  • 1-aparat: *31.12.2020*\n  • 2-aparat: *30.12.2020*\n\n🗓 *Oylik to'lovlar holati:*\n  • *Yanvar:* ❌ To'lanmagan (0 so'm)\n  • *Fevral:* ❌ ",
-          "intent": "PAYMENT_HISTORY",
-          "timestamp": 1795602265.5556574
+          "timestamp": 1795770398.933533
         },
         {
           "role": "user",
-          "text": "men sentabr uchun tolagandim nimaga tolanmagan bolib korinyapti",
+          "text": "36888 xatolik chiqyapti",
           "intent": null,
-          "timestamp": 1795602270.2304757
+          "timestamp": 1795770466.9985795
+        },
+        {
+          "role": "user",
+          "text": "time past dib ashebka chiqarabdida aparatimiz",
+          "intent": null,
+          "timestamp": 1795772071.568169
         }
       ]
     }
   },
-  "chat_info": {
-    "1966874161": {
-      "inn": "302568138",
-      "org_name": "`MARS ELEKTRON TEXNIKA` MChJ",
-      "timestamp": 1795602265.12016
-    }
-  }
+  "chat_info": {}
 }
